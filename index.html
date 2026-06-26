@@ -178,6 +178,123 @@
   .delta-pill.plus{background:rgba(34,197,94,0.15);color:var(--grn);}
   .delta-pill.minus{background:rgba(239,68,68,0.15);color:var(--red);}
 </style>
+<script>
+  // ═══════════════════════════════════════════════════
+  // BOOTSTRAPPED RUNTIME STATE & NAVIGATION CONTROLS
+  // ═══════════════════════════════════════════════════
+  let SCRIPT_URL = localStorage.getItem('pw_script_url') || '';
+  let SHEET_URL  = localStorage.getItem('pw_sheet_url') || '';
+  let backendOk  = false;
+
+  let logs = {}, callbacks = {};
+  try { logs = JSON.parse(localStorage.getItem('pw_logs')||'{}'); } catch(e){}
+  try { callbacks = JSON.parse(localStorage.getItem('pw_callbacks')||'{}'); } catch(e){}
+
+  let historicalSnapshots = [];
+  try { historicalSnapshots = JSON.parse(localStorage.getItem('pw_snapshots')||'[]'); } catch(e){}
+
+  let ACTIVE = [
+    {id:1,name:"CBR Aakruti (OT)",flats:108,ob:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
+    {id:2,name:"SVS Ananda OD",flats:168,ob:17,pen:10,launch:"Sep 24",months:21,revMay:4700,revJun:4450,remark:""},
+    {id:3,name:"MJR Hydra",flats:300,ob:61,pen:20,launch:"Jan 26",months:5,revMay:14980,revJun:11800,remark:""},
+    {id:4,name:"Ashish JK (DP)",flats:206,ob:31,pen:15,launch:"Apr 26",months:2,revMay:17600,revJun:8375,remark:""},
+    {id:5,name:"Prabhavati",flats:80,ob:18,pen:22,launch:"May 26",months:0,revMay:7134,revJun:4158,remark:""},
+  ];
+  let PIPELINE = [
+    {id:101,name:"Coronet Green",flats:100,remark:"Expected launch: 22nd June"},
+    {id:102,name:"Sai Poorna Premier",flats:220,remark:"Achieved 16% interest. Expected: 5th July"},
+    {id:103,name:"Estalla Maple Square",flats:207,remark:"Penetration focus"},
+    {id:104,name:"Sai Royale",flats:104,remark:"Feasibility check done"},
+    {id:105,name:"Deep Square",flats:140,remark:"2nd meeting fixed 27/28"},
+    {id:106,name:"Sai Poorna Luxuria",flats:180,remark:"June 30 CB"},
+    {id:107,name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July"},
+  ];
+
+  let _detailId = null, currentLogId = null, currentLogName = '';
+  let sortKey='pen', sortDir=-1, filterUrgent=false, searchQ='', currentTab='overview';
+
+  // Moved early to eliminate execution handoff race contexts
+  function renderDrawerFocus(mode) {
+    const area = document.getElementById('drawerFocusArea');
+    if (!area) return;
+    const todayStr = new Date().toISOString().slice(0,10);
+    let h = '';
+
+    if (mode === 'today') {
+      h = '<h4>Today\'s Follow-ups</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
+      let count = 0;
+      Object.entries(callbacks).forEach(([id,date])=>{
+        if(date === todayStr){
+          const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
+          h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--orn);">
+            <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Callback Due Today</small>
+          </div>`;
+          count++;
+        }
+      });
+      if(!count) h += '<p style="color:var(--muted);font-size:11px;">No active entries due today.</p>';
+      h += '</div>';
+    } 
+    else if (mode === 'upcoming') {
+      h = '<h4>Upcoming Callbacks</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
+      let count = 0;
+      Object.entries(callbacks).forEach(([id,date])=>{
+        if(date > todayStr){
+          const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
+          h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--muted);">
+            <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Target: ${date}</small>
+          </div>`;
+          count++;
+        }
+      });
+      if(!count) h += '<p style="color:var(--muted);font-size:11px;">No future items indexed.</p>';
+      h += '</div>';
+    } 
+    else if (mode === 'history') {
+      h = '<h4>Recent History Streams</h4><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:300px;overflow-y:auto;">';
+      let count = 0;
+      [...ACTIVE,...PIPELINE].forEach(r => {
+        const logList = typeof getLogsById === 'function' ? getLogsById(r.id) : [];
+        if (logList.length) {
+          const last = logList[logList.length - 1];
+          h += `<div style="padding:8px;background:var(--card);border-radius:6px;font-size:11px;">
+            <strong style="color:var(--acc);">${r.name}</strong>
+            <div style="color:var(--txt2);margin-top:3px;font-style:italic;">"${last.note.substring(0,40)}..."</div>
+            <small style="color:var(--muted);">${last.time}</small>
+          </div>`;
+          count++;
+        }
+      });
+      if(!count) h += '<p style="color:var(--muted);font-size:11px;">No transactional history traces logged.</p>';
+      h += '</div>';
+    }
+    area.innerHTML = h;
+  }
+
+  function toggleDrawer(){
+    const d=document.getElementById('callDrawer');
+    const o=document.getElementById('drawerOverlay');
+    const open = d && d.style.display==='block';
+    if(open){
+      if(d && o) { d.style.display='none'; o.style.display='none'; }
+      return;
+    }
+    
+    if(d && o) {
+      d.style.display='block';
+      o.style.display='block';
+    }
+    renderDrawerFocus('today');
+  }
+
+  function toggleTheme(){
+    const h=document.documentElement;
+    const t=h.getAttribute('data-theme')==='dark'?'light':'dark';
+    h.setAttribute('data-theme',t);
+    document.getElementById('themeBtn').textContent=t==='dark'?'☀️ Light':'🌙 Dark';
+    if(typeof renderCurrent === 'function') renderCurrent();
+  }
+</script>
 </head>
 <body>
 
@@ -316,51 +433,8 @@
 
 <script>
 // ═══════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════
-let SCRIPT_URL = localStorage.getItem('pw_script_url') || '';
-let SHEET_URL  = localStorage.getItem('pw_sheet_url') || '';
-let backendOk  = false;
-
-let logs = {}, callbacks = {};
-try { logs = JSON.parse(localStorage.getItem('pw_logs')||'{}'); } catch(e){}
-try { callbacks = JSON.parse(localStorage.getItem('pw_callbacks')||'{}'); } catch(e){}
-
-let historicalSnapshots = [];
-try { historicalSnapshots = JSON.parse(localStorage.getItem('pw_snapshots')||'[]'); } catch(e){}
-
-let ACTIVE = [
-  {id:1,name:"CBR Aakruti (OT)",flats:108,ob:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
-  {id:2,name:"SVS Ananda OD",flats:168,ob:17,pen:10,launch:"Sep 24",months:21,revMay:4700,revJun:4450,remark:""},
-  {id:3,name:"MJR Hydra",flats:300,ob:61,pen:20,launch:"Jan 26",months:5,revMay:14980,revJun:11800,remark:""},
-  {id:4,name:"Ashish JK (DP)",flats:206,ob:31,pen:15,launch:"Apr 26",months:2,revMay:17600,revJun:8375,remark:""},
-  {id:5,name:"Prabhavati",flats:80,ob:18,pen:22,launch:"May 26",months:0,revMay:7134,revJun:4158,remark:""},
-];
-let PIPELINE = [
-  {id:101,name:"Coronet Green",flats:100,remark:"Expected launch: 22nd June"},
-  {id:102,name:"Sai Poorna Premier",flats:220,remark:"Achieved 16% interest. Expected: 5th July"},
-  {id:103,name:"Estalla Maple Square",flats:207,remark:"Penetration focus"},
-  {id:104,name:"Sai Royale",flats:104,remark:"Feasibility check done"},
-  {id:105,name:"Deep Square",flats:140,remark:"2nd meeting fixed 27/28"},
-  {id:106,name:"Sai Poorna Luxuria",flats:180,remark:"June 30 CB"},
-  {id:107,name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July"},
-];
-
-let _detailId = null, currentLogId = null, currentLogName = '';
-let sortKey='pen', sortDir=-1, filterUrgent=false, searchQ='', currentTab='overview';
-
-// ═══════════════════════════════════════════════════
 // BACKEND API
 // ═══════════════════════════════════════════════════
-function setSyncStatus(state, msg) {
-  const dot = document.getElementById('syncDot');
-  const txt = document.getElementById('syncTxt');
-  if(dot && txt) {
-    dot.className = 'sync-dot ' + state;
-    txt.textContent = msg;
-  }
-}
-
 async function apiCall(action, data={}) {
   if (!SCRIPT_URL) return null;
   try {
@@ -399,6 +473,12 @@ async function connectBackend() {
     backendOk = true;
     logs = {};
     callbacks = {};
+    
+    if (result.snapshots) {
+      historicalSnapshots = result.snapshots;
+      document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
+    }
+
     const allSocs = [...ACTIVE, ...PIPELINE];
     Object.entries(result.grouped).forEach(([name, entries]) => {
       const soc = allSocs.find(s => s.name === name);
@@ -438,6 +518,8 @@ async function refreshLogsFromSheet() {
   const result = await apiCall('getAllLogs');
   if (!result) { setSyncStatus('err', 'Sync failed'); return; }
   logs = {}; callbacks = {};
+  if (result.snapshots) historicalSnapshots = result.snapshots;
+  
   const allSocs = [...ACTIVE, ...PIPELINE];
   Object.entries(result.grouped || {}).forEach(([name, entries]) => {
     const soc = allSocs.find(s => s.name === name);
@@ -464,9 +546,7 @@ function fmtS(n){ return n>=1000?'₹'+(n/1000).toFixed(1)+'k':'₹'+n; }
 
 function checkHealthOverride(r) {
   let s=0;
-  if(r.pen>=40)s+=40;else if(r.pen>=25)s+=25;else if(r.pen>=15)s+=15;else s+=5;
-  const t=r.revJun-r.revMay;
-  if(t>0)s+=30;else if(t===0)s+=15;
+  if (r.pen >= 40) s+=40; else if(r.pen >= 25) s+=25; else if(r.pen >= 15) s+=15; else s+=5;
   return Math.min(s,100);
 }
 function urgencyReasons(r){
@@ -574,7 +654,7 @@ function renderOverview(){
 function renderFollowup(){
   let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <div class="sec" style="margin:0;flex:1">Pending callbacks & flagged</div>
-    ${backendOk?`<button class="filter-btn" onclick="refreshLogsFromSheet().then(renderCurrent)" style="margin-left:10px;">🔄 Sync now</button>`:''}
+    ${backendOk?`<button class="filter-btn" onclick="refreshLogsFromSheet().then(renderCurrent)">🔄 Sync now</button>`:''}
   </div>`;
 
   const pending=ACTIVE.filter(r=>callbacks[r.id]||urgencyReasons(r).length)
@@ -701,362 +781,6 @@ function renderCompare(){
   document.getElementById('tab-compare').innerHTML=html;
 }
 
-// ═══════════════════════════════════════════════════
-// HISTORICAL SNAPSHOTS VIEW TAB
-// ═══════════════════════════════════════════════════
-function renderSnapshots() {
-  let html = `<div class="sec">Historical Data Matrix Snapshots</div>`;
-  if (!historicalSnapshots.length) {
-    html += `<div class="empty">No historical changes documented yet. Load a modified layout sheet to see comparative day-to-day deltas.</div>`;
-  } else {
-    html += `<div style="display:flex; flex-direction:column; gap:16px;">`;
-    historicalSnapshots.slice().reverse().forEach(snap => {
-      html += `<div style="background:var(--surf); border:1px solid var(--bdr); padding:16px; border-radius:12px;">
-        <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:var(--acc);">📅 Snapshot Log Reference: ${snap.date}</div>`;
-      if (!snap.changes || !snap.changes.length) {
-        html += `<div style="font-size:11px; color:var(--muted);">Zero onboarding changes detected during this transaction window.</div>`;
-      } else {
-        html += `<table class="cmp-table" style="margin-bottom:0;"><thead><tr><th>Society</th><th>Metric Variance Shift</th></tr></thead><tbody>`;
-        snap.changes.forEach(c => {
-          html += `<tr>
-            <td><strong>${c.name}</strong></td>
-            <td>
-              Onboarded: ${c.oldOb} ➔ <strong>${c.newOb}</strong> <span class="delta-pill plus">+${c.obDiff} flats</span><br>
-              Penetration: ${c.oldPen}% ➔ <strong>${c.newPen}%</strong> <span class="delta-pill plus">+${c.penDiff}%</span>
-            </td>
-          </tr>`;
-        });
-        html += `</tbody></table>`;
-      }
-      html += `</div>`;
-    });
-    html += `</div>`;
-  }
-  document.getElementById('tab-snapshots').innerHTML = html;
-}
-
-// ═══════════════════════════════════════════════════
-// DETAIL MODAL
-// ═══════════════════════════════════════════════════
-function openDetail(id){
-  const all=[...ACTIVE,...PIPELINE];
-  const r=all.find(x=>x.id===id);
-  if(!r) return;
-  _detailId=id;
-  const isPipe=!!PIPELINE.find(p=>p.id===id);
-  const rem=isPipe?100:(100-(r.pen||0));
-  const fLeft=isPipe?r.flats:(r.flats-(r.ob||0));
-  const pen=r.pen||0;
-  const circ=301.59;
-
-  document.getElementById('detailTitle').textContent=r.name;
-  document.getElementById('detailSub').textContent=(isPipe?'Pipeline · ':'Active · ')+r.flats+' total flats'+(r.ob?' · '+r.ob+' onboarded':'');
-  document.getElementById('detailRing').style.strokeDashoffset=isPipe?0:circ-(rem/100)*circ;
-  document.getElementById('detailRingPct').textContent=isPipe?'—':rem+'%';
-  document.getElementById('dTotal').textContent=r.flats;
-  document.getElementById('dDone').textContent=r.ob||0;
-  document.getElementById('dLeft').textContent=fLeft;
-  document.getElementById('dBarDone').style.width=pen+'%';
-  document.getElementById('dBarDonePct').textContent=pen+'%';
-  document.getElementById('dBarLeft').style.width=rem+'%';
-  document.getElementById('dBarLeftPct').textContent=rem+'%';
-
-  if(!isPipe){
-    const next=Math.ceil((pen+1)/10)*10;
-    const toNext=Math.max(0,Math.ceil((next/100)*r.flats)-(r.ob||0));
-    document.getElementById('dTargetNote').innerHTML=`To reach <strong>${next}% penetration</strong>, you need <strong>${toNext} more flat${toNext!==1?'s':''}</strong> onboarded.<br>${fLeft} flats still untouched out of ${r.flats}.`;
-  } else {
-    document.getElementById('dTargetNote').innerHTML=`Pipeline society — ${r.flats} flats total.<br>${r.remark||''}`;
-  }
-
-  const logList=getLogsById(id);
-  let lh=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Call history (${logList.length})</div>`;
-  if(!logList.length) lh+=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px;">No calls logged yet.</div>`;
-  else logList.slice().reverse().forEach(l=>{
-    lh+=`<div class="log-entry">
-      ${l.agentName?`<div style="font-size:10px;font-weight:600;color:var(--acc);margin-bottom:2px;">👤 ${l.agentName}</div>`:''}
-      ${l.note}
-      <div class="note-time">${l.time} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div>
-    </div>`;
-  });
-  document.getElementById('dLogHistory').innerHTML=lh;
-  document.getElementById('dLogBtn').textContent=isPipe?'📝 Log pipeline note':'📝 Log a call';
-  document.getElementById('detailModal').classList.add('open');
-}
-
-function openLogFromDetail(){
-  const all=[...ACTIVE,...PIPELINE];
-  const r=all.find(x=>x.id===_detailId);
-  if(!r) return;
-  const isPipe=!!PIPELINE.find(p=>p.id===_detailId);
-  document.getElementById('detailModal').classList.remove('open');
-  openLog(r.id, r.name, isPipe?'pipeline':'');
-}
-
-// ═══════════════════════════════════════════════════
-// LOG MODAL
-// ═══════════════════════════════════════════════════
-function openLog(id, name, mode){
-  currentLogId=id; currentLogName=name||'';
-  document.getElementById('logModalTitle').textContent=mode==='pipeline'?'Log pipeline note':'Log call / visit';
-  document.getElementById('logModalSub').textContent=name||'';
-  document.getElementById('logAgent').value=localStorage.getItem('pw_agent')||'';
-  document.getElementById('logNote').value='';
-  document.getElementById('logOutcome').value='positive';
-  document.getElementById('cbDateLabel').style.display='none';
-  document.getElementById('cbDate').style.display='none';
-  document.getElementById('cbDate').value='';
-  if(mode==='callback'){
-    document.getElementById('logOutcome').value='callback';
-    document.getElementById('cbDateLabel').style.display='block';
-    document.getElementById('cbDate').style.display='block';
-  }
-  document.getElementById('logSaving').style.display='none';
-  document.getElementById('logModal').classList.add('open');
-}
-
-document.getElementById('logOutcome').addEventListener('change',function(){
-  const s=this.value==='callback';
-  document.getElementById('cbDateLabel').style.display=s?'block':'none';
-  document.getElementById('cbDate').style.display=s?'block':'none';
-});
-
-function closeLogModal(){ document.getElementById('logModal').classList.remove('open'); }
-
-async function saveLog(){
-  const note=document.getElementById('logNote').value.trim();
-  if(!note){alert('Please add a note.');return;}
-  const agentName=document.getElementById('logAgent').value.trim();
-  const outcome=document.getElementById('logOutcome').value;
-  const cbDate=document.getElementById('cbDate').value;
-
-  if(agentName) localStorage.setItem('pw_agent',agentName);
-
-  const now=new Date();
-  const time=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-  const entry={note,agentName,outcome,callbackDate:cbDate,time};
-
-  if(!logs[currentLogId]) logs[currentLogId]=[];
-  logs[currentLogId].push(entry);
-  if(outcome==='callback'&&cbDate) callbacks[currentLogId]=cbDate;
-
-  saveLocal();
-
-  if(backendOk){
-    document.getElementById('logSaving').style.display='block';
-    document.getElementById('logSaveBtn').disabled=true;
-    const all=[...ACTIVE,...PIPELINE];
-    const r=all.find(x=>x.id===currentLogId);
-    await pushLogToSheet({
-      societyName: r?r.name:currentLogName,
-      agentName, note, outcome,
-      callbackDate: cbDate,
-      type: PIPELINE.find(p=>p.id===currentLogId)?'pipeline':'active'
-    });
-    document.getElementById('logSaveBtn').disabled=false;
-  }
-
-  closeLogModal();
-  renderCurrent();
-}
-
-async function markCbDone(id, name){
-  delete callbacks[id];
-  saveLocal();
-  if(backendOk) await apiCall('clearCallback',{societyName:name});
-  renderCurrent();
-}
-
-function saveLocal(){
-  localStorage.setItem('pw_logs',JSON.stringify(logs));
-  localStorage.setItem('pw_callbacks',JSON.stringify(callbacks));
-}
-
-// ═══════════════════════════════════════════════════
-// SHEET LOADER & COMPARATIVE TRACKER PROTOCOLS
-// ═══════════════════════════════════════════════════
-async function loadSheet(){
-  const input=document.getElementById('sheetUrl').value.trim();
-  if(!input){alert('Paste your Google Sheet link first.');return;}
-  const m=input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if(!m){alert("Doesn't look like a Google Sheets URL.");return;}
-  const sheetId=m[1];
-  const btn=document.querySelector('.conn-bar button:last-child');
-  btn.textContent='Loading…'; btn.disabled=true;
-  localStorage.setItem('pw_sheet_url',input);
-  try{
-    const res=await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`,{credentials:'omit'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const raw=await res.text();
-    const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
-    const table=json.table;
-    if(!table||!table.cols) throw new Error('Empty sheet.');
-    const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
-    const idx=k=>cols.findIndex(h=>h.includes(k));
-    const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
-    const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
-    
-    const baselineMap = {};
-    ACTIVE.forEach(r => { baselineMap[r.name] = { ob: r.ob, pen: r.pen }; });
-
-    const nA=[],nP=[]; let cnt=200;
-    let dayChanges = [];
-
-    (table.rows||[]).forEach(row=>{
-      const name=cell(row,'society')||cell(row,'name');
-      if(!name||/total|overall|^s\.?no/i.test(name)) return;
-      const ob=num(cell(row,'onboard'));
-      const oldObj=baselineMap[name];
-      const id=cnt++;
-      const obj={id,name,flats:num(cell(row,'total'))||num(cell(row,'flat')),ob,
-        pen:num(cell(row,'penetr'))||num(cell(row,'pen')),
-        launch:cell(row,'launch')||cell(row,'month')||'—',
-        months:num(cell(row,'months')),
-        revMay:num(cell(row,'may')),
-        revJun:num(cell(row,'june'))||num(cell(row,'jun')),
-        remark:cell(row,'remark')||cell(row,'pendency'),
-      };
-      
-      if (oldObj && ob > oldObj.ob) {
-        dayChanges.push({
-          name: name,
-          oldOb: oldObj.ob,
-          newOb: ob,
-          obDiff: ob - oldObj.ob,
-          oldPen: oldObj.pen,
-          newPen: obj.pen,
-          penDiff: obj.pen - oldObj.pen
-        });
-      }
-
-      if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
-    });
-    
-    if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
-    
-    if (dayChanges.length > 0) {
-      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
-      historicalSnapshots.push({
-        date: todayString,
-        changes: dayChanges
-      });
-      localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
-    }
-
-    ACTIVE=nA; PIPELINE=nP;
-    document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
-    document.getElementById('connStatus').textContent='✅ Sheet loaded. Logs preserved.';
-    renderCurrent();
-  } catch(e){
-    alert('Could not load sheet.\n\n'+e.message);
-  } finally{
-    btn.textContent='Load Sheet'; btn.disabled=false;
-  }
-}
-
-// ═══════════════════════════════════════════════════
-// TABS & UTILS
-// ═══════════════════════════════════════════════════
-function showTab(tab){
-  currentTab=tab;
-  document.querySelectorAll('.tab').forEach((b)=>{
-    const onclickAttr = b.getAttribute('onclick') || '';
-    b.classList.toggle('active', onclickAttr.includes(`'${tab}'`));
-  });
-  ['overview','followup','compare','snapshots'].forEach(t=>{
-    const el = document.getElementById('tab-'+t);
-    if(el) el.style.display=t===tab?'block':'none';
-  });
-  renderCurrent();
-}
-
-function renderCurrent(){
-  if(currentTab==='overview') renderOverview();
-  else if(currentTab==='followup') renderFollowup();
-  else if(currentTab==='compare') renderCompare();
-  else if(currentTab==='snapshots') renderSnapshots();
-}
-
-function toggleTheme(){
-  const h=document.documentElement;
-  const t=h.getAttribute('data-theme')==='dark'?'light':'dark';
-  h.setAttribute('data-theme',t);
-  document.getElementById('themeBtn').textContent=t==='dark'?'☀️ Light':'🌙 Dark';
-  renderCurrent();
-}
-function esc(s){ return (s||'').replace(/'/g,"\\'"); }
-
-// ═══════════════════════════════════════════════════
-// DRAWER CONTENT ROUTER
-// ═══════════════════════════════════════════════════
-function renderDrawerFocus(mode) {
-  const area = document.getElementById('drawerFocusArea');
-  const todayStr = new Date().toISOString().slice(0,10);
-  let h = '';
-
-  if (mode === 'today') {
-    h = '<h4>Today\'s Follow-ups</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
-    let count = 0;
-    Object.entries(callbacks).forEach(([id,date])=>{
-      if(date === todayStr){
-        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--orn);">
-          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Callback Due Today</small>
-        </div>`;
-        count++;
-      }
-    });
-    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No active entries due today.</p>';
-    h += '</div>';
-  } 
-  else if (mode === 'upcoming') {
-    h = '<h4>Upcoming Callbacks</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
-    let count = 0;
-    Object.entries(callbacks).forEach(([id,date])=>{
-      if(date > todayStr){
-        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--muted);">
-          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Target: ${date}</small>
-        </div>`;
-        count++;
-      }
-    });
-    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No future items indexed.</p>';
-    h += '</div>';
-  } 
-  else if (mode === 'history') {
-    h = '<h4>Recent History Streams</h4><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:300px;overflow-y:auto;">';
-    let count = 0;
-    [...ACTIVE,...PIPELINE].forEach(r => {
-      const logList = getLogsById(r.id);
-      if (logList.length) {
-        const last = logList[logList.length - 1];
-        h += `<div style="padding:8px;background:var(--card);border-radius:6px;font-size:11px;">
-          <strong style="color:var(--acc);">${r.name}</strong>
-          <div style="color:var(--txt2);margin-top:3px;font-style:italic;">"${last.note.substring(0,40)}..."</div>
-          <small style="color:var(--muted);">${last.time}</small>
-        </div>`;
-        count++;
-      }
-    });
-    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No transactional history traces logged.</p>';
-    h += '</div>';
-  }
-  area.innerHTML = h;
-}
-
-function toggleDrawer(){
-  const d=document.getElementById('callDrawer');
-  const o=document.getElementById('drawerOverlay');
-  const open = d && d.style.display==='block';
-  if(open){d.style.display='none';o.style.display='none';return;}
-  
-  renderDrawerFocus('today');
-  if(d && o) {
-    d.style.display='block';
-    o.style.display='block';
-  }
-}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const d=document.getElementById('callDrawer');if(d && d.style.display==='block')toggleDrawer();}});
 
 // ═══════════════════════════════════════════════════

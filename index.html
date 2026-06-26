@@ -172,11 +172,15 @@
 
   .empty{text-align:center;padding:32px;color:var(--muted);font-size:12px;}
   @media(max-width:600px){body{padding:12px;}.kpi-val{font-size:18px;}}
+
+  /* Snapshot Tracking Modifications */
+  .delta-pill{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono);margin-left:6px;}
+  .delta-pill.plus{background:rgba(34,197,94,0.15);color:var(--grn);}
+  .delta-pill.minus{background:rgba(239,68,68,0.15);color:var(--red);}
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="prowater-header">
   <div style="display:flex;align-items:center;gap:12px;">
     <button class="hdr-btn" onclick="toggleDrawer()" style="padding:8px 10px;">☰</button>
@@ -191,30 +195,31 @@
     <span id="syncStatus" style="font-size:11px;color:var(--muted);font-family:var(--mono);">
       <span class="sync-dot" id="syncDot"></span><span id="syncTxt">Not connected</span>
     </span>
-    
 
-<div id="drawerOverlay" onclick="toggleDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998"></div>
-<div id="callDrawer" style="display:none;position:fixed;left:0;top:0;width:320px;height:100%;background:var(--surf);border-right:1px solid var(--bdr);padding:20px;overflow:auto;z-index:9999;box-shadow:4px 0 20px rgba(0,0,0,.35)">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-<h3>☰ ProWater CRM</h3>
-<button onclick="toggleDrawer()" style="background:none;border:none;font-size:22px;color:var(--txt);cursor:pointer">✕</button>
-</div>
-<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('overview');toggleDrawer()">🏠 Dashboard</a>
-<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="toggleDrawer()">📞 Today's Calls</a>
-<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('followup');toggleDrawer()">📅 Upcoming Callbacks</a>
-<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('followup');toggleDrawer()">📜 Call History</a>
-<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('compare');toggleDrawer()">📊 Reports</a>
-<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="toggleDrawer()">⚙️ Settings</a>
-</div>
-<h4>Today's Follow-ups</h4>
-<div id="todayCalls"></div>
-</div>
-<button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+    <div id="drawerOverlay" onclick="toggleDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998"></div>
+    <div id="callDrawer" style="display:none;position:fixed;left:0;top:0;width:320px;height:100%;background:var(--surf);border-right:1px solid var(--bdr);padding:20px;overflow:auto;z-index:9999;box-shadow:4px 0 20px rgba(0,0,0,.35)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3>☰ ProWater CRM</h3>
+        <button onclick="toggleDrawer()" style="background:none;border:none;font-size:22px;color:var(--txt);cursor:pointer">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px">
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('overview');toggleDrawer()">🏠 Dashboard</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('today')">📞 Today's Calls</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('upcoming')">📅 Upcoming Callbacks</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('history')">📜 Call History</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('snapshots');toggleDrawer()">⏳ Historical Snapshots</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('compare');toggleDrawer()">📊 Reports</a>
+      </div>
+      <hr style="border:0;border-top:1px solid var(--bdr);margin-bottom:14px;">
+      <div id="drawerFocusArea">
+        <h4>Today's Follow-ups</h4>
+        <div id="todayCalls"></div>
+      </div>
+    </div>
+    <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
   </div>
 </div>
 
-<!-- Setup / Connection -->
 <div id="setupBanner" class="setup-banner">
   <strong>One-time setup — connect Google Sheets backend (5 min)</strong><br><br>
   <div class="step"><div class="num">1</div><div>Open your Google Sheet → <strong>Extensions → Apps Script</strong></div></div>
@@ -234,7 +239,6 @@
 </div>
 <div class="conn-status" id="connStatus">Logs are saving locally until backend is connected.</div>
 
-<!-- Agent name -->
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
   <label style="font-size:11px;color:var(--muted);font-weight:600;">YOUR NAME:</label>
   <input type="text" id="agentName" placeholder="Enter your name to tag call logs…"
@@ -246,13 +250,14 @@
   <button class="tab active" onclick="showTab('overview')">Overview</button>
   <button class="tab" onclick="showTab('followup')">Follow-ups</button>
   <button class="tab" onclick="showTab('compare')">Compare</button>
+  <button class="tab" id="tabBtnSnapshots" style="display:none;" onclick="showTab('snapshots')">Snapshots</button>
 </div>
 
 <div id="tab-overview"></div>
 <div id="tab-followup" style="display:none"></div>
 <div id="tab-compare" style="display:none"></div>
+<div id="tab-snapshots" style="display:none"></div>
 
-<!-- Log Modal -->
 <div class="modal-bg" id="logModal">
   <div class="modal">
     <div class="modal-title" id="logModalTitle">Log call</div>
@@ -278,7 +283,6 @@
   </div>
 </div>
 
-<!-- Detail Modal -->
 <div class="modal-bg" id="detailModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
@@ -318,10 +322,12 @@ let SCRIPT_URL = localStorage.getItem('pw_script_url') || '';
 let SHEET_URL  = localStorage.getItem('pw_sheet_url') || '';
 let backendOk  = false;
 
-// In-memory logs (fallback when no backend)
 let logs = {}, callbacks = {};
 try { logs = JSON.parse(localStorage.getItem('pw_logs')||'{}'); } catch(e){}
 try { callbacks = JSON.parse(localStorage.getItem('pw_callbacks')||'{}'); } catch(e){}
+
+let historicalSnapshots = [];
+try { historicalSnapshots = JSON.parse(localStorage.getItem('pw_snapshots')||'[]'); } catch(e){}
 
 let ACTIVE = [
   {id:1,name:"CBR Aakruti (OT)",flats:108,ob:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
@@ -389,7 +395,6 @@ async function connectBackend() {
   const result = await apiCall('getAllLogs');
   if (result && result.grouped !== undefined) {
     backendOk = true;
-    // Load all logs from sheet into memory
     logs = {};
     callbacks = {};
     const allSocs = [...ACTIVE, ...PIPELINE];
@@ -419,7 +424,7 @@ async function pushLogToSheet(logData) {
   setSyncStatus('loading', 'Saving…');
   const result = await apiCall('saveLog', logData);
   if (result && result.success) {
-    setSyncStatus('ok', 'Saved ✓ ' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}));
+    setSyncStatus('ok', 'Saved ✓ ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
   } else {
     setSyncStatus('err', 'Save failed — stored locally');
   }
@@ -440,7 +445,7 @@ async function refreshLogsFromSheet() {
     const soc = allSocs.find(s => s.name === name);
     if (soc && date !== 'callback-done') callbacks[soc.id] = date;
   });
-  setSyncStatus('ok', 'Synced ' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}));
+  setSyncStatus('ok', 'Synced ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
 }
 
 // ═══════════════════════════════════════════════════
@@ -498,7 +503,7 @@ function renderOverview(){
   const revMay=ACTIVE.reduce((a,r)=>a+r.revMay,0);
   const revJun=ACTIVE.reduce((a,r)=>a+r.revJun,0);
   const delta=revJun-revMay;
-  const avgPen=Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length);
+  const avgPen=ACTIVE.length ? Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length) : 0;
   const urgent=ACTIVE.filter(isUrgent).length;
   const cbDue=ACTIVE.filter(r=>callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()).length;
 
@@ -679,19 +684,55 @@ function renderCompare(){
   });
   html+=`</tbody></table></div>`;
 
-  const topPen=[...ACTIVE].sort((a,b)=>b.pen-a.pen)[0];
-  const topRev=[...ACTIVE].sort((a,b)=>b.revJun-a.revJun)[0];
-  const mostLeft=[...ACTIVE].sort((a,b)=>(b.flats-b.ob)-(a.flats-a.ob))[0];
-  const worstTrend=[...ACTIVE].sort((a,b)=>(a.revJun-a.revMay)-(b.revJun-b.revMay))[0];
+  const topPen=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.pen-a.pen)[0] : null;
+  const topRev=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.revJun-a.revJun)[0] : null;
+  const mostLeft=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(b.flats-b.ob)-(a.flats-a.ob))[0] : null;
+  const worstTrend=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(a.revJun-a.revMay)-(b.revJun-b.revMay))[0] : null;
 
-  html+=`<div class="sec">Key insights</div>
-  <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
-    <div class="scard" style="cursor:pointer" onclick="openDetail(${topPen.id})"><div class="scard-name" style="color:var(--grn)">🏆 Top penetration</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${topPen.pen}%</div><div style="font-size:11px;color:var(--txt2)">${topPen.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-    <div class="scard" style="cursor:pointer" onclick="openDetail(${topRev.id})"><div class="scard-name" style="color:var(--grn)">💰 Top revenue Jun</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0">${fmt(topRev.revJun)}</div><div style="font-size:11px;color:var(--txt2)">${topRev.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-    <div class="scard" style="cursor:pointer" onclick="openDetail(${mostLeft.id})"><div class="scard-name" style="color:var(--acc)">🎯 Biggest opportunity</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${mostLeft.flats-mostLeft.ob} flats</div><div style="font-size:11px;color:var(--txt2)">${mostLeft.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-    <div class="scard" style="cursor:pointer" onclick="openDetail(${worstTrend.id})"><div class="scard-name" style="color:var(--red)">📉 Needs intervention</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0;color:var(--red)">${fmt(Math.max(0,worstTrend.revMay-worstTrend.revJun))} drop</div><div style="font-size:11px;color:var(--txt2)">${worstTrend.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-  </div>`;
+  if (topPen) {
+    html+=`<div class="sec">Key insights</div>
+    <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${topPen.id})"><div class="scard-name" style="color:var(--grn)">🏆 Top penetration</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${topPen.pen}%</div><div style="font-size:11px;color:var(--txt2)">${topPen.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${topRev.id})"><div class="scard-name" style="color:var(--grn)">💰 Top revenue Jun</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0">${fmt(topRev.revJun)}</div><div style="font-size:11px;color:var(--txt2)">${topRev.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${mostLeft.id})"><div class="scard-name" style="color:var(--acc)">🎯 Biggest opportunity</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${mostLeft.flats-mostLeft.ob} flats</div><div style="font-size:11px;color:var(--txt2)">${mostLeft.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${worstTrend.id})"><div class="scard-name" style="color:var(--red)">📉 Needs intervention</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0;color:var(--red)">${fmt(Math.max(0,worstTrend.revMay-worstTrend.revJun))} drop</div><div style="font-size:11px;color:var(--txt2)">${worstTrend.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+    </div>`;
+  }
   document.getElementById('tab-compare').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// HISTORICAL SNAPSHOTS VIEW TAB
+// ═══════════════════════════════════════════════════
+function renderSnapshots() {
+  let html = `<div class="sec">Historical Data Matrix Snapshots</div>`;
+  if (!historicalSnapshots.length) {
+    html += `<div class="empty">No historical changes documented yet. Load a modified layout sheet to see comparative day-to-day deltas.</div>`;
+  } else {
+    html += `<div style="display:flex; flex-direction:column; gap:16px;">`;
+    historicalSnapshots.slice().reverse().forEach(snap => {
+      html += `<div style="background:var(--surf); border:1px solid var(--bdr); padding:16px; border-radius:12px;">
+        <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:var(--acc);">📅 Target Delta Log Sheet Reference: ${snap.date}</div>`;
+      if (!snap.changes || !snap.changes.length) {
+        html += `<div style="font-size:11px; color:var(--muted);">Zero onboarding changes detected during this transaction window.</div>`;
+      } else {
+        html += `<table class="cmp-table" style="margin-bottom:0;"><thead><tr><th>Society</th><th>Metric Variance Shift</th></tr></thead><tbody>`;
+        snap.changes.forEach(c => {
+          html += `<tr>
+            <td><strong>${c.name}</strong></td>
+            <td>
+              Onboarded: ${c.oldOb} ➔ <strong>${c.newOb}</strong> <span class="delta-pill plus">+${c.obDiff} flats</span><br>
+              Penetration: ${c.oldPen}% ➔ <strong>${c.newPen}%</strong> <span class="delta-pill plus">+${c.penDiff}%</span>
+            </td>
+          </tr>`;
+        });
+        html += `</tbody></table>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+  document.getElementById('tab-snapshots').innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════
@@ -789,22 +830,18 @@ async function saveLog(){
   const outcome=document.getElementById('logOutcome').value;
   const cbDate=document.getElementById('cbDate').value;
 
-  // Save agent name for next time
   if(agentName) localStorage.setItem('pw_agent',agentName);
 
   const now=new Date();
-  const time=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' '+now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const time=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
   const entry={note,agentName,outcome,callbackDate:cbDate,time};
 
-  // Add to in-memory store
   if(!logs[currentLogId]) logs[currentLogId]=[];
   logs[currentLogId].push(entry);
   if(outcome==='callback'&&cbDate) callbacks[currentLogId]=cbDate;
 
-  // Save to localStorage immediately (offline fallback)
   saveLocal();
 
-  // Save to Google Sheet if backend is connected
   if(backendOk){
     document.getElementById('logSaving').style.display='block';
     document.getElementById('logSaveBtn').disabled=true;
@@ -836,7 +873,7 @@ function saveLocal(){
 }
 
 // ═══════════════════════════════════════════════════
-// SHEET LOADER
+// SHEET LOADER & COMPARATIVE TRACKER PROTOCOLS
 // ═══════════════════════════════════════════════════
 async function loadSheet(){
   const input=document.getElementById('sheetUrl').value.trim();
@@ -858,13 +895,17 @@ async function loadSheet(){
     const idx=k=>cols.findIndex(h=>h.includes(k));
     const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
     const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
-    const oldMap={};[...ACTIVE,...PIPELINE].forEach(r=>{oldMap[r.name]=r.id;});
+    
+    const oldMap={}; [...ACTIVE,...PIPELINE].forEach(r=>{oldMap[r.name]=r;});
     const nA=[],nP=[]; let cnt=200;
+    let dayChanges = [];
+
     (table.rows||[]).forEach(row=>{
       const name=cell(row,'society')||cell(row,'name');
       if(!name||/total|overall|^s\.?no/i.test(name)) return;
       const ob=num(cell(row,'onboard'));
-      const id=oldMap[name]||cnt++;
+      const oldObj=oldMap[name];
+      const id=oldObj?oldObj.id:cnt++;
       const obj={id,name,flats:num(cell(row,'total'))||num(cell(row,'flat')),ob,
         pen:num(cell(row,'penetr'))||num(cell(row,'pen')),
         launch:cell(row,'launch')||cell(row,'month')||'—',
@@ -873,10 +914,35 @@ async function loadSheet(){
         revJun:num(cell(row,'june'))||num(cell(row,'jun')),
         remark:cell(row,'remark')||cell(row,'pendency'),
       };
+      
+      if (oldObj && oldObj.ob !== undefined && ob > oldObj.ob) {
+        dayChanges.push({
+          name: name,
+          oldOb: oldObj.ob,
+          newOb: ob,
+          obDiff: ob - oldObj.ob,
+          oldPen: oldObj.pen,
+          newPen: obj.pen,
+          penDiff: obj.pen - oldObj.pen
+        });
+      }
+
       if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
     });
+    
     if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
+    
+    if (dayChanges.length > 0) {
+      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+      historicalSnapshots.push({
+        date: todayString,
+        changes: dayChanges
+      });
+      localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
+    }
+
     ACTIVE=nA; PIPELINE=nP;
+    document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
     document.getElementById('connStatus').textContent='✅ Sheet loaded. Logs preserved.';
     renderCurrent();
   } catch(e){
@@ -891,19 +957,23 @@ async function loadSheet(){
 // ═══════════════════════════════════════════════════
 function showTab(tab){
   currentTab=tab;
-  document.querySelectorAll('.tab').forEach((b,i)=>{
-    b.classList.toggle('active',['overview','followup','compare'][i]===tab);
+  document.querySelectorAll('.tab').forEach((b)=>{
+    b.classList.toggle('active', b.getAttribute('onclick').includes(`'${tab}'`));
   });
-  ['overview','followup','compare'].forEach(t=>{
-    document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
+  ['overview','followup','compare','snapshots'].forEach(t=>{
+    const el = document.getElementById('tab-'+t);
+    if(el) el.style.display=t===tab?'block':'none';
   });
   renderCurrent();
 }
+
 function renderCurrent(){
   if(currentTab==='overview') renderOverview();
   else if(currentTab==='followup') renderFollowup();
-  else renderCompare();
+  else if(currentTab==='compare') renderCompare();
+  else if(currentTab==='snapshots') renderSnapshots();
 }
+
 function toggleTheme(){
   const h=document.documentElement;
   const t=h.getAttribute('data-theme')==='dark'?'light':'dark';
@@ -913,47 +983,98 @@ function toggleTheme(){
 }
 function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 
+// ═══════════════════════════════════════════════════
+// DRAWER CONTENT ROUTER ENG_UNITS
+// ═══════════════════════════════════════════════════
+function renderDrawerFocus(mode) {
+  const area = document.getElementById('drawerFocusArea');
+  const todayStr = new Date().toISOString().slice(0,10);
+  let h = '';
+
+  if (mode === 'today') {
+    h = '<h4>Today\'s Follow-ups</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
+    let count = 0;
+    Object.entries(callbacks).forEach(([id,date])=>{
+      if(date === todayStr){
+        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
+        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--orn);">
+          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Callback Due Today</small>
+        </div>`;
+        count++;
+      }
+    });
+    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No active entries due today.</p>';
+    h += '</div>';
+  } 
+  else if (mode === 'upcoming') {
+    h = '<h4>Upcoming Callbacks</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
+    let count = 0;
+    Object.entries(callbacks).forEach(([id,date])=>{
+      if(date > todayStr){
+        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
+        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--muted);">
+          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Target: ${date}</small>
+        </div>`;
+        count++;
+      }
+    });
+    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No future items indexed.</p>';
+    h += '</div>';
+  } 
+  else if (mode === 'history') {
+    h = '<h4>Recent History Streams</h4><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:300px;overflow-y:auto;">';
+    let count = 0;
+    [...ACTIVE,...PIPELINE].forEach(r => {
+      const logList = getLogsById(r.id);
+      if (logList.length) {
+        const last = logList[logList.length - 1];
+        h += `<div style="padding:8px;background:var(--card);border-radius:6px;font-size:11px;">
+          <strong style="color:var(--acc);">${r.name}</strong>
+          <div style="color:var(--txt2);margin-top:3px;font-style:italic;">"${last.note.substring(0,40)}..."</div>
+          <small style="color:var(--muted);">${last.time}</small>
+        </div>`;
+        count++;
+      }
+    });
+    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No transactional history traces logged.</p>';
+    h += '</div>';
+  }
+  area.innerHTML = h;
+}
 
 function toggleDrawer(){
- const d=document.getElementById('callDrawer');
- const o=document.getElementById('drawerOverlay');
- const open=d.style.display==='block';
- if(open){d.style.display='none';o.style.display='none';return;}
- let h='';
- Object.entries(callbacks).forEach(([id,date])=>{
-   if(date===new Date().toISOString().slice(0,10)){
-     const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-     h+=`<div style="padding:10px;border-bottom:1px solid var(--bdr)"><b>${s?s.name:id}</b><br><small>Callback Today</small></div>`;
-   }
- });
- document.getElementById('todayCalls').innerHTML=h||'<p>No callbacks today.</p>';
- d.style.display='block';
- o.style.display='block';
+  const d=document.getElementById('callDrawer');
+  const o=document.getElementById('drawerOverlay');
+  const open=d.style.display==='block';
+  if(open){d.style.display='none';o.style.display='none';return;}
+  
+  renderDrawerFocus('today');
+  d.style.display='block';
+  o.style.display='block';
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const d=document.getElementById('callDrawer');if(d.style.display==='block')toggleDrawer();}});
 
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
-// Restore saved URLs
 if(SCRIPT_URL) document.getElementById('scriptUrl').value=SCRIPT_URL;
 if(SHEET_URL)  document.getElementById('sheetUrl').value=SHEET_URL;
 if(localStorage.getItem('pw_agent'))
   document.getElementById('agentName').value=localStorage.getItem('pw_agent');
 
-// Auto-connect if URL was previously saved
+if (historicalSnapshots.length > 0) {
+  document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
+}
+
 if(SCRIPT_URL){
   document.getElementById('setupBanner').style.display='none';
   connectBackend();
 }
-// Auto-load sheet if URL was previously saved
 if(SHEET_URL){
   loadSheet();
 }
 
 renderOverview();
-
-// Auto-sync every 60 seconds when backend is connected
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);
 </script>
 </body>

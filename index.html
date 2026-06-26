@@ -336,16 +336,23 @@ function setSyncStatus(state, msg) {
 async function apiCall(action, data={}) {
   if (!SCRIPT_URL) return null;
   try {
-    const url = SCRIPT_URL + '?action=' + action + '&t=' + Date.now();
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action, ...data})
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    let res;
+    if (action === 'getAllLogs') {
+      res = await fetch(`${SCRIPT_URL}?action=getAllLogs&t=${Date.now()}`, {
+        method:'GET',
+        cache:'no-store'
+      });
+    } else {
+      res = await fetch(SCRIPT_URL, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({action,...data})
+      });
+    }
+    if(!res.ok) throw new Error('HTTP '+res.status);
     return await res.json();
-  } catch(e) {
-    console.warn('API error:', e.message);
+  } catch(e){
+    console.error('API error',e);
     return null;
   }
 }

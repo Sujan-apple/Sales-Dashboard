@@ -43,12 +43,53 @@
   tbody tr:hover{background:var(--card);}
   td{padding:11px 14px;white-space:nowrap;}
   td.mono{font-family:var(--mono);font-size:12px;}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.04em;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
   .badge-green{background:rgba(34,197,94,.15);color:var(--green);}
   .badge-yellow{background:rgba(245,158,11,.15);color:var(--yellow);}
   .badge-blue{background:rgba(79,142,247,.15);color:var(--accent);}
-  .pen-bar{height:4px;border-radius:4px;background:var(--border);overflow:hidden;width:80px;}
-  .pen-fill{height:100%;border-radius:4px;background:var(--accent);}
+
+  /* ── Penetration bar — clickable ── */
+  .pen-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+  .pen-wrap:hover .pen-bar{opacity:.85;}
+  .pen-wrap:hover .pen-pct{color:var(--accent);}
+  .pen-bar{height:6px;border-radius:4px;background:var(--border);overflow:hidden;width:90px;position:relative;transition:opacity .2s;}
+  .pen-done{height:100%;border-radius:4px;background:var(--accent);transition:width .4s;}
+  .pen-pct{font-family:var(--mono);font-size:11px;transition:color .2s;}
+  .pen-hint{font-size:9px;color:var(--muted);margin-top:1px;}
+
+  /* ── Modal ── */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:360px;max-width:95vw;position:relative;}
+  .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;}
+  .modal-close:hover{color:var(--text);}
+  .modal-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+
+  .pen-ring-wrap{display:flex;justify-content:center;margin-bottom:20px;}
+  .pen-ring{position:relative;width:140px;height:140px;}
+  .pen-ring svg{transform:rotate(-90deg);}
+  .pen-ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .pen-ring-pct{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--red);}
+  .pen-ring-txt{font-size:11px;color:var(--muted);}
+
+  .pen-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+  .pen-stat{background:var(--card);border-radius:10px;padding:12px;text-align:center;}
+  .pen-stat-val{font-family:var(--mono);font-size:20px;font-weight:600;margin-bottom:2px;}
+  .pen-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .pen-stat-val.green{color:var(--green);}
+  .pen-stat-val.red{color:var(--red);}
+  .pen-stat-val.yellow{color:var(--yellow);}
+
+  .pen-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .pen-progress-label{font-size:12px;color:var(--text2);width:80px;flex-shrink:0;}
+  .pen-progress-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .pen-progress-fill{height:100%;border-radius:4px;}
+  .pen-progress-val{font-family:var(--mono);font-size:11px;width:36px;text-align:right;flex-shrink:0;}
+
+  .pen-target-note{font-size:11px;color:var(--text2);background:var(--card);border-radius:8px;padding:10px 12px;line-height:1.6;}
+  .pen-target-note strong{color:var(--yellow);}
+
   .remark{font-size:11px;color:var(--text2);max-width:220px;white-space:normal;line-height:1.4;}
   .pipeline{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px;}
   .pipe-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:10px;padding:14px 16px;}
@@ -64,7 +105,7 @@
 
 <header>
   <div class="logo">Society <span>Dashboard</span></div>
-  <div class="last-updated" id="lastUpdated">Sample data — connect your sheet above</div>
+  <div class="last-updated" id="lastUpdated">Sample data</div>
 </header>
 
 <div class="sheet-bar">
@@ -72,8 +113,9 @@
   <button id="loadBtn" onclick="loadSheet()">Load Sheet</button>
 </div>
 <p class="hint" id="hintText">
-  <strong>How to connect:</strong> Open your Google Sheet → <strong>Share</strong> → <strong>Anyone with the link → Viewer</strong> → Copy link → Paste above.<br>
-  Required column headers: <code>Society Name</code> <code>Total Flats</code> <code>Onboarded Flats</code> <code>% Penetration</code> <code>Launched Month</code> <code>Total Months</code> <code>Revenue May</code> <code>Revenue June</code> <code>Remark</code>
+  <strong>How to connect:</strong> Google Sheet → <strong>Share → Anyone with the link → Viewer</strong> → Copy link → Paste above.<br>
+  Required columns: <code>Society Name</code> <code>Total Flats</code> <code>Onboarded Flats</code> <code>% Penetration</code> <code>Launched Month</code> <code>Total Months</code> <code>Revenue May</code> <code>Revenue June</code> <code>Remark</code>
+  &nbsp;· <strong>Click any penetration bar</strong> to see the remaining target breakdown.
 </p>
 
 <div class="kpis" id="kpis"></div>
@@ -82,7 +124,7 @@
   <table>
     <thead><tr>
       <th>#</th><th>Society</th><th>Total Flats</th><th>Onboarded</th>
-      <th>Penetration</th><th>Launch</th><th>Months</th>
+      <th>Penetration ↗ click</th><th>Launch</th><th>Months</th>
       <th>Revenue (May)</th><th>Revenue (June)</th><th>Status</th><th>Remark</th>
     </tr></thead>
     <tbody id="mainTbody"></tbody>
@@ -90,6 +132,48 @@
 </div>
 <div class="section-title">Pipeline — Upcoming</div>
 <div class="pipeline" id="pipeline"></div>
+
+<!-- Penetration Modal -->
+<div class="modal-overlay" id="penModal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('penModal').classList.remove('open')">✕</button>
+    <div class="modal-title" id="modalTitle">—</div>
+    <div class="modal-sub" id="modalSub">—</div>
+
+    <div class="pen-ring-wrap">
+      <div class="pen-ring">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="56" fill="none" stroke="#2a2e42" stroke-width="12"/>
+          <circle cx="70" cy="70" r="56" fill="none" stroke="#ef4444" stroke-width="12"
+            stroke-dasharray="351.86" id="ringRemain" stroke-dashoffset="0" stroke-linecap="round"/>
+        </svg>
+        <div class="pen-ring-label">
+          <div class="pen-ring-pct" id="ringPct">—</div>
+          <div class="pen-ring-txt">remaining</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pen-stats">
+      <div class="pen-stat"><div class="pen-stat-val yellow" id="statTotal">—</div><div class="pen-stat-lbl">Total Flats</div></div>
+      <div class="pen-stat"><div class="pen-stat-val green" id="statDone">—</div><div class="pen-stat-lbl">Onboarded</div></div>
+      <div class="pen-stat"><div class="pen-stat-val red" id="statLeft">—</div><div class="pen-stat-lbl">Remaining</div></div>
+    </div>
+
+    <div class="pen-progress-row">
+      <div class="pen-progress-label">Achieved</div>
+      <div class="pen-progress-bar"><div class="pen-progress-fill" id="barDone" style="background:var(--green)"></div></div>
+      <div class="pen-progress-val" id="barDonePct" style="color:var(--green)">—</div>
+    </div>
+    <div class="pen-progress-row" style="margin-bottom:16px">
+      <div class="pen-progress-label">Remaining</div>
+      <div class="pen-progress-bar"><div class="pen-progress-fill" id="barLeft" style="background:var(--red)"></div></div>
+      <div class="pen-progress-val" id="barLeftPct" style="color:var(--red)">—</div>
+    </div>
+
+    <div class="pen-target-note" id="targetNote">—</div>
+  </div>
+</div>
 
 <script>
 const SAMPLE_ACTIVE = [
@@ -109,35 +193,91 @@ const SAMPLE_PIPELINE = [
   {name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July (Penetration)"},
 ];
 
+// ── Open penetration modal ──
+function openPenModal(r) {
+  const remaining  = 100 - r.pen;
+  const flatsLeft  = r.flats - r.onboarded;
+  const circumf    = 2 * Math.PI * 56; // 351.86
+
+  document.getElementById("modalTitle").textContent = r.name;
+  document.getElementById("modalSub").textContent   = `Penetration breakdown · ${r.flats} total flats`;
+
+  // Ring — shows remaining %
+  const offset = circumf - (remaining / 100) * circumf;
+  document.getElementById("ringRemain").style.strokeDashoffset = offset;
+  document.getElementById("ringPct").textContent = remaining + "%";
+
+  // Stats
+  document.getElementById("statTotal").textContent = r.flats;
+  document.getElementById("statDone").textContent  = r.onboarded;
+  document.getElementById("statLeft").textContent  = flatsLeft;
+
+  // Progress bars
+  document.getElementById("barDone").style.width    = r.pen + "%";
+  document.getElementById("barDonePct").textContent = r.pen + "%";
+  document.getElementById("barLeft").style.width    = remaining + "%";
+  document.getElementById("barLeftPct").textContent = remaining + "%";
+
+  // Target note
+  const toNext10 = Math.ceil(r.pen / 10) * 10;
+  const nextTarget = toNext10 <= r.pen ? toNext10 + 10 : toNext10;
+  const flatsToNext = Math.ceil((nextTarget / 100) * r.flats) - r.onboarded;
+  document.getElementById("targetNote").innerHTML =
+    `To reach <strong>${nextTarget}% penetration</strong>, you need <strong>${flatsToNext > 0 ? flatsToNext : 0} more flats</strong> onboarded.<br>
+     ${flatsLeft} flats still untouched out of ${r.flats} total.`;
+
+  document.getElementById("penModal").classList.add("open");
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById("penModal"))
+    document.getElementById("penModal").classList.remove("open");
+}
+
+// ── Render dashboard ──
 function renderAll(active, pipeline) {
-  const aFlats  = active.reduce((a,r)=>a+r.flats,0);
-  const ob      = active.reduce((a,r)=>a+r.onboarded,0);
-  const revMay  = active.reduce((a,r)=>a+r.revMay,0);
-  const revJun  = active.reduce((a,r)=>a+r.revJun,0);
-  const avgPen  = active.length ? Math.round(active.reduce((a,r)=>a+r.pen,0)/active.length) : 0;
-  const delta   = revJun - revMay;
-  const allFlats= aFlats + pipeline.reduce((a,r)=>a+r.flats,0);
+  const aFlats = active.reduce((a,r)=>a+r.flats,0);
+  const ob     = active.reduce((a,r)=>a+r.onboarded,0);
+  const revMay = active.reduce((a,r)=>a+r.revMay,0);
+  const revJun = active.reduce((a,r)=>a+r.revJun,0);
+  const avgPen = active.length ? Math.round(active.reduce((a,r)=>a+r.pen,0)/active.length) : 0;
+  const delta  = revJun - revMay;
+  const allFlats = aFlats + pipeline.reduce((a,r)=>a+r.flats,0);
 
   document.getElementById("kpis").innerHTML = `
     <div class="kpi"><div class="kpi-label">Total Flats</div><div class="kpi-value">${allFlats}</div><div class="kpi-sub">${active.length} active · ${pipeline.length} pipeline</div></div>
     <div class="kpi"><div class="kpi-label">Onboarded</div><div class="kpi-value">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
-    <div class="kpi"><div class="kpi-label">Avg Penetration</div><div class="kpi-value">${avgPen}%</div><div class="kpi-sub">across active societies</div></div>
+    <div class="kpi"><div class="kpi-label">Avg Penetration</div><div class="kpi-value">${avgPen}%</div><div class="kpi-sub">${100-avgPen}% remaining overall</div></div>
     <div class="kpi"><div class="kpi-label">Revenue — May</div><div class="kpi-value">₹${revMay.toLocaleString()}</div></div>
     <div class="kpi"><div class="kpi-label">Revenue — June</div><div class="kpi-value">₹${revJun.toLocaleString()}</div><div class="kpi-sub ${delta>=0?'up':'dn'}">${delta>=0?'▲':'▼'} ₹${Math.abs(delta).toLocaleString()} vs May</div></div>
   `;
 
+  // Store active rows for modal access
+  window._activeData = active;
+
   const tbody = document.getElementById("mainTbody");
-  tbody.innerHTML = active.map(r=>{
+  tbody.innerHTML = active.map((r,idx)=>{
     let sc="badge-green",sl="Active";
     if(r.months<=2&&r.months>0){sc="badge-yellow";sl="New";}
     if(r.months===0){sc="badge-blue";sl="Just Launched";}
     const d=r.revJun-r.revMay;
+    const remaining = 100 - r.pen;
     return `<tr>
       <td class="mono" style="color:var(--muted)">${r.sno}</td>
       <td><strong>${r.name}</strong></td>
       <td class="mono">${r.flats}</td>
       <td class="mono">${r.onboarded}</td>
-      <td><div style="display:flex;align-items:center;gap:8px"><div class="pen-bar"><div class="pen-fill" style="width:${Math.min(r.pen,100)}%"></div></div><span class="mono" style="font-size:11px">${r.pen}%</span></div></td>
+      <td>
+        <div class="pen-wrap" onclick="openPenModal(window._activeData[${idx}])" title="Click to see remaining penetration">
+          <div class="pen-bar">
+            <div class="pen-done" style="width:${Math.min(r.pen,100)}%"></div>
+          </div>
+          <div>
+            <div class="pen-pct">${r.pen}% <span style="color:var(--red);font-size:10px">/ ${remaining}% left</span></div>
+            <div class="pen-hint">click for details</div>
+          </div>
+        </div>
+      </td>
       <td>${r.launch}</td>
       <td class="mono">${r.months}</td>
       <td class="mono">₹${r.revMay.toLocaleString()}</td>
@@ -148,7 +288,7 @@ function renderAll(active, pipeline) {
   }).join("") + `<tr class="status-row">
     <td></td><td>Overall</td>
     <td class="mono">${aFlats}</td><td class="mono">${ob}</td>
-    <td><span style="font-family:var(--mono);font-size:12px">${avgPen}%</span></td>
+    <td><span style="font-family:var(--mono);font-size:12px">${avgPen}% <span style="color:var(--red)">/  ${100-avgPen}% left</span></span></td>
     <td colspan="2"></td>
     <td class="mono">₹${revMay.toLocaleString()}</td>
     <td class="mono">₹${revJun.toLocaleString()}</td>
@@ -166,78 +306,57 @@ function renderAll(active, pipeline) {
     "Updated: "+new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
 }
 
-// ── Sheet loader using fetch + Google's gviz endpoint ──
+// ── Google Sheet loader ──
 async function loadSheet() {
   const input = document.getElementById("sheetUrl").value.trim();
   if (!input) { alert("Paste your Google Sheet link first."); return; }
-
   const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if (!m) { alert("That doesn't look like a Google Sheets URL.\nCopy the full link from your browser while the sheet is open."); return; }
+  if (!m) { alert("That doesn't look like a Google Sheets URL."); return; }
   const sheetId = m[1];
-
   const btn = document.getElementById("loadBtn");
   btn.textContent = "Loading…"; btn.disabled = true;
-
-  // Google's gviz/tq returns:  /*O_o*/\ngoogle.visualization.Query.setResponse({...});
-  // We fetch as text and extract the JSON manually — no JSONP, no CORS proxy needed.
   const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
-
   try {
-    const res = await fetch(url, { credentials: "omit" });
-    if (!res.ok) throw new Error(`Server returned ${res.status}. Make sure the sheet is shared as 'Anyone with the link can view'.`);
-
-    const raw = await res.text();
-
-    // Strip the Google wrapper:  /*O_o*/\ngoogle.visualization.Query.setResponse( ... );
-    const jsonStart = raw.indexOf("(") + 1;
-    const jsonEnd   = raw.lastIndexOf(")");
-    if (jsonStart <= 0 || jsonEnd <= 0) throw new Error("Unexpected response format from Google.");
-    const json = JSON.parse(raw.slice(jsonStart, jsonEnd));
-
+    const res = await fetch(url, {credentials:"omit"});
+    if (!res.ok) throw new Error(`HTTP ${res.status} — make sure sheet is shared as 'Anyone with link can view'`);
+    const raw  = await res.text();
+    const json = JSON.parse(raw.slice(raw.indexOf("(")+1, raw.lastIndexOf(")")));
     const table = json.table;
-    if (!table || !table.cols) throw new Error("Sheet appears empty or inaccessible.");
-
-    // Map column labels → indices
-    const cols = table.cols.map(c => (c.label||"").toLowerCase().replace(/[^a-z0-9]/g,""));
-    const idx  = key => cols.findIndex(h => h.includes(key));
-    const cell = (row, key) => {
-      const i = idx(key);
-      if (i < 0 || !row.c || !row.c[i] || row.c[i].v === null || row.c[i].v === undefined) return "";
+    if (!table||!table.cols) throw new Error("Empty or inaccessible sheet.");
+    const cols = table.cols.map(c=>(c.label||"").toLowerCase().replace(/[^a-z0-9]/g,""));
+    const idx  = key => cols.findIndex(h=>h.includes(key));
+    const cell = (row,key) => {
+      const i=idx(key);
+      if(i<0||!row.c||!row.c[i]||row.c[i].v===null) return "";
       return String(row.c[i].v).trim();
     };
-    const num = v => parseInt(v.replace(/[^0-9.-]/g,"")) || 0;
-
+    const num = v=>parseInt(v.replace(/[^0-9.-]/g,""))||0;
     const active=[], pipe=[];
-    (table.rows||[]).forEach((row, i) => {
-      const name = cell(row,"society") || cell(row,"name");
-      if (!name || /total|overall|^s\.?no/i.test(name)) return;
-      const onboarded = num(cell(row,"onboard"));
-      const obj = {
-        sno: i+1, name,
-        flats:    num(cell(row,"total"))  || num(cell(row,"flat")),
+    (table.rows||[]).forEach((row,i)=>{
+      const name=cell(row,"society")||cell(row,"name");
+      if(!name||/total|overall|^s\.?no/i.test(name)) return;
+      const onboarded=num(cell(row,"onboard"));
+      const obj={
+        sno:i+1,name,
+        flats:   num(cell(row,"total"))||num(cell(row,"flat")),
         onboarded,
-        pen:      num(cell(row,"penetr")) || num(cell(row,"pen")),
-        launch:   cell(row,"launch")     || cell(row,"month") || "—",
-        months:   num(cell(row,"months")),
-        revMay:   num(cell(row,"may")),
-        revJun:   num(cell(row,"june"))  || num(cell(row,"jun")),
-        remark:   cell(row,"remark")     || cell(row,"pendency"),
+        pen:     num(cell(row,"penetr"))||num(cell(row,"pen")),
+        launch:  cell(row,"launch")||cell(row,"month")||"—",
+        months:  num(cell(row,"months")),
+        revMay:  num(cell(row,"may")),
+        revJun:  num(cell(row,"june"))||num(cell(row,"jun")),
+        remark:  cell(row,"remark")||cell(row,"pendency"),
       };
-      if (onboarded > 0) active.push(obj);
-      else pipe.push({name:obj.name, flats:obj.flats, remark:obj.remark});
+      if(onboarded>0) active.push(obj);
+      else pipe.push({name:obj.name,flats:obj.flats,remark:obj.remark});
     });
-
-    if (!active.length && !pipe.length)
-      throw new Error("No data rows found.\n\nCheck that row 1 of your sheet has the required column names:\nSociety Name, Total Flats, Onboarded Flats, Revenue May, Revenue June, etc.");
-
-    renderAll(active, pipe);
-    document.getElementById("hintText").innerHTML =
-      '✅ Sheet connected! Data updates each time you click Reload. &nbsp;<a href="#" onclick="loadSheet();return false;">Reload now</a>';
-
+    if(!active.length&&!pipe.length) throw new Error("No rows found. Check column headers match the required names.");
+    renderAll(active,pipe);
+    document.getElementById("hintText").innerHTML='✅ Sheet connected! &nbsp;<a href="#" onclick="loadSheet();return false;">Reload</a>';
   } catch(e) {
-    alert("Could not load sheet.\n\n" + e.message);
+    alert("Could not load sheet.\n\n"+e.message);
   } finally {
-    btn.textContent = "Load Sheet"; btn.disabled = false;
+    btn.textContent="Load Sheet"; btn.disabled=false;
   }
 }
 

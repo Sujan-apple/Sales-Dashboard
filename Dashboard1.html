@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Society Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+  :root {
+    --bg:#0f1117;--surface:#1a1d27;--card:#20243a;--border:#2a2e42;
+    --accent:#4f8ef7;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;
+    --muted:#6b7280;--text:#e8eaf0;--text2:#9ca3af;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px;}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+  .logo{font-size:20px;font-weight:700;letter-spacing:-.5px;}
+  .logo span{color:var(--accent);}
+  .last-updated{font-size:12px;color:var(--muted);font-family:var(--mono);}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+  .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+  .kpi-value{font-family:var(--mono);font-size:26px;font-weight:500;line-height:1;}
+  .kpi-sub{font-size:11px;color:var(--text2);margin-top:4px;}
+  .sheet-bar{display:flex;gap:10px;margin-bottom:10px;align-items:center;flex-wrap:wrap;}
+  .sheet-bar input{flex:1;min-width:260px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+  .sheet-bar input:focus{border-color:var(--accent);}
+  .sheet-bar input::placeholder{color:var(--muted);}
+  .sheet-bar button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .sheet-bar button:hover{opacity:.85;}
+  .hint{font-size:11px;color:var(--muted);margin-bottom:20px;line-height:1.8;}
+  .hint a{color:var(--accent);text-decoration:none;}
+  .hint code{background:var(--card);padding:1px 5px;border-radius:3px;font-size:10px;}
+  .section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin-bottom:28px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead tr{background:var(--card);}
+  th{padding:11px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:var(--card);}
+  td{padding:11px 14px;white-space:nowrap;}
+  td.mono{font-family:var(--mono);font-size:12px;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.04em;}
+  .badge-green{background:rgba(34,197,94,.15);color:var(--green);}
+  .badge-yellow{background:rgba(245,158,11,.15);color:var(--yellow);}
+  .badge-blue{background:rgba(79,142,247,.15);color:var(--accent);}
+  .pen-bar{height:4px;border-radius:4px;background:var(--border);overflow:hidden;width:80px;}
+  .pen-fill{height:100%;border-radius:4px;background:var(--accent);}
+  .remark{font-size:11px;color:var(--text2);max-width:220px;white-space:normal;line-height:1.4;}
+  .pipeline{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px;}
+  .pipe-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:10px;padding:14px 16px;}
+  .pipe-name{font-weight:600;font-size:13px;margin-bottom:4px;}
+  .pipe-flats{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:8px;}
+  .pipe-remark{font-size:11px;color:var(--text2);line-height:1.5;}
+  .up{color:var(--green);font-size:11px;} .dn{color:var(--red);font-size:11px;}
+  .status-row{background:var(--card) !important;font-weight:600;}
+  @media(max-width:600px){body{padding:14px;}.kpi-value{font-size:22px;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Society <span>Dashboard</span></div>
+  <div class="last-updated" id="lastUpdated">Sample data — connect your sheet above</div>
+</header>
+
+<div class="sheet-bar">
+  <input type="text" id="sheetUrl" placeholder="Paste your Google Sheet sharing link here…" />
+  <button id="loadBtn" onclick="loadSheet()">Load Sheet</button>
+</div>
+<p class="hint" id="hintText">
+  <strong>How to connect:</strong> Open your Google Sheet → <strong>Share</strong> → <strong>Anyone with the link → Viewer</strong> → Copy link → Paste above.<br>
+  Required column headers: <code>Society Name</code> <code>Total Flats</code> <code>Onboarded Flats</code> <code>% Penetration</code> <code>Launched Month</code> <code>Total Months</code> <code>Revenue May</code> <code>Revenue June</code> <code>Remark</code>
+</p>
+
+<div class="kpis" id="kpis"></div>
+<div class="section-title">Active Societies</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>#</th><th>Society</th><th>Total Flats</th><th>Onboarded</th>
+      <th>Penetration</th><th>Launch</th><th>Months</th>
+      <th>Revenue (May)</th><th>Revenue (June)</th><th>Status</th><th>Remark</th>
+    </tr></thead>
+    <tbody id="mainTbody"></tbody>
+  </table>
+</div>
+<div class="section-title">Pipeline — Upcoming</div>
+<div class="pipeline" id="pipeline"></div>
+
+<script>
+const SAMPLE_ACTIVE = [
+  {sno:1,name:"CBR Aakruti (OT)",flats:108,onboarded:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
+  {sno:2,name:"SVS Ananda OD",flats:168,onboarded:17,pen:10,launch:"Sep 24",months:21,revMay:4700,revJun:4450,remark:""},
+  {sno:3,name:"MJR Hydra",flats:300,onboarded:61,pen:20,launch:"Jan 26",months:5,revMay:14980,revJun:11800,remark:""},
+  {sno:4,name:"Ashish JK (DP)",flats:206,onboarded:31,pen:15,launch:"Apr 26",months:2,revMay:17600,revJun:8375,remark:""},
+  {sno:5,name:"Prabhavati",flats:80,onboarded:18,pen:22,launch:"May 26",months:0,revMay:7134,revJun:4158,remark:""},
+];
+const SAMPLE_PIPELINE = [
+  {name:"Coronet Green",flats:100,remark:"Expected launch: 22nd June (late)"},
+  {name:"Sai Poorna Premier",flats:220,remark:"Achieved 16% interest. Expected: 5th July"},
+  {name:"Estalla Maple Square",flats:207,remark:"Arun (Penetration)"},
+  {name:"Sai Royale",flats:104,remark:"Feasibility check done"},
+  {name:"Deep Square",flats:140,remark:"2nd meeting fixed 27/28 this month"},
+  {name:"Sai Poorna Luxuria",flats:180,remark:"June 30 CB"},
+  {name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July (Penetration)"},
+];
+
+function renderAll(active, pipeline) {
+  const aFlats  = active.reduce((a,r)=>a+r.flats,0);
+  const ob      = active.reduce((a,r)=>a+r.onboarded,0);
+  const revMay  = active.reduce((a,r)=>a+r.revMay,0);
+  const revJun  = active.reduce((a,r)=>a+r.revJun,0);
+  const avgPen  = active.length ? Math.round(active.reduce((a,r)=>a+r.pen,0)/active.length) : 0;
+  const delta   = revJun - revMay;
+  const allFlats= aFlats + pipeline.reduce((a,r)=>a+r.flats,0);
+
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi"><div class="kpi-label">Total Flats</div><div class="kpi-value">${allFlats}</div><div class="kpi-sub">${active.length} active · ${pipeline.length} pipeline</div></div>
+    <div class="kpi"><div class="kpi-label">Onboarded</div><div class="kpi-value">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
+    <div class="kpi"><div class="kpi-label">Avg Penetration</div><div class="kpi-value">${avgPen}%</div><div class="kpi-sub">across active societies</div></div>
+    <div class="kpi"><div class="kpi-label">Revenue — May</div><div class="kpi-value">₹${revMay.toLocaleString()}</div></div>
+    <div class="kpi"><div class="kpi-label">Revenue — June</div><div class="kpi-value">₹${revJun.toLocaleString()}</div><div class="kpi-sub ${delta>=0?'up':'dn'}">${delta>=0?'▲':'▼'} ₹${Math.abs(delta).toLocaleString()} vs May</div></div>
+  `;
+
+  const tbody = document.getElementById("mainTbody");
+  tbody.innerHTML = active.map(r=>{
+    let sc="badge-green",sl="Active";
+    if(r.months<=2&&r.months>0){sc="badge-yellow";sl="New";}
+    if(r.months===0){sc="badge-blue";sl="Just Launched";}
+    const d=r.revJun-r.revMay;
+    return `<tr>
+      <td class="mono" style="color:var(--muted)">${r.sno}</td>
+      <td><strong>${r.name}</strong></td>
+      <td class="mono">${r.flats}</td>
+      <td class="mono">${r.onboarded}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="pen-bar"><div class="pen-fill" style="width:${Math.min(r.pen,100)}%"></div></div><span class="mono" style="font-size:11px">${r.pen}%</span></div></td>
+      <td>${r.launch}</td>
+      <td class="mono">${r.months}</td>
+      <td class="mono">₹${r.revMay.toLocaleString()}</td>
+      <td class="mono">₹${r.revJun.toLocaleString()} <span class="${d>=0?'up':'dn'}">${d>=0?'▲':'▼'}${Math.abs(d).toLocaleString()}</span></td>
+      <td><span class="badge ${sc}">${sl}</span></td>
+      <td class="remark">${r.remark||'—'}</td>
+    </tr>`;
+  }).join("") + `<tr class="status-row">
+    <td></td><td>Overall</td>
+    <td class="mono">${aFlats}</td><td class="mono">${ob}</td>
+    <td><span style="font-family:var(--mono);font-size:12px">${avgPen}%</span></td>
+    <td colspan="2"></td>
+    <td class="mono">₹${revMay.toLocaleString()}</td>
+    <td class="mono">₹${revJun.toLocaleString()}</td>
+    <td></td><td></td>
+  </tr>`;
+
+  document.getElementById("pipeline").innerHTML = pipeline.map(p=>`
+    <div class="pipe-card">
+      <div class="pipe-name">${p.name}</div>
+      <div class="pipe-flats">${p.flats} flats</div>
+      <div class="pipe-remark">${p.remark||'—'}</div>
+    </div>`).join("");
+
+  document.getElementById("lastUpdated").textContent =
+    "Updated: "+new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
+}
+
+// ── Sheet loader using fetch + Google's gviz endpoint ──
+async function loadSheet() {
+  const input = document.getElementById("sheetUrl").value.trim();
+  if (!input) { alert("Paste your Google Sheet link first."); return; }
+
+  const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  if (!m) { alert("That doesn't look like a Google Sheets URL.\nCopy the full link from your browser while the sheet is open."); return; }
+  const sheetId = m[1];
+
+  const btn = document.getElementById("loadBtn");
+  btn.textContent = "Loading…"; btn.disabled = true;
+
+  // Google's gviz/tq returns:  /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+  // We fetch as text and extract the JSON manually — no JSONP, no CORS proxy needed.
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+
+  try {
+    const res = await fetch(url, { credentials: "omit" });
+    if (!res.ok) throw new Error(`Server returned ${res.status}. Make sure the sheet is shared as 'Anyone with the link can view'.`);
+
+    const raw = await res.text();
+
+    // Strip the Google wrapper:  /*O_o*/\ngoogle.visualization.Query.setResponse( ... );
+    const jsonStart = raw.indexOf("(") + 1;
+    const jsonEnd   = raw.lastIndexOf(")");
+    if (jsonStart <= 0 || jsonEnd <= 0) throw new Error("Unexpected response format from Google.");
+    const json = JSON.parse(raw.slice(jsonStart, jsonEnd));
+
+    const table = json.table;
+    if (!table || !table.cols) throw new Error("Sheet appears empty or inaccessible.");
+
+    // Map column labels → indices
+    const cols = table.cols.map(c => (c.label||"").toLowerCase().replace(/[^a-z0-9]/g,""));
+    const idx  = key => cols.findIndex(h => h.includes(key));
+    const cell = (row, key) => {
+      const i = idx(key);
+      if (i < 0 || !row.c || !row.c[i] || row.c[i].v === null || row.c[i].v === undefined) return "";
+      return String(row.c[i].v).trim();
+    };
+    const num = v => parseInt(v.replace(/[^0-9.-]/g,"")) || 0;
+
+    const active=[], pipe=[];
+    (table.rows||[]).forEach((row, i) => {
+      const name = cell(row,"society") || cell(row,"name");
+      if (!name || /total|overall|^s\.?no/i.test(name)) return;
+      const onboarded = num(cell(row,"onboard"));
+      const obj = {
+        sno: i+1, name,
+        flats:    num(cell(row,"total"))  || num(cell(row,"flat")),
+        onboarded,
+        pen:      num(cell(row,"penetr")) || num(cell(row,"pen")),
+        launch:   cell(row,"launch")     || cell(row,"month") || "—",
+        months:   num(cell(row,"months")),
+        revMay:   num(cell(row,"may")),
+        revJun:   num(cell(row,"june"))  || num(cell(row,"jun")),
+        remark:   cell(row,"remark")     || cell(row,"pendency"),
+      };
+      if (onboarded > 0) active.push(obj);
+      else pipe.push({name:obj.name, flats:obj.flats, remark:obj.remark});
+    });
+
+    if (!active.length && !pipe.length)
+      throw new Error("No data rows found.\n\nCheck that row 1 of your sheet has the required column names:\nSociety Name, Total Flats, Onboarded Flats, Revenue May, Revenue June, etc.");
+
+    renderAll(active, pipe);
+    document.getElementById("hintText").innerHTML =
+      '✅ Sheet connected! Data updates each time you click Reload. &nbsp;<a href="#" onclick="loadSheet();return false;">Reload now</a>';
+
+  } catch(e) {
+    alert("Could not load sheet.\n\n" + e.message);
+  } finally {
+    btn.textContent = "Load Sheet"; btn.disabled = false;
+  }
+}
+
+renderAll(SAMPLE_ACTIVE, SAMPLE_PIPELINE);
+</script>
+</body>
+</html>

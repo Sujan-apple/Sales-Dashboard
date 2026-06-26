@@ -250,7 +250,7 @@
   <button class="tab active" onclick="showTab('overview')">Overview</button>
   <button class="tab" onclick="showTab('followup')">Follow-ups</button>
   <button class="tab" onclick="showTab('compare')">Compare</button>
-  <button class="tab" id="tabBtnSnapshots" style="display:none;" onclick="showTab('snapshots')">Snapshots</button>
+  <!-- <button class="tab" id="tabBtnSnapshots" style="display:none;" onclick="showTab('snapshots')">Snapshots</button> -->
 </div>
 
 <div id="tab-overview"></div>
@@ -705,29 +705,21 @@ function renderCompare(){
 // HISTORICAL SNAPSHOTS VIEW TAB
 // ═══════════════════════════════════════════════════
 function renderSnapshots() {
-  let html = `<div class="sec">Historical Data Matrix Snapshots</div>`;
+  let html = `<div class="sec">Historical Snapshots (All Changes)</div>`;
   if (!historicalSnapshots.length) {
-    html += `<div class="empty">No historical changes documented yet. Load a modified layout sheet to see comparative day-to-day deltas.</div>`;
+    html += `<div class="empty">No changes recorded yet. Update your sheet and click "Load Sheet".</div>`;
   } else {
     html += `<div style="display:flex; flex-direction:column; gap:16px;">`;
     historicalSnapshots.slice().reverse().forEach(snap => {
       html += `<div style="background:var(--surf); border:1px solid var(--bdr); padding:16px; border-radius:12px;">
-        <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:var(--acc);">📅 Snapshot Log Reference: ${snap.date}</div>`;
-      if (!snap.changes || !snap.changes.length) {
-        html += `<div style="font-size:11px; color:var(--muted);">Zero onboarding changes detected during this transaction window.</div>`;
-      } else {
-        html += `<table class="cmp-table" style="margin-bottom:0;"><thead><tr><th>Society</th><th>Metric Variance Shift</th></tr></thead><tbody>`;
-        snap.changes.forEach(c => {
-          html += `<tr>
-            <td><strong>${c.name}</strong></td>
-            <td>
-              Onboarded: ${c.oldOb} ➔ <strong>${c.newOb}</strong> <span class="delta-pill plus">+${c.obDiff} flats</span><br>
-              Penetration: ${c.oldPen}% ➔ <strong>${c.newPen}%</strong> <span class="delta-pill plus">+${c.penDiff}%</span>
-            </td>
-          </tr>`;
-        });
-        html += `</tbody></table>`;
-      }
+        <div style="font-weight:700; font-size:14px; margin-bottom:12px; color:var(--acc);">📅 ${snap.date}</div>`;
+      
+      snap.changes.forEach(c => {
+        html += `<div style="margin-bottom:12px; padding:12px; background:var(--card); border-radius:10px;">
+          <strong>${c.name}</strong><br><br>
+          ${c.changes.map(ch => `<span class="delta-pill plus">${ch}</span>`).join('<br>')}
+        </div>`;
+      });
       html += `</div>`;
     });
     html += `</div>`;
@@ -876,67 +868,85 @@ function saveLocal(){
 // SHEET LOADER & COMPARATIVE TRACKER PROTOCOLS
 // ═══════════════════════════════════════════════════
 async function loadSheet(){
-  const input=document.getElementById('sheetUrl').value.trim();
+  const input = document.getElementById('sheetUrl').value.trim();
   if(!input){alert('Paste your Google Sheet link first.');return;}
-  const m=input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  
+  const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
   if(!m){alert("Doesn't look like a Google Sheets URL.");return;}
-  const sheetId=m[1];
-  const btn=document.querySelector('.conn-bar button:last-child');
-  btn.textContent='Loading…'; btn.disabled=true;
-  localStorage.setItem('pw_sheet_url',input);
-  try{
-    const res=await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`,{credentials:'omit'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const raw=await res.text();
-    const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
-    const table=json.table;
-    if(!table||!table.cols) throw new Error('Empty sheet.');
-    const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
-    const idx=k=>cols.findIndex(h=>h.includes(k));
-    const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
-    const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
+  
+  const sheetId = m[1];
+  const btn = document.querySelector('.conn-bar button:last-child');
+  btn.textContent = 'Loading…'; 
+  btn.disabled = true;
+  
+  localStorage.setItem('pw_sheet_url', input);
+
+  try {
+    const res = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`, {credentials:'omit'});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
     
+    const raw = await res.text();
+    const json = JSON.parse(raw.slice(raw.indexOf('(')+1, raw.lastIndexOf(')')));
+    const table = json.table;
+
+    if(!table || !table.cols) throw new Error('Empty sheet.');
+
+    const cols = table.cols.map(c => (c.label || '').toLowerCase().replace(/[^a-z0-9]/g,''));
+    const idx = k => cols.findIndex(h => h.includes(k));
+    const cell = (row, k) => {
+      const i = idx(k);
+      if(i<0 || !row.c || !row.c[i] || row.c[i].v === null) return '';
+      return String(row.c[i].v).trim();
+    };
+    const num = v => parseInt(v.replace(/[^0-9.-]/g,'')) || 0;
+
+    // Baseline for comparison
     const baselineMap = {};
-    ACTIVE.forEach(r => { baselineMap[r.name] = { ob: r.ob, pen: r.pen }; });
+    ACTIVE.forEach(r => { 
+      baselineMap[r.name] = {...r}; 
+    });
 
-    const nA=[],nP=[]; let cnt=200;
-    let dayChanges = [];
+    const dayChanges = [];
 
-    (table.rows||[]).forEach(row=>{
-      const name=cell(row,'society')||cell(row,'name');
-      if(!name||/total|overall|^s\.?no/i.test(name)) return;
-      const ob=num(cell(row,'onboard'));
-      const oldObj=baselineMap[name];
-      const id=cnt++;
-      const obj={id,name,flats:num(cell(row,'total'))||num(cell(row,'flat')),ob,
-        pen:num(cell(row,'penetr'))||num(cell(row,'pen')),
-        launch:cell(row,'launch')||cell(row,'month')||'—',
-        months:num(cell(row,'months')),
-        revMay:num(cell(row,'may')),
-        revJun:num(cell(row,'june'))||num(cell(row,'jun')),
-        remark:cell(row,'remark')||cell(row,'pendency'),
-      };
-      
-      if (oldObj && ob > oldObj.ob) {
+   (table.rows || []).forEach(row => {
+      const name = cell(row, 'society') || cell(row, 'name');
+      if(!name || /total|overall|^s\.?no/i.test(name)) return;
+
+      const oldData = baselineMap[name];
+      if(!oldData) return;
+
+      const newOb = num(cell(row, 'onboard'));
+      const newPen = num(cell(row, 'penetr')) || num(cell(row, 'pen'));
+      const newRevJun = num(cell(row, 'june')) || num(cell(row, 'jun'));
+      const newRevMay = num(cell(row, 'may'));
+      const newMonths = num(cell(row, 'months'));
+      const newRemark = cell(row, 'remark') || cell(row, 'pendency');
+
+      const changes = [];
+
+      if(newOb !== oldData.ob) changes.push(`Onboarded: ${oldData.ob} → ${newOb}`);
+      if(newPen !== oldData.pen) changes.push(`Penetration: ${oldData.pen}% → ${newPen}%`);
+      if(newRevJun !== oldData.revJun) changes.push(`Revenue Jun: ₹${oldData.revJun} → ₹${newRevJun}`);
+      if(newRevMay !== oldData.revMay) changes.push(`Revenue May: ₹${oldData.revMay} → ₹${newRevMay}`);
+      if(newMonths !== oldData.months) changes.push(`Months Live: ${oldData.months} → ${newMonths}`);
+      if(newRemark && newRemark !== oldData.remark) changes.push(`Remark: Updated`);
+
+      if(changes.length > 0) {
         dayChanges.push({
           name: name,
-          oldOb: oldObj.ob,
-          newOb: ob,
-          obDiff: ob - oldObj.ob,
-          oldPen: oldObj.pen,
-          newPen: obj.pen,
-          penDiff: obj.pen - oldObj.pen
+          changes: changes,
+          oldOb: oldData.ob,
+          newOb: newOb,
+          oldPen: oldData.pen,
+          newPen: newPen
         });
       }
-
-      if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
     });
-    
-    if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
-    
-    if (dayChanges.length > 0) {
-      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
-      historicalSnapshots.push({
+
+    // Save snapshot
+    if(dayChanges.length > 0) {
+      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+      historicalSnapshots.unshift({
         date: todayString,
         changes: dayChanges
       });

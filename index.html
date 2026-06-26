@@ -953,7 +953,7 @@ async function loadSheet(){
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
     }
 
-    const nA = [], nP = [];
+   ACTIVE=nA; PIPELINE=nP;
     document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
     document.getElementById('connStatus').textContent='✅ Sheet loaded. Logs preserved.';
     renderCurrent();

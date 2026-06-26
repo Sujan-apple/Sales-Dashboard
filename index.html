@@ -1,24 +1,124 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Society Sales Dashboard</title>
+<title>ProWater Dashboard</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+  
   :root {
-    --bg:#0f1117;--surf:#1a1d27;--card:#20243a;--bdr:#2a2e42;
-    --acc:#4f8ef7;--grn:#22c55e;--ylw:#f59e0b;--red:#ef4444;--orn:#f97316;
-    --muted:#6b7280;--txt:#e8eaf0;--txt2:#9ca3af;
-    --mono:'JetBrains Mono',monospace;
+    /* Theme color definitions from image_bd7f86.jpg */
+    --prowater-green: #144a29;
+    --prowater-lime: #93d445;
+    
+    /* Dark Theme Variables (Default) */
+    --bg: #0b0d11;
+    --surf: #131722;
+    --card: #1b2030;
+    --bdr: #242b3d;
+    --acc: var(--prowater-lime);
+    --acc-txt: #144a29;
+    --grn: #22c55e;
+    --ylw: #f59e0b;
+    --red: #ef4444;
+    --orn: #f97316;
+    --muted: #6b7280;
+    --txt: #e8eaf0;
+    --txt2: #9ca3af;
+    --mono: 'JetBrains Mono', monospace;
+    --header-bg: #144a29;
+    --header-txt: #ffffff;
   }
+
+  html[data-theme="light"] {
+    /* Light Theme Variables */
+    --bg: #f4f6f8;
+    --surf: #ffffff;
+    --card: #f9fafb;
+    --bdr: #e5e7eb;
+    --acc: #144a29;
+    --acc-txt: #ffffff;
+    --grn: #16a34a;
+    --ylw: #d97706;
+    --red: #dc2626;
+    --orn: #ea580c;
+    --muted: #9ca3af;
+    --txt: #111827;
+    --txt2: #4b5563;
+    --header-bg: #ffffff;
+    --header-txt: #144a29;
+  }
+
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px;font-size:13px;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px;font-size:13px;transition: background 0.3s, color 0.3s;}
+
+  /* Header System */
+  .prowater-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--header-bg);
+    border: 1px solid var(--bdr);
+    padding: 14px 24px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Vector Custom Logo matching image_bd7f86.jpg */
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .logo-icon {
+    position: relative;
+    width: 28px;
+    height: 28px;
+  }
+  .logo-text {
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.5px;
+    color: var(--header-txt);
+    display: flex;
+    flex-direction: column;
+    line-height: 0.9;
+  }
+  .logo-text span {
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+  }
+
+  /* Theme Toggle Switch */
+  .theme-toggle {
+    background: var(--card);
+    border: 1px solid var(--bdr);
+    color: var(--txt);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover {
+    background: var(--bdr);
+  }
 
   /* Nav tabs */
   .tabs{display:flex;gap:2px;background:var(--surf);border-radius:10px;padding:4px;margin-bottom:20px;border:1px solid var(--bdr);}
   .tab{flex:1;padding:8px;border-radius:7px;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
-  .tab.active{background:var(--acc);color:#fff;}
+  .tab.active{background: var(--prowater-green);color:#fff;}
+  html[data-theme="light"] .tab.active{background: var(--prowater-green); color: #fff;}
   .tab:hover:not(.active){color:var(--txt);}
 
   /* Sheet bar */
@@ -26,7 +126,7 @@
   .sheet-bar input{flex:1;min-width:260px;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:9px 14px;color:var(--txt);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
   .sheet-bar input:focus{border-color:var(--acc);}
   .sheet-bar input::placeholder{color:var(--muted);}
-  .sheet-bar button{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .sheet-bar button{background:var(--prowater-green);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;}
   .sheet-bar button:hover{opacity:.85;}
   .hint{font-size:11px;color:var(--muted);margin-bottom:20px;line-height:1.8;}
   .hint a{color:var(--acc);text-decoration:none;}
@@ -43,8 +143,8 @@
   /* Alert banner */
   .alerts{margin-bottom:16px;}
   .alert{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:8px;font-size:12px;line-height:1.5;}
-  .alert-red{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
-  .alert-ylw{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#fcd34d;}
+  .alert-red{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:var(--red);}
+  .alert-ylw{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--ylw);}
   .alert-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
   .alert strong{display:block;margin-bottom:1px;}
 
@@ -63,7 +163,7 @@
   .h-hot{background:rgba(239,68,68,.15);color:var(--red);}
   .h-warn{background:rgba(245,158,11,.15);color:var(--ylw);}
   .h-good{background:rgba(34,197,94,.15);color:var(--grn);}
-  .h-new{background:rgba(79,142,247,.15);color:var(--acc);}
+  .h-new{background:rgba(79,142,247,.15);color:var(--muted);}
 
   /* Metrics row */
   .metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
@@ -74,19 +174,20 @@
   /* Pen bar */
   .pen-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
   .pen-bar{flex:1;height:5px;border-radius:4px;background:var(--bdr);overflow:hidden;}
-  .pen-fill{height:100%;border-radius:4px;background:var(--acc);}
+  .pen-fill{height:100%;border-radius:4px;background:var(--prowater-green);}
+  html[data-theme="dark"] .pen-fill { background: var(--prowater-lime); }
   .pen-txt{font-family:var(--mono);font-size:10px;white-space:nowrap;}
 
   /* Action buttons */
   .actions{display:flex;gap:6px;}
   .abtn{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bdr);background:none;color:var(--txt2);font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px;}
   .abtn:hover{background:var(--card);color:var(--txt);border-color:var(--acc);}
-  .abtn.primary{background:rgba(79,142,247,.15);border-color:var(--acc);color:var(--acc);}
+  .abtn.primary{background:rgba(20,74,41,.15);border-color:var(--prowater-green);color:var(--txt);}
+  html[data-theme="light"] .abtn.primary { background: rgba(20,74,41,.08); color: var(--prowater-green); }
   .abtn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.4);color:var(--red);}
 
   /* Last note */
-  .last-note{background:var(--card);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11px;color:var(--txt2);line-height:1.4;border-left:2px solid var(--acc);}
-  .note-time{font-size:9px;color:var(--muted);margin-top:3px;}
+  .last-note{background:var(--card);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11px;color:var(--txt2);line-height:1.4;border-left:2px solid var(--prowater-green);}
 
   /* Callback flag */
   .callback-flag{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);border-radius:6px;padding:5px 8px;font-size:10px;color:var(--orn);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
@@ -118,7 +219,7 @@
   .form-row{display:flex;gap:8px;margin-top:4px;}
   .form-row button{flex:1;padding:9px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;}
   .btn-cancel{background:var(--card);color:var(--txt2);}
-  .btn-save{background:var(--acc);color:#fff;}
+  .btn-save{background:var(--prowater-green);color:#fff;}
 
   /* Compare table */
   .cmp-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;}
@@ -135,7 +236,7 @@
   .search-row input:focus{border-color:var(--acc);}
   .search-row input::placeholder{color:var(--muted);}
   .filter-btn{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;color:var(--txt2);font-size:11px;padding:7px 12px;cursor:pointer;font-weight:600;}
-  .filter-btn.on{background:rgba(79,142,247,.15);border-color:var(--acc);color:var(--acc);}
+  .filter-btn.on{background:rgba(20,74,41,.15);border-color:var(--prowater-green);color:var(--txt);}
 
   .empty{text-align:center;padding:32px;color:var(--muted);font-size:12px;}
   @media(max-width:600px){body{padding:12px;}.kpi-val{font-size:18px;}}
@@ -143,9 +244,22 @@
 </head>
 <body>
 
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-  <div style="font-size:20px;font-weight:700;letter-spacing:-.5px;">Society <span style="color:var(--acc)">Dashboard</span></div>
-  <div style="font-size:11px;color:var(--muted);font-family:var(--mono)" id="lastUpdated">Sample data</div>
+<div class="prowater-header">
+  <div class="logo-container">
+    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M35 75 C 20 60, 20 40, 35 25 C 50 40, 50 60, 35 75 Z" fill="#144a29"/>
+      <path d="M52 80 C 40 70, 40 55, 52 45 C 64 55, 64 70, 52 80 Z" fill="#93d445"/>
+      <circle cx="68" cy="40" r="10" fill="#22c55e"/>
+    </svg>
+    <div class="logo-text">
+      ProWater
+      <span>DASHBOARD</span>
+    </div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <div style="font-size:11px;color:var(--muted);font-family:var(--mono); text-align: right;" id="lastUpdated">Sample data</div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">☀️ Light Mode</button>
+  </div>
 </div>
 
 <div class="sheet-bar">
@@ -191,6 +305,18 @@
 </div>
 
 <script>
+// Theme Management Setup
+function toggleTheme() {
+  const htmlEl = document.documentElement;
+  const currentTheme = htmlEl.getAttribute('data-theme');
+  const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  htmlEl.setAttribute('data-theme', targetTheme);
+  
+  const btn = document.getElementById('themeToggleBtn');
+  btn.textContent = targetTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+  renderCurrent();
+}
+
 // ── Default sample data (replaced when sheet is loaded) ──
 let ACTIVE = [
   {id:1,name:"CBR Aakruti (OT)",flats:108,ob:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
@@ -567,3 +693,5 @@ renderOverview();
 </script>
 </body>
 </html>
+
+```

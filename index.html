@@ -178,7 +178,8 @@
 
 <!-- Header -->
 <div class="prowater-header">
-  <div style="display:flex;align-items:center;gap:8px;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="hdr-btn" onclick="toggleDrawer()" style="padding:8px 10px;">☰</button>
     <svg width="28" height="28" viewBox="0 0 100 100">
       <path d="M35 75 C20 60,20 40,35 25 C50 40,50 60,35 75Z" fill="#144a29"/>
       <path d="M52 80 C40 70,40 55,52 45 C64 55,64 70,52 80Z" fill="#93d445"/>
@@ -190,7 +191,26 @@
     <span id="syncStatus" style="font-size:11px;color:var(--muted);font-family:var(--mono);">
       <span class="sync-dot" id="syncDot"></span><span id="syncTxt">Not connected</span>
     </span>
-    <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+    
+
+<div id="drawerOverlay" onclick="toggleDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998"></div>
+<div id="callDrawer" style="display:none;position:fixed;left:0;top:0;width:320px;height:100%;background:var(--surf);border-right:1px solid var(--bdr);padding:20px;overflow:auto;z-index:9999;box-shadow:4px 0 20px rgba(0,0,0,.35)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+<h3>☰ ProWater CRM</h3>
+<button onclick="toggleDrawer()" style="background:none;border:none;font-size:22px;color:var(--txt);cursor:pointer">✕</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('overview');toggleDrawer()">🏠 Dashboard</a>
+<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="toggleDrawer()">📞 Today's Calls</a>
+<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('followup');toggleDrawer()">📅 Upcoming Callbacks</a>
+<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('followup');toggleDrawer()">📜 Call History</a>
+<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="showTab('compare');toggleDrawer()">📊 Reports</a>
+<a href="#" style="text-decoration:none;color:inherit;padding:8px" onclick="toggleDrawer()">⚙️ Settings</a>
+</div>
+<h4>Today's Follow-ups</h4>
+<div id="todayCalls"></div>
+</div>
+<button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
   </div>
 </div>
 
@@ -507,8 +527,8 @@ function renderOverview(){
         <div><div class="scard-name">${r.name}</div><div class="scard-flats">${r.flats} flats · ${r.months===0?'Just launched':r.months+'mo live'}</div></div>
         <span class="badge ${hl.c}">${hl.t}</span>
       </div>
-      ${cb&&new Date(cb)<=new Date()?`<div class="cb-flag">📞 Callback overdue: ${cb}</div>`:''}
-      ${cb&&!(new Date(cb)<=new Date())?`<div class="cb-flag" style="background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);">📅 Callback: ${cb}</div>`:''}
+      ${cb&&new Date(cb)<=new Date()?`<div class="cb-flag">📞 Callback overdue</div>`:''}
+      ${cb&&!(new Date(cb)<=new Date())?`<div class="cb-flag" style="background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);">📅 Callback Scheduled</div>`:''}
       ${logCardHtml(ll)}
       <div class="metrics">
         <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
@@ -893,6 +913,25 @@ function toggleTheme(){
 }
 function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 
+
+function toggleDrawer(){
+ const d=document.getElementById('callDrawer');
+ const o=document.getElementById('drawerOverlay');
+ const open=d.style.display==='block';
+ if(open){d.style.display='none';o.style.display='none';return;}
+ let h='';
+ Object.entries(callbacks).forEach(([id,date])=>{
+   if(date===new Date().toISOString().slice(0,10)){
+     const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
+     h+=`<div style="padding:10px;border-bottom:1px solid var(--bdr)"><b>${s?s.name:id}</b><br><small>Callback Today</small></div>`;
+   }
+ });
+ document.getElementById('todayCalls').innerHTML=h||'<p>No callbacks today.</p>';
+ d.style.display='block';
+ o.style.display='block';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const d=document.getElementById('callDrawer');if(d.style.display==='block')toggleDrawer();}});
+
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
@@ -904,6 +943,7 @@ if(localStorage.getItem('pw_agent'))
 
 // Auto-connect if URL was previously saved
 if(SCRIPT_URL){
+  document.getElementById('setupBanner').style.display='none';
   connectBackend();
 }
 // Auto-load sheet if URL was previously saved

@@ -3,364 +3,567 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Society Dashboard</title>
+<title>Society Sales Dashboard</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
   :root {
-    --bg:#0f1117;--surface:#1a1d27;--card:#20243a;--border:#2a2e42;
-    --accent:#4f8ef7;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;
-    --muted:#6b7280;--text:#e8eaf0;--text2:#9ca3af;
+    --bg:#0f1117;--surf:#1a1d27;--card:#20243a;--bdr:#2a2e42;
+    --acc:#4f8ef7;--grn:#22c55e;--ylw:#f59e0b;--red:#ef4444;--orn:#f97316;
+    --muted:#6b7280;--txt:#e8eaf0;--txt2:#9ca3af;
     --mono:'JetBrains Mono',monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px;}
-  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
-  .logo{font-size:20px;font-weight:700;letter-spacing:-.5px;}
-  .logo span{color:var(--accent);}
-  .last-updated{font-size:12px;color:var(--muted);font-family:var(--mono);}
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
-  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
-  .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
-  .kpi-value{font-family:var(--mono);font-size:26px;font-weight:500;line-height:1;}
-  .kpi-sub{font-size:11px;color:var(--text2);margin-top:4px;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px;font-size:13px;}
+
+  /* Nav tabs */
+  .tabs{display:flex;gap:2px;background:var(--surf);border-radius:10px;padding:4px;margin-bottom:20px;border:1px solid var(--bdr);}
+  .tab{flex:1;padding:8px;border-radius:7px;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
+  .tab.active{background:var(--acc);color:#fff;}
+  .tab:hover:not(.active){color:var(--txt);}
+
+  /* Sheet bar */
   .sheet-bar{display:flex;gap:10px;margin-bottom:10px;align-items:center;flex-wrap:wrap;}
-  .sheet-bar input{flex:1;min-width:260px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
-  .sheet-bar input:focus{border-color:var(--accent);}
+  .sheet-bar input{flex:1;min-width:260px;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:9px 14px;color:var(--txt);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+  .sheet-bar input:focus{border-color:var(--acc);}
   .sheet-bar input::placeholder{color:var(--muted);}
-  .sheet-bar button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .sheet-bar button{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;}
   .sheet-bar button:hover{opacity:.85;}
   .hint{font-size:11px;color:var(--muted);margin-bottom:20px;line-height:1.8;}
-  .hint a{color:var(--accent);text-decoration:none;}
+  .hint a{color:var(--acc);text-decoration:none;}
   .hint code{background:var(--card);padding:1px 5px;border-radius:3px;font-size:10px;}
-  .section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-  .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin-bottom:28px;}
-  table{width:100%;border-collapse:collapse;font-size:13px;}
-  thead tr{background:var(--card);}
-  th{padding:11px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
-  tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
-  tbody tr:last-child{border-bottom:none;}
-  tbody tr:hover{background:var(--card);}
-  td{padding:11px 14px;white-space:nowrap;}
-  td.mono{font-family:var(--mono);font-size:12px;}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
-  .badge-green{background:rgba(34,197,94,.15);color:var(--green);}
-  .badge-yellow{background:rgba(245,158,11,.15);color:var(--yellow);}
-  .badge-blue{background:rgba(79,142,247,.15);color:var(--accent);}
 
-  /* ── Penetration bar — clickable ── */
-  .pen-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
-  .pen-wrap:hover .pen-bar{opacity:.85;}
-  .pen-wrap:hover .pen-pct{color:var(--accent);}
-  .pen-bar{height:6px;border-radius:4px;background:var(--border);overflow:hidden;width:90px;position:relative;transition:opacity .2s;}
-  .pen-done{height:100%;border-radius:4px;background:var(--accent);transition:width .4s;}
-  .pen-pct{font-family:var(--mono);font-size:11px;transition:color .2s;}
-  .pen-hint{font-size:9px;color:var(--muted);margin-top:1px;}
+  /* KPI row */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
+  .kpi{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;}
+  .kpi-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;}
+  .kpi-val{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1;}
+  .kpi-sub{font-size:10px;color:var(--txt2);margin-top:3px;}
+  .up{color:var(--grn);} .dn{color:var(--red);}
 
-  /* ── Modal ── */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
-  .modal-overlay.open{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:360px;max-width:95vw;position:relative;}
-  .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;}
-  .modal-close:hover{color:var(--text);}
-  .modal-title{font-size:16px;font-weight:700;margin-bottom:4px;}
-  .modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+  /* Alert banner */
+  .alerts{margin-bottom:16px;}
+  .alert{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:8px;font-size:12px;line-height:1.5;}
+  .alert-red{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+  .alert-ylw{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#fcd34d;}
+  .alert-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+  .alert strong{display:block;margin-bottom:1px;}
 
-  .pen-ring-wrap{display:flex;justify-content:center;margin-bottom:20px;}
-  .pen-ring{position:relative;width:140px;height:140px;}
-  .pen-ring svg{transform:rotate(-90deg);}
-  .pen-ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .pen-ring-pct{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--red);}
-  .pen-ring-txt{font-size:11px;color:var(--muted);}
+  /* Section title */
+  .sec{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+  .sec::after{content:'';flex:1;height:1px;background:var(--bdr);}
 
-  .pen-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
-  .pen-stat{background:var(--card);border-radius:10px;padding:12px;text-align:center;}
-  .pen-stat-val{font-family:var(--mono);font-size:20px;font-weight:600;margin-bottom:2px;}
-  .pen-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-  .pen-stat-val.green{color:var(--green);}
-  .pen-stat-val.red{color:var(--red);}
-  .pen-stat-val.yellow{color:var(--yellow);}
+  /* Society cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px;}
+  .scard{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:14px 16px;transition:border-color .2s;}
+  .scard:hover{border-color:var(--acc);}
+  .scard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .scard-name{font-weight:700;font-size:13px;max-width:160px;}
+  .scard-flats{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+  .health-badge{border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;}
+  .h-hot{background:rgba(239,68,68,.15);color:var(--red);}
+  .h-warn{background:rgba(245,158,11,.15);color:var(--ylw);}
+  .h-good{background:rgba(34,197,94,.15);color:var(--grn);}
+  .h-new{background:rgba(79,142,247,.15);color:var(--acc);}
 
-  .pen-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-  .pen-progress-label{font-size:12px;color:var(--text2);width:80px;flex-shrink:0;}
-  .pen-progress-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
-  .pen-progress-fill{height:100%;border-radius:4px;}
-  .pen-progress-val{font-family:var(--mono);font-size:11px;width:36px;text-align:right;flex-shrink:0;}
+  /* Metrics row */
+  .metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+  .metric{background:var(--card);border-radius:6px;padding:7px 8px;text-align:center;}
+  .metric-v{font-family:var(--mono);font-size:14px;font-weight:600;}
+  .metric-l{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:2px;}
 
-  .pen-target-note{font-size:11px;color:var(--text2);background:var(--card);border-radius:8px;padding:10px 12px;line-height:1.6;}
-  .pen-target-note strong{color:var(--yellow);}
+  /* Pen bar */
+  .pen-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .pen-bar{flex:1;height:5px;border-radius:4px;background:var(--bdr);overflow:hidden;}
+  .pen-fill{height:100%;border-radius:4px;background:var(--acc);}
+  .pen-txt{font-family:var(--mono);font-size:10px;white-space:nowrap;}
 
-  .remark{font-size:11px;color:var(--text2);max-width:220px;white-space:normal;line-height:1.4;}
-  .pipeline{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px;}
-  .pipe-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:10px;padding:14px 16px;}
-  .pipe-name{font-weight:600;font-size:13px;margin-bottom:4px;}
-  .pipe-flats{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:8px;}
-  .pipe-remark{font-size:11px;color:var(--text2);line-height:1.5;}
-  .up{color:var(--green);font-size:11px;} .dn{color:var(--red);font-size:11px;}
-  .status-row{background:var(--card) !important;font-weight:600;}
-  @media(max-width:600px){body{padding:14px;}.kpi-value{font-size:22px;}}
+  /* Action buttons */
+  .actions{display:flex;gap:6px;}
+  .abtn{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bdr);background:none;color:var(--txt2);font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px;}
+  .abtn:hover{background:var(--card);color:var(--txt);border-color:var(--acc);}
+  .abtn.primary{background:rgba(79,142,247,.15);border-color:var(--acc);color:var(--acc);}
+  .abtn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.4);color:var(--red);}
+
+  /* Last note */
+  .last-note{background:var(--card);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11px;color:var(--txt2);line-height:1.4;border-left:2px solid var(--acc);}
+  .note-time{font-size:9px;color:var(--muted);margin-top:3px;}
+
+  /* Callback flag */
+  .callback-flag{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);border-radius:6px;padding:5px 8px;font-size:10px;color:var(--orn);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+
+  /* Follow-up panel */
+  .fup-item{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;}
+  .fup-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+  .fup-dot.red{background:var(--red);}
+  .fup-dot.ylw{background:var(--ylw);}
+  .fup-dot.grn{background:var(--grn);}
+  .fup-body{flex:1;}
+  .fup-name{font-weight:700;font-size:13px;}
+  .fup-note{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.4;}
+  .fup-time{font-size:10px;color:var(--muted);margin-top:4px;}
+  .fup-actions{display:flex;gap:6px;flex-shrink:0;}
+  .icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--bdr);background:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .icon-btn:hover{background:var(--card);color:var(--txt);}
+
+  /* Log modal */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;}
+  .modal-bg.open{display:flex;}
+  .modal{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;padding:22px;width:340px;max-width:95vw;}
+  .modal-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .modal-sub{font-size:11px;color:var(--muted);margin-bottom:16px;}
+  .form-lbl{font-size:11px;color:var(--txt2);margin-bottom:5px;display:block;}
+  .form-lbl+textarea,.form-lbl+select,.form-lbl+input{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:7px;color:var(--txt);padding:8px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;margin-bottom:12px;}
+  .form-lbl+textarea{height:72px;resize:vertical;}
+  .form-lbl+textarea:focus,.form-lbl+select:focus,.form-lbl+input:focus{border-color:var(--acc);}
+  .form-row{display:flex;gap:8px;margin-top:4px;}
+  .form-row button{flex:1;padding:9px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;}
+  .btn-cancel{background:var(--card);color:var(--txt2);}
+  .btn-save{background:var(--acc);color:#fff;}
+
+  /* Compare table */
+  .cmp-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;}
+  .cmp-table th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--bdr);}
+  .cmp-table td{padding:10px 12px;border-bottom:1px solid var(--bdr);}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table tr:hover td{background:var(--surf);}
+  .sort-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;margin-left:4px;}
+  .sort-btn.active{color:var(--acc);}
+
+  /* Search bar */
+  .search-row{display:flex;gap:8px;margin-bottom:14px;align-items:center;}
+  .search-row input{flex:1;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;color:var(--txt);font-size:12px;outline:none;}
+  .search-row input:focus{border-color:var(--acc);}
+  .search-row input::placeholder{color:var(--muted);}
+  .filter-btn{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;color:var(--txt2);font-size:11px;padding:7px 12px;cursor:pointer;font-weight:600;}
+  .filter-btn.on{background:rgba(79,142,247,.15);border-color:var(--acc);color:var(--acc);}
+
+  .empty{text-align:center;padding:32px;color:var(--muted);font-size:12px;}
+  @media(max-width:600px){body{padding:12px;}.kpi-val{font-size:18px;}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">Society <span>Dashboard</span></div>
-  <div class="last-updated" id="lastUpdated">Sample data</div>
-</header>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+  <div style="font-size:20px;font-weight:700;letter-spacing:-.5px;">Society <span style="color:var(--acc)">Dashboard</span></div>
+  <div style="font-size:11px;color:var(--muted);font-family:var(--mono)" id="lastUpdated">Sample data</div>
+</div>
 
 <div class="sheet-bar">
   <input type="text" id="sheetUrl" placeholder="Paste your Google Sheet sharing link here…" />
-  <button id="loadBtn" onclick="loadSheet()">Load Sheet</button>
+  <button onclick="loadSheet()">Load Sheet</button>
 </div>
 <p class="hint" id="hintText">
   <strong>How to connect:</strong> Google Sheet → <strong>Share → Anyone with the link → Viewer</strong> → Copy link → Paste above.<br>
   Required columns: <code>Society Name</code> <code>Total Flats</code> <code>Onboarded Flats</code> <code>% Penetration</code> <code>Launched Month</code> <code>Total Months</code> <code>Revenue May</code> <code>Revenue June</code> <code>Remark</code>
-  &nbsp;· <strong>Click any penetration bar</strong> to see the remaining target breakdown.
 </p>
 
-<div class="kpis" id="kpis"></div>
-<div class="section-title">Active Societies</div>
-<div class="table-wrap">
-  <table>
-    <thead><tr>
-      <th>#</th><th>Society</th><th>Total Flats</th><th>Onboarded</th>
-      <th>Penetration ↗ click</th><th>Launch</th><th>Months</th>
-      <th>Revenue (May)</th><th>Revenue (June)</th><th>Status</th><th>Remark</th>
-    </tr></thead>
-    <tbody id="mainTbody"></tbody>
-  </table>
+<div class="tabs">
+  <button class="tab active" onclick="showTab('overview')">Overview</button>
+  <button class="tab" onclick="showTab('followup')">Follow-ups</button>
+  <button class="tab" onclick="showTab('compare')">Compare</button>
 </div>
-<div class="section-title">Pipeline — Upcoming</div>
-<div class="pipeline" id="pipeline"></div>
 
-<!-- Penetration Modal -->
-<div class="modal-overlay" id="penModal" onclick="closeModal(event)">
+<div id="tab-overview"></div>
+<div id="tab-followup" style="display:none"></div>
+<div id="tab-compare" style="display:none"></div>
+
+<!-- Log call modal -->
+<div class="modal-bg" id="logModal">
   <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('penModal').classList.remove('open')">✕</button>
-    <div class="modal-title" id="modalTitle">—</div>
-    <div class="modal-sub" id="modalSub">—</div>
-
-    <div class="pen-ring-wrap">
-      <div class="pen-ring">
-        <svg width="140" height="140" viewBox="0 0 140 140">
-          <circle cx="70" cy="70" r="56" fill="none" stroke="#2a2e42" stroke-width="12"/>
-          <circle cx="70" cy="70" r="56" fill="none" stroke="#ef4444" stroke-width="12"
-            stroke-dasharray="351.86" id="ringRemain" stroke-dashoffset="0" stroke-linecap="round"/>
-        </svg>
-        <div class="pen-ring-label">
-          <div class="pen-ring-pct" id="ringPct">—</div>
-          <div class="pen-ring-txt">remaining</div>
-        </div>
-      </div>
+    <div class="modal-title" id="logModalTitle">Log call</div>
+    <div class="modal-sub" id="logModalSub">—</div>
+    <label class="form-lbl">Notes from call / visit</label>
+    <textarea id="logNote" placeholder="e.g. Spoke to committee, interested in 12 more flats…"></textarea>
+    <label class="form-lbl">Outcome</label>
+    <select id="logOutcome">
+      <option value="positive">Positive — progressing well</option>
+      <option value="callback">Needs callback / follow-up</option>
+      <option value="blocked">Blocked — needs attention</option>
+      <option value="neutral">Neutral / informational</option>
+    </select>
+    <label class="form-lbl" id="cbDateLabel" style="display:none">Callback date</label>
+    <input type="date" id="cbDate" style="display:none">
+    <div class="form-row">
+      <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
+      <button class="btn-save" onclick="saveLog()">Save log</button>
     </div>
-
-    <div class="pen-stats">
-      <div class="pen-stat"><div class="pen-stat-val yellow" id="statTotal">—</div><div class="pen-stat-lbl">Total Flats</div></div>
-      <div class="pen-stat"><div class="pen-stat-val green" id="statDone">—</div><div class="pen-stat-lbl">Onboarded</div></div>
-      <div class="pen-stat"><div class="pen-stat-val red" id="statLeft">—</div><div class="pen-stat-lbl">Remaining</div></div>
-    </div>
-
-    <div class="pen-progress-row">
-      <div class="pen-progress-label">Achieved</div>
-      <div class="pen-progress-bar"><div class="pen-progress-fill" id="barDone" style="background:var(--green)"></div></div>
-      <div class="pen-progress-val" id="barDonePct" style="color:var(--green)">—</div>
-    </div>
-    <div class="pen-progress-row" style="margin-bottom:16px">
-      <div class="pen-progress-label">Remaining</div>
-      <div class="pen-progress-bar"><div class="pen-progress-fill" id="barLeft" style="background:var(--red)"></div></div>
-      <div class="pen-progress-val" id="barLeftPct" style="color:var(--red)">—</div>
-    </div>
-
-    <div class="pen-target-note" id="targetNote">—</div>
   </div>
 </div>
 
 <script>
-const SAMPLE_ACTIVE = [
-  {sno:1,name:"CBR Aakruti (OT)",flats:108,onboarded:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
-  {sno:2,name:"SVS Ananda OD",flats:168,onboarded:17,pen:10,launch:"Sep 24",months:21,revMay:4700,revJun:4450,remark:""},
-  {sno:3,name:"MJR Hydra",flats:300,onboarded:61,pen:20,launch:"Jan 26",months:5,revMay:14980,revJun:11800,remark:""},
-  {sno:4,name:"Ashish JK (DP)",flats:206,onboarded:31,pen:15,launch:"Apr 26",months:2,revMay:17600,revJun:8375,remark:""},
-  {sno:5,name:"Prabhavati",flats:80,onboarded:18,pen:22,launch:"May 26",months:0,revMay:7134,revJun:4158,remark:""},
+// ── Default sample data (replaced when sheet is loaded) ──
+let ACTIVE = [
+  {id:1,name:"CBR Aakruti (OT)",flats:108,ob:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
+  {id:2,name:"SVS Ananda OD",flats:168,ob:17,pen:10,launch:"Sep 24",months:21,revMay:4700,revJun:4450,remark:""},
+  {id:3,name:"MJR Hydra",flats:300,ob:61,pen:20,launch:"Jan 26",months:5,revMay:14980,revJun:11800,remark:""},
+  {id:4,name:"Ashish JK (DP)",flats:206,ob:31,pen:15,launch:"Apr 26",months:2,revMay:17600,revJun:8375,remark:""},
+  {id:5,name:"Prabhavati",flats:80,ob:18,pen:22,launch:"May 26",months:0,revMay:7134,revJun:4158,remark:""},
 ];
-const SAMPLE_PIPELINE = [
-  {name:"Coronet Green",flats:100,remark:"Expected launch: 22nd June (late)"},
-  {name:"Sai Poorna Premier",flats:220,remark:"Achieved 16% interest. Expected: 5th July"},
-  {name:"Estalla Maple Square",flats:207,remark:"Arun (Penetration)"},
-  {name:"Sai Royale",flats:104,remark:"Feasibility check done"},
-  {name:"Deep Square",flats:140,remark:"2nd meeting fixed 27/28 this month"},
-  {name:"Sai Poorna Luxuria",flats:180,remark:"June 30 CB"},
-  {name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July (Penetration)"},
+let PIPELINE = [
+  {id:101,name:"Coronet Green",flats:100,remark:"Expected launch: 22nd June (late)"},
+  {id:102,name:"Sai Poorna Premier",flats:220,remark:"Achieved 16% interest. Expected: 5th July"},
+  {id:103,name:"Estalla Maple Square",flats:207,remark:"Penetration focus"},
+  {id:104,name:"Sai Royale",flats:104,remark:"Feasibility check done"},
+  {id:105,name:"Deep Square",flats:140,remark:"2nd meeting fixed 27/28"},
+  {id:106,name:"Sai Poorna Luxuria",flats:180,remark:"June 30 CB"},
+  {id:107,name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July"},
 ];
 
-// ── Open penetration modal ──
-function openPenModal(r) {
-  const remaining  = 100 - r.pen;
-  const flatsLeft  = r.flats - r.onboarded;
-  const circumf    = 2 * Math.PI * 56; // 351.86
+// ── In-session state ──
+let logs = {};
+let callbacks = {};
+let currentLogId = null;
+let sortKey = 'pen', sortDir = -1;
+let filterUrgent = false, searchQ = '';
+let currentTab = 'overview';
 
-  document.getElementById("modalTitle").textContent = r.name;
-  document.getElementById("modalSub").textContent   = `Penetration breakdown · ${r.flats} total flats`;
+function getLogs(id){ return logs[id] || []; }
+function lastLog(id){ const l=getLogs(id); return l.length ? l[l.length-1] : null; }
 
-  // Ring — shows remaining %
-  const offset = circumf - (remaining / 100) * circumf;
-  document.getElementById("ringRemain").style.strokeDashoffset = offset;
-  document.getElementById("ringPct").textContent = remaining + "%";
-
-  // Stats
-  document.getElementById("statTotal").textContent = r.flats;
-  document.getElementById("statDone").textContent  = r.onboarded;
-  document.getElementById("statLeft").textContent  = flatsLeft;
-
-  // Progress bars
-  document.getElementById("barDone").style.width    = r.pen + "%";
-  document.getElementById("barDonePct").textContent = r.pen + "%";
-  document.getElementById("barLeft").style.width    = remaining + "%";
-  document.getElementById("barLeftPct").textContent = remaining + "%";
-
-  // Target note
-  const toNext10 = Math.ceil(r.pen / 10) * 10;
-  const nextTarget = toNext10 <= r.pen ? toNext10 + 10 : toNext10;
-  const flatsToNext = Math.ceil((nextTarget / 100) * r.flats) - r.onboarded;
-  document.getElementById("targetNote").innerHTML =
-    `To reach <strong>${nextTarget}% penetration</strong>, you need <strong>${flatsToNext > 0 ? flatsToNext : 0} more flats</strong> onboarded.<br>
-     ${flatsLeft} flats still untouched out of ${r.flats} total.`;
-
-  document.getElementById("penModal").classList.add("open");
+function healthScore(r){
+  let s = 0;
+  if(r.pen >= 40) s += 40; else if(r.pen >= 25) s += 25; else if(r.pen >= 15) s += 15; else s += 5;
+  const trend = r.revJun - r.revMay;
+  if(trend > 0) s += 30; else if(trend === 0) s += 15;
+  if(r.months > 0 && r.months <= 3) s += 20; else if(r.months > 3) s += 10; else s += 15;
+  if(lastLog(r.id)) s += 10;
+  return Math.min(s, 100);
 }
 
-function closeModal(e) {
-  if (e.target === document.getElementById("penModal"))
-    document.getElementById("penModal").classList.remove("open");
+function urgencyReasons(r){
+  const reasons = [];
+  if(r.revJun < r.revMay) reasons.push(`Revenue dropped ₹${(r.revMay-r.revJun).toLocaleString()} vs May`);
+  if(r.pen < 15) reasons.push(`Low penetration (${r.pen}%)`);
+  if(r.months > 12 && r.pen < 25) reasons.push(`${r.months} months live, still under 25% pen`);
+  if(!lastLog(r.id)) reasons.push('No call logged yet');
+  if(callbacks[r.id] && new Date(callbacks[r.id]) <= new Date()) reasons.push('Callback overdue');
+  return reasons;
 }
 
-// ── Render dashboard ──
-function renderAll(active, pipeline) {
-  const aFlats = active.reduce((a,r)=>a+r.flats,0);
-  const ob     = active.reduce((a,r)=>a+r.onboarded,0);
-  const revMay = active.reduce((a,r)=>a+r.revMay,0);
-  const revJun = active.reduce((a,r)=>a+r.revJun,0);
-  const avgPen = active.length ? Math.round(active.reduce((a,r)=>a+r.pen,0)/active.length) : 0;
-  const delta  = revJun - revMay;
-  const allFlats = aFlats + pipeline.reduce((a,r)=>a+r.flats,0);
+function isUrgent(r){ return urgencyReasons(r).length > 0; }
+function fmt(n){ return '₹'+n.toLocaleString('en-IN'); }
+function fmtShort(n){ return n>=1000?'₹'+(n/1000).toFixed(1)+'k':'₹'+n; }
 
-  document.getElementById("kpis").innerHTML = `
-    <div class="kpi"><div class="kpi-label">Total Flats</div><div class="kpi-value">${allFlats}</div><div class="kpi-sub">${active.length} active · ${pipeline.length} pipeline</div></div>
-    <div class="kpi"><div class="kpi-label">Onboarded</div><div class="kpi-value">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
-    <div class="kpi"><div class="kpi-label">Avg Penetration</div><div class="kpi-value">${avgPen}%</div><div class="kpi-sub">${100-avgPen}% remaining overall</div></div>
-    <div class="kpi"><div class="kpi-label">Revenue — May</div><div class="kpi-value">₹${revMay.toLocaleString()}</div></div>
-    <div class="kpi"><div class="kpi-label">Revenue — June</div><div class="kpi-value">₹${revJun.toLocaleString()}</div><div class="kpi-sub ${delta>=0?'up':'dn'}">${delta>=0?'▲':'▼'} ₹${Math.abs(delta).toLocaleString()} vs May</div></div>
-  `;
+// ── OVERVIEW TAB ──
+function renderOverview(){
+  const filtered = ACTIVE.filter(r=>{
+    if(filterUrgent && !isUrgent(r)) return false;
+    if(searchQ && !r.name.toLowerCase().includes(searchQ.toLowerCase())) return false;
+    return true;
+  });
+  const ob = ACTIVE.reduce((a,r)=>a+r.ob,0);
+  const aFlats = ACTIVE.reduce((a,r)=>a+r.flats,0);
+  const revMay = ACTIVE.reduce((a,r)=>a+r.revMay,0);
+  const revJun = ACTIVE.reduce((a,r)=>a+r.revJun,0);
+  const delta = revJun - revMay;
+  const avgPen = Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length);
+  const urgentCount = ACTIVE.filter(isUrgent).length;
+  const cbDue = ACTIVE.filter(r=>callbacks[r.id] && new Date(callbacks[r.id])<=new Date()).length;
 
-  // Store active rows for modal access
-  window._activeData = active;
+  let html = `<div class="kpis">
+    <div class="kpi"><div class="kpi-lbl">Onboarded</div><div class="kpi-val">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
+    <div class="kpi"><div class="kpi-lbl">Avg Pen.</div><div class="kpi-val">${avgPen}%</div><div class="kpi-sub">${100-avgPen}% gap remaining</div></div>
+    <div class="kpi"><div class="kpi-lbl">Revenue Jun</div><div class="kpi-val" style="font-size:16px">${fmtShort(revJun)}</div><div class="kpi-sub ${delta>=0?'up':'dn'}">${delta>=0?'▲':'▼'} ${fmtShort(Math.abs(delta))} vs May</div></div>
+    <div class="kpi"><div class="kpi-lbl">Urgent</div><div class="kpi-val" style="color:${urgentCount>0?'var(--red)':'var(--grn)'}">${urgentCount}</div><div class="kpi-sub">societies need action</div></div>
+    <div class="kpi"><div class="kpi-lbl">Callbacks due</div><div class="kpi-val" style="color:${cbDue>0?'var(--orn)':'var(--grn)'}">${cbDue}</div><div class="kpi-sub">overdue today</div></div>
+  </div>`;
 
-  const tbody = document.getElementById("mainTbody");
-  tbody.innerHTML = active.map((r,idx)=>{
-    let sc="badge-green",sl="Active";
-    if(r.months<=2&&r.months>0){sc="badge-yellow";sl="New";}
-    if(r.months===0){sc="badge-blue";sl="Just Launched";}
-    const d=r.revJun-r.revMay;
-    const remaining = 100 - r.pen;
-    return `<tr>
-      <td class="mono" style="color:var(--muted)">${r.sno}</td>
-      <td><strong>${r.name}</strong></td>
-      <td class="mono">${r.flats}</td>
-      <td class="mono">${r.onboarded}</td>
-      <td>
-        <div class="pen-wrap" onclick="openPenModal(window._activeData[${idx}])" title="Click to see remaining penetration">
-          <div class="pen-bar">
-            <div class="pen-done" style="width:${Math.min(r.pen,100)}%"></div>
-          </div>
-          <div>
-            <div class="pen-pct">${r.pen}% <span style="color:var(--red);font-size:10px">/ ${remaining}% left</span></div>
-            <div class="pen-hint">click for details</div>
-          </div>
+  const urgentSocs = ACTIVE.filter(isUrgent);
+  if(urgentSocs.length){
+    html += `<div class="alerts"><div class="sec">Alerts</div>`;
+    urgentSocs.slice(0,5).forEach(r=>{
+      const reasons = urgencyReasons(r);
+      html += `<div class="alert alert-red"><span class="alert-icon">⚠</span><div><strong>${r.name}</strong>${reasons.join(' · ')}</div></div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<div class="search-row">
+    <input type="text" placeholder="Search societies…" value="${searchQ}" oninput="searchQ=this.value;renderOverview()" />
+    <button class="filter-btn ${filterUrgent?'on':''}" onclick="filterUrgent=!filterUrgent;renderOverview()">⚡ Urgent only</button>
+  </div>`;
+
+  html += `<div class="sec">Active societies (${filtered.length})</div><div class="cards">`;
+  filtered.forEach(r=>{
+    const score = healthScore(r);
+    const hl = score>=70?{cls:'h-good',txt:'Healthy'}:score>=45?{cls:'h-warn',txt:'Watch'}:{cls:'h-hot',txt:'Critical'};
+    const d = r.revJun - r.revMay;
+    const ll = lastLog(r.id);
+    const cb = callbacks[r.id];
+    html += `<div class="scard">
+      <div class="scard-top">
+        <div><div class="scard-name">${r.name}</div><div class="scard-flats">${r.flats} flats · ${r.months===0?'Just launched':r.months+'mo live'}</div></div>
+        <span class="health-badge ${hl.cls}">${hl.txt}</span>
+      </div>`;
+    if(cb && new Date(cb)<=new Date()){
+      html += `<div class="callback-flag">📞 Callback was due ${cb}</div>`;
+    } else if(cb){
+      html += `<div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:6px;padding:5px 8px;font-size:10px;color:var(--orn);margin-bottom:8px;">📅 Callback set: ${cb}</div>`;
+    }
+    if(ll){
+      html += `<div class="last-note">${ll.note}<div class="note-time">${ll.time} · ${ll.outcome==='blocked'?'🔴':ll.outcome==='callback'?'🟡':'🟢'} ${ll.outcome}</div></div>`;
+    }
+    html += `<div class="metrics">
+      <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
+      <div class="metric"><div class="metric-v" style="color:var(--acc)">${r.pen}%</div><div class="metric-l">Pen.</div></div>
+      <div class="metric"><div class="metric-v ${d>=0?'up':'dn'}">${d>=0?'▲':'▼'}${fmtShort(Math.abs(d))}</div><div class="metric-l">Jun trend</div></div>
+    </div>
+    <div class="pen-row">
+      <div class="pen-bar"><div class="pen-fill" style="width:${r.pen}%"></div></div>
+      <div class="pen-txt"><span style="color:var(--acc)">${r.pen}%</span> <span style="color:var(--red);font-size:10px">/ ${100-r.pen}% left</span></div>
+    </div>
+    <div class="actions">
+      <button class="abtn primary" onclick="openLog(${r.id})">📝 Log call</button>
+      <button class="abtn" onclick="openLog(${r.id},'callback')">📅 Set CB</button>
+      <button class="abtn ${isUrgent(r)?'danger':''}" onclick="openLog(${r.id},'flag')">⚡ ${isUrgent(r)?'Flagged':'Flag'}</button>
+    </div></div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="sec">Pipeline (${PIPELINE.length})</div><div class="cards">`;
+  PIPELINE.forEach(p=>{
+    html += `<div class="scard">
+      <div class="scard-top"><div><div class="scard-name">${p.name}</div><div class="scard-flats">${p.flats} flats</div></div><span class="health-badge h-new">Pipeline</span></div>
+      <div style="font-size:11px;color:var(--txt2);line-height:1.4;margin-bottom:8px;">${p.remark||'—'}</div>
+      <div class="actions"><button class="abtn primary" onclick="openLog(${p.id},'pipeline')">📝 Log note</button></div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById('tab-overview').innerHTML = html;
+}
+
+// ── FOLLOW-UPS TAB ──
+function renderFollowup(){
+  const allItems = ACTIVE.map(r=>({r,logs_r:getLogs(r.id),cb:callbacks[r.id],reasons:urgencyReasons(r)}));
+  let html = `<div class="sec">Pending callbacks & flagged</div>`;
+  const pending = allItems.filter(x=>x.cb||x.reasons.length).sort((a,b)=>{
+    const aOvd = a.cb && new Date(a.cb)<=new Date() ? 0 : 1;
+    const bOvd = b.cb && new Date(b.cb)<=new Date() ? 0 : 1;
+    return aOvd - bOvd;
+  });
+  if(!pending.length){
+    html += `<div class="empty">No pending follow-ups. Log a call from the Overview tab to get started.</div>`;
+  } else {
+    pending.forEach(({r,logs_r,cb,reasons})=>{
+      const overdue = cb && new Date(cb)<=new Date();
+      const dotCls = overdue?'red':reasons.length?'ylw':'grn';
+      const lastL = logs_r.length ? logs_r[logs_r.length-1] : null;
+      html += `<div class="fup-item">
+        <div class="fup-dot ${dotCls}"></div>
+        <div class="fup-body">
+          <div class="fup-name">${r.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${r.flats} flats</span></div>
+          ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;">${overdue?'⚠ Callback overdue:':'📅 Callback:'} ${cb}</div>`:''}
+          ${reasons.length?`<div class="fup-note">${reasons.join(' · ')}</div>`:''}
+          ${lastL?`<div class="fup-note" style="margin-top:4px;font-style:italic">"${lastL.note}"</div><div class="fup-time">${lastL.time}</div>`:'<div class="fup-note" style="margin-top:4px;color:var(--muted)">No call logged yet</div>'}
         </div>
-      </td>
-      <td>${r.launch}</td>
-      <td class="mono">${r.months}</td>
-      <td class="mono">₹${r.revMay.toLocaleString()}</td>
-      <td class="mono">₹${r.revJun.toLocaleString()} <span class="${d>=0?'up':'dn'}">${d>=0?'▲':'▼'}${Math.abs(d).toLocaleString()}</span></td>
-      <td><span class="badge ${sc}">${sl}</span></td>
-      <td class="remark">${r.remark||'—'}</td>
-    </tr>`;
-  }).join("") + `<tr class="status-row">
-    <td></td><td>Overall</td>
-    <td class="mono">${aFlats}</td><td class="mono">${ob}</td>
-    <td><span style="font-family:var(--mono);font-size:12px">${avgPen}% <span style="color:var(--red)">/  ${100-avgPen}% left</span></span></td>
-    <td colspan="2"></td>
-    <td class="mono">₹${revMay.toLocaleString()}</td>
-    <td class="mono">₹${revJun.toLocaleString()}</td>
-    <td></td><td></td>
-  </tr>`;
-
-  document.getElementById("pipeline").innerHTML = pipeline.map(p=>`
-    <div class="pipe-card">
-      <div class="pipe-name">${p.name}</div>
-      <div class="pipe-flats">${p.flats} flats</div>
-      <div class="pipe-remark">${p.remark||'—'}</div>
-    </div>`).join("");
-
-  document.getElementById("lastUpdated").textContent =
-    "Updated: "+new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
+        <div class="fup-actions">
+          <button class="icon-btn" title="Log call" onclick="openLog(${r.id})">📝</button>
+          <button class="icon-btn" title="Mark callback done" onclick="markCbDone(${r.id})">✓</button>
+        </div>
+      </div>`;
+    });
+  }
+  html += `<div class="sec" style="margin-top:16px">All call history</div>`;
+  const withLogs = ACTIVE.filter(r=>getLogs(r.id).length);
+  if(!withLogs.length){
+    html += `<div class="empty">No calls logged yet. Use the Overview tab to log calls.</div>`;
+  } else {
+    withLogs.forEach(r=>{
+      html += `<div style="margin-bottom:12px;"><div style="font-weight:700;font-size:12px;margin-bottom:6px;">${r.name}</div>`;
+      getLogs(r.id).slice().reverse().forEach(l=>{
+        html += `<div class="last-note">${l.note}<div class="note-time">${l.time} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div></div>`;
+      });
+      html += `</div>`;
+    });
+  }
+  document.getElementById('tab-followup').innerHTML = html;
 }
 
-// ── Google Sheet loader ──
-async function loadSheet() {
-  const input = document.getElementById("sheetUrl").value.trim();
-  if (!input) { alert("Paste your Google Sheet link first."); return; }
-  const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if (!m) { alert("That doesn't look like a Google Sheets URL."); return; }
-  const sheetId = m[1];
-  const btn = document.getElementById("loadBtn");
-  btn.textContent = "Loading…"; btn.disabled = true;
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
-  try {
-    const res = await fetch(url, {credentials:"omit"});
-    if (!res.ok) throw new Error(`HTTP ${res.status} — make sure sheet is shared as 'Anyone with link can view'`);
-    const raw  = await res.text();
-    const json = JSON.parse(raw.slice(raw.indexOf("(")+1, raw.lastIndexOf(")")));
-    const table = json.table;
-    if (!table||!table.cols) throw new Error("Empty or inaccessible sheet.");
-    const cols = table.cols.map(c=>(c.label||"").toLowerCase().replace(/[^a-z0-9]/g,""));
-    const idx  = key => cols.findIndex(h=>h.includes(key));
-    const cell = (row,key) => {
+// ── COMPARE TAB ──
+function renderCompare(){
+  const sorted = [...ACTIVE].sort((a,b)=>{
+    let va=a[sortKey],vb=b[sortKey];
+    if(sortKey==='score'){va=healthScore(a);vb=healthScore(b);}
+    if(sortKey==='trend'){va=a.revJun-a.revMay;vb=b.revJun-b.revMay;}
+    return (va-vb)*sortDir;
+  });
+  const maxPen=Math.max(...ACTIVE.map(r=>r.pen));
+  const maxRev=Math.max(...ACTIVE.map(r=>r.revJun));
+  const maxOb=Math.max(...ACTIVE.map(r=>r.ob));
+
+  function sortBtn(key,lbl){
+    const active=sortKey===key;
+    return `${lbl} <button class="sort-btn ${active?'active':''}" onclick="sortKey='${key}';sortDir=sortKey==='${key}'?-sortDir:-1;sortKey='${key}';renderCompare()">${sortDir===-1&&active?'↓':'↑'}</button>`;
+  }
+
+  let html=`<div style="overflow-x:auto;"><table class="cmp-table"><thead><tr>
+    <th>Society</th><th>${sortBtn('pen','Penetration')}</th><th>${sortBtn('ob','Onboarded')}</th>
+    <th>${sortBtn('revJun','Revenue Jun')}</th><th>${sortBtn('trend','Trend')}</th>
+    <th>${sortBtn('score','Health')}</th><th>Last activity</th>
+  </tr></thead><tbody>`;
+
+  sorted.forEach(r=>{
+    const score=healthScore(r);
+    const scCls=score>=70?'h-good':score>=45?'h-warn':'h-hot';
+    const trend=r.revJun-r.revMay;
+    const ll=lastLog(r.id);
+    const penBar=`<div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:4px;border-radius:3px;background:var(--bdr);overflow:hidden;"><div style="height:100%;width:${r.pen}%;background:var(--acc);border-radius:3px;"></div></div><span style="font-family:var(--mono);font-size:11px">${r.pen}%</span></div>`;
+    html+=`<tr>
+      <td><strong style="${score<45?'color:var(--red)':''}">${r.name}</strong><div style="font-size:10px;color:var(--muted)">${r.months===0?'Just launched':r.months+'mo live'}</div></td>
+      <td>${penBar}</td>
+      <td><span style="font-family:var(--mono);font-size:12px;${r.ob===maxOb?'color:var(--grn);font-weight:700':''}">${r.ob}</span><div style="font-size:10px;color:var(--muted)">of ${r.flats}</div></td>
+      <td><span style="font-family:var(--mono);font-size:12px;${r.revJun===maxRev?'color:var(--grn);font-weight:700':''}">${fmt(r.revJun)}</span></td>
+      <td style="font-family:var(--mono);font-size:11px;" class="${trend>=0?'up':'dn'}">${trend>=0?'▲':'▼'} ${fmtShort(Math.abs(trend))}</td>
+      <td><span class="health-badge ${scCls}">${score}</span></td>
+      <td style="font-size:11px;color:var(--txt2)">${ll?`"${ll.note.substring(0,28)}…"<div style="font-size:9px;color:var(--muted)">${ll.time}</div>`:'<span style="color:var(--muted)">—</span>'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div>`;
+
+  const topPen=[...ACTIVE].sort((a,b)=>b.pen-a.pen)[0];
+  const topRev=[...ACTIVE].sort((a,b)=>b.revJun-a.revJun)[0];
+  const mostLeft=[...ACTIVE].sort((a,b)=>(b.flats-b.ob)-(a.flats-a.ob))[0];
+  const worstTrend=[...ACTIVE].sort((a,b)=>(a.revJun-a.revMay)-(b.revJun-b.revMay))[0];
+
+  html+=`<div class="sec">Key insights</div><div class="cards">
+    <div class="scard"><div class="scard-name" style="color:var(--grn)">🏆 Top penetration</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${topPen.pen}%</div><div style="font-size:11px;color:var(--txt2)">${topPen.name}</div></div>
+    <div class="scard"><div class="scard-name" style="color:var(--grn)">💰 Top revenue (Jun)</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0">${fmt(topRev.revJun)}</div><div style="font-size:11px;color:var(--txt2)">${topRev.name}</div></div>
+    <div class="scard"><div class="scard-name" style="color:var(--acc)">🎯 Biggest opportunity</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${mostLeft.flats-mostLeft.ob} flats</div><div style="font-size:11px;color:var(--txt2)">${mostLeft.name} — ${mostLeft.flats-mostLeft.ob} untouched</div></div>
+    <div class="scard"><div class="scard-name" style="color:var(--red)">📉 Needs intervention</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0;color:var(--red)">${fmt(worstTrend.revMay-worstTrend.revJun)} drop</div><div style="font-size:11px;color:var(--txt2)">${worstTrend.name} — May→Jun decline</div></div>
+  </div>`;
+
+  document.getElementById('tab-compare').innerHTML=html;
+}
+
+// ── LOG MODAL ──
+function openLog(id, mode){
+  currentLogId = id;
+  const all = [...ACTIVE, ...PIPELINE];
+  const r = all.find(x=>x.id===id);
+  document.getElementById('logModalTitle').textContent = mode==='pipeline'?'Log pipeline note':'Log call / visit';
+  document.getElementById('logModalSub').textContent = r.name + (r.flats?` · ${r.flats} flats`:'');
+  const cbRow = document.getElementById('cbDateLabel');
+  const cbInput = document.getElementById('cbDate');
+  if(mode==='callback'){
+    document.getElementById('logOutcome').value='callback';
+    cbRow.style.display='block'; cbInput.style.display='block';
+  } else {
+    cbRow.style.display='none'; cbInput.style.display='none';
+  }
+  document.getElementById('logNote').value='';
+  document.getElementById('logModal').classList.add('open');
+}
+
+document.getElementById('logOutcome').addEventListener('change',function(){
+  const show=this.value==='callback';
+  document.getElementById('cbDateLabel').style.display=show?'block':'none';
+  document.getElementById('cbDate').style.display=show?'block':'none';
+});
+
+function closeLogModal(){
+  document.getElementById('logModal').classList.remove('open');
+}
+
+function saveLog(){
+  const note=document.getElementById('logNote').value.trim();
+  if(!note){alert('Please add a note before saving.');return;}
+  const outcome=document.getElementById('logOutcome').value;
+  const cbDate=document.getElementById('cbDate').value;
+  if(!logs[currentLogId]) logs[currentLogId]=[];
+  const now=new Date();
+  logs[currentLogId].push({
+    note, outcome, cbDate,
+    time:now.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' '+now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})
+  });
+  if(outcome==='callback'&&cbDate) callbacks[currentLogId]=cbDate;
+  closeLogModal();
+  renderCurrent();
+}
+
+function markCbDone(id){
+  delete callbacks[id];
+  renderFollowup();
+  if(currentTab==='overview') renderOverview();
+}
+
+// ── TAB SWITCHING ──
+function showTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    b.classList.toggle('active',['overview','followup','compare'][i]===tab);
+  });
+  document.getElementById('tab-overview').style.display=tab==='overview'?'block':'none';
+  document.getElementById('tab-followup').style.display=tab==='followup'?'block':'none';
+  document.getElementById('tab-compare').style.display=tab==='compare'?'block':'none';
+  renderCurrent();
+}
+
+function renderCurrent(){
+  if(currentTab==='overview') renderOverview();
+  else if(currentTab==='followup') renderFollowup();
+  else renderCompare();
+}
+
+// ── GOOGLE SHEET LOADER ──
+async function loadSheet(){
+  const input=document.getElementById('sheetUrl').value.trim();
+  if(!input){alert('Paste your Google Sheet link first.');return;}
+  const m=input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  if(!m){alert("That doesn't look like a Google Sheets URL.");return;}
+  const sheetId=m[1];
+  const btn=document.querySelector('.sheet-bar button');
+  btn.textContent='Loading…'; btn.disabled=true;
+  const url=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+  try{
+    const res=await fetch(url,{credentials:'omit'});
+    if(!res.ok) throw new Error(`HTTP ${res.status} — make sure sheet is shared as 'Anyone with link can view'`);
+    const raw=await res.text();
+    const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
+    const table=json.table;
+    if(!table||!table.cols) throw new Error('Empty or inaccessible sheet.');
+    const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
+    const idx=key=>cols.findIndex(h=>h.includes(key));
+    const cell=(row,key)=>{
       const i=idx(key);
-      if(i<0||!row.c||!row.c[i]||row.c[i].v===null) return "";
+      if(i<0||!row.c||!row.c[i]||row.c[i].v===null) return '';
       return String(row.c[i].v).trim();
     };
-    const num = v=>parseInt(v.replace(/[^0-9.-]/g,""))||0;
-    const active=[], pipe=[];
-    (table.rows||[]).forEach((row,i)=>{
-      const name=cell(row,"society")||cell(row,"name");
+    const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
+    const newActive=[], newPipe=[];
+    let idCount=1;
+    (table.rows||[]).forEach(row=>{
+      const name=cell(row,'society')||cell(row,'name');
       if(!name||/total|overall|^s\.?no/i.test(name)) return;
-      const onboarded=num(cell(row,"onboard"));
+      const ob=num(cell(row,'onboard'));
       const obj={
-        sno:i+1,name,
-        flats:   num(cell(row,"total"))||num(cell(row,"flat")),
-        onboarded,
-        pen:     num(cell(row,"penetr"))||num(cell(row,"pen")),
-        launch:  cell(row,"launch")||cell(row,"month")||"—",
-        months:  num(cell(row,"months")),
-        revMay:  num(cell(row,"may")),
-        revJun:  num(cell(row,"june"))||num(cell(row,"jun")),
-        remark:  cell(row,"remark")||cell(row,"pendency"),
+        id:idCount++, name,
+        flats:num(cell(row,'total'))||num(cell(row,'flat')),
+        ob, pen:num(cell(row,'penetr'))||num(cell(row,'pen')),
+        launch:cell(row,'launch')||cell(row,'month')||'—',
+        months:num(cell(row,'months')),
+        revMay:num(cell(row,'may')),
+        revJun:num(cell(row,'june'))||num(cell(row,'jun')),
+        remark:cell(row,'remark')||cell(row,'pendency'),
       };
-      if(onboarded>0) active.push(obj);
-      else pipe.push({name:obj.name,flats:obj.flats,remark:obj.remark});
+      if(ob>0) newActive.push(obj);
+      else newPipe.push({id:idCount++,name:obj.name,flats:obj.flats,remark:obj.remark});
     });
-    if(!active.length&&!pipe.length) throw new Error("No rows found. Check column headers match the required names.");
-    renderAll(active,pipe);
-    document.getElementById("hintText").innerHTML='✅ Sheet connected! &nbsp;<a href="#" onclick="loadSheet();return false;">Reload</a>';
-  } catch(e) {
-    alert("Could not load sheet.\n\n"+e.message);
-  } finally {
-    btn.textContent="Load Sheet"; btn.disabled=false;
+    if(!newActive.length&&!newPipe.length) throw new Error('No rows found. Check column headers match the required names.');
+    ACTIVE=newActive; PIPELINE=newPipe;
+    logs={}; callbacks={};
+    document.getElementById('lastUpdated').textContent='Updated: '+new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});
+    document.getElementById('hintText').innerHTML='✅ Sheet connected! &nbsp;<a href="#" onclick="loadSheet();return false;">Reload</a>';
+    renderCurrent();
+  } catch(e){
+    alert('Could not load sheet.\n\n'+e.message);
+  } finally{
+    btn.textContent='Load Sheet'; btn.disabled=false;
   }
 }
 
-renderAll(SAMPLE_ACTIVE, SAMPLE_PIPELINE);
+// ── INIT ──
+renderOverview();
 </script>
 </body>
 </html>

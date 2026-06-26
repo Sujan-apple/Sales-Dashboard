@@ -5,252 +5,252 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ProWater Dashboard</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
-  :root {
-    --prowater-green:#144a29;--prowater-lime:#93d445;
-    --bg:#0b0d11;--surf:#131722;--card:#1b2030;--bdr:#242b3d;
-    --acc:var(--prowater-lime);--grn:#22c55e;--ylw:#f59e0b;--red:#ef4444;--orn:#f97316;
-    --muted:#6b7280;--txt:#e8eaf0;--txt2:#9ca3af;--mono:'JetBrains Mono',monospace;
-    --header-bg:#144a29;--header-txt:#ffffff;
-  }
-  html[data-theme="light"]{
-    --bg:#f4f6f8;--surf:#ffffff;--card:#f9fafb;--bdr:#e5e7eb;
-    --acc:#144a29;--grn:#16a34a;--ylw:#d97706;--red:#dc2626;--orn:#ea580c;
-    --muted:#9ca3af;--txt:#111827;--txt2:#4b5563;
-    --header-bg:#ffffff;--header-txt:#144a29;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px;font-size:13px;transition:background .3s,color .3s;}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+  :root {
+    --prowater-green:#144a29;--prowater-lime:#93d445;
+    --bg:#0b0d11;--surf:#131722;--card:#1b2030;--bdr:#242b3d;
+    --acc:var(--prowater-lime);--grn:#22c55e;--ylw:#f59e0b;--red:#ef4444;--orn:#f97316;
+    --muted:#6b7280;--txt:#e8eaf0;--txt2:#9ca3af;--mono:'JetBrains Mono',monospace;
+    --header-bg:#144a29;--header-txt:#ffffff;
+  }
+  html[data-theme="light"]{
+    --bg:#f4f6f8;--surf:#ffffff;--card:#f9fafb;--bdr:#e5e7eb;
+    --acc:#144a29;--grn:#16a34a;--ylw:#d97706;--red:#dc2626;--orn:#ea580c;
+    --muted:#9ca3af;--txt:#111827;--txt2:#4b5563;
+    --header-bg:#ffffff;--header-txt:#144a29;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px;font-size:13px;transition:background .3s,color .3s;}
 
-  /* Header */
-  .prowater-header{display:flex;align-items:center;justify-content:space-between;background:var(--header-bg);border:1px solid var(--bdr);padding:14px 24px;border-radius:12px;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
-  .logo-text{font-weight:700;font-size:19px;letter-spacing:-.5px;color:var(--header-txt);display:flex;flex-direction:column;line-height:.9;}
-  .logo-text span{font-size:11px;font-weight:400;opacity:.8;letter-spacing:.5px;}
-  .hdr-btn{background:var(--card);border:1px solid var(--bdr);color:var(--txt);padding:7px 13px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;}
-  .hdr-btn:hover{background:var(--bdr);}
+  /* Header */
+  .prowater-header{display:flex;align-items:center;justify-content:space-between;background:var(--header-bg);border:1px solid var(--bdr);padding:14px 24px;border-radius:12px;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .logo-text{font-weight:700;font-size:19px;letter-spacing:-.5px;color:var(--header-txt);display:flex;flex-direction:column;line-height:.9;}
+  .logo-text span{font-size:11px;font-weight:400;opacity:.8;letter-spacing:.5px;}
+  .hdr-btn{background:var(--card);border:1px solid var(--bdr);color:var(--txt);padding:7px 13px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;}
+  .hdr-btn:hover{background:var(--bdr);}
 
-  /* Setup banner */
-  .setup-banner{background:rgba(20,74,41,.15);border:1px solid rgba(20,74,41,.4);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:12px;line-height:1.8;}
-  .setup-banner strong{color:var(--grn);}
-  .setup-banner code{background:var(--card);padding:2px 6px;border-radius:4px;font-size:11px;font-family:var(--mono);}
-  .setup-banner .step{display:flex;gap:10px;margin-bottom:4px;}
-  .setup-banner .num{background:var(--prowater-green);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+  /* Setup banner */
+  .setup-banner{background:rgba(20,74,41,.15);border:1px solid rgba(20,74,41,.4);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:12px;line-height:1.8;}
+  .setup-banner strong{color:var(--grn);}
+  .setup-banner code{background:var(--card);padding:2px 6px;border-radius:4px;font-size:11px;font-family:var(--mono);}
+  .setup-banner .step{display:flex;gap:10px;margin-bottom:4px;}
+  .setup-banner .num{background:var(--prowater-green);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
 
-  /* Connection bar */
-  .conn-bar{display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;}
-  .conn-bar input{flex:1;min-width:220px;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:8px 13px;color:var(--txt);font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
-  .conn-bar input:focus{border-color:var(--acc);}
-  .conn-bar input::placeholder{color:var(--muted);}
-  .conn-bar button{background:var(--prowater-green);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
-  .conn-bar button:hover{opacity:.85;}
-  .conn-status{font-size:11px;color:var(--muted);margin-bottom:16px;}
-  .conn-status.ok{color:var(--grn);}
-  .conn-status.err{color:var(--red);}
+  /* Connection bar */
+  .conn-bar{display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;}
+  .conn-bar input{flex:1;min-width:220px;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:8px 13px;color:var(--txt);font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+  .conn-bar input:focus{border-color:var(--acc);}
+  .conn-bar input::placeholder{color:var(--muted);}
+  .conn-bar button{background:var(--prowater-green);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
+  .conn-bar button:hover{opacity:.85;}
+  .conn-status{font-size:11px;color:var(--muted);margin-bottom:16px;}
+  .conn-status.ok{color:var(--grn);}
+  .conn-status.err{color:var(--red);}
 
-  /* Tabs */
-  .tabs{display:flex;gap:2px;background:var(--surf);border-radius:10px;padding:4px;margin-bottom:20px;border:1px solid var(--bdr);}
-  .tab{flex:1;padding:8px;border-radius:7px;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
-  .tab.active{background:var(--prowater-green);color:#fff;}
-  .tab:hover:not(.active){color:var(--txt);}
+  /* Tabs */
+  .tabs{display:flex;gap:2px;background:var(--surf);border-radius:10px;padding:4px;margin-bottom:20px;border:1px solid var(--bdr);}
+  .tab{flex:1;padding:8px;border-radius:7px;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;}
+  .tab.active{background:var(--prowater-green);color:#fff;}
+  .tab:hover:not(.active){color:var(--txt);}
 
-  /* KPIs */
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
-  .kpi{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;}
-  .kpi-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;}
-  .kpi-val{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1;}
-  .kpi-sub{font-size:10px;color:var(--txt2);margin-top:3px;}
-  .up{color:var(--grn);} .dn{color:var(--red);}
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
+  .kpi{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;}
+  .kpi-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;}
+  .kpi-val{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1;}
+  .kpi-sub{font-size:10px;color:var(--txt2);margin-top:3px;}
+  .up{color:var(--grn);} .dn{color:var(--red);}
 
-  /* Section */
-  .sec{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px;display:flex;align-items:center;gap:8px;}
-  .sec::after{content:'';flex:1;height:1px;background:var(--bdr);}
+  /* Section */
+  .sec{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+  .sec::after{content:'';flex:1;height:1px;background:var(--bdr);}
 
-  /* Society cards */
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px;}
-  .scard{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:14px 16px;transition:border-color .2s;}
-  .scard:hover{border-color:var(--acc);}
-  .scard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-  .scard-name{font-weight:700;font-size:13px;}
-  .scard-flats{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
-  .badge{border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;}
-  .b-hot{background:rgba(239,68,68,.15);color:var(--red);}
-  .b-warn{background:rgba(245,158,11,.15);color:var(--ylw);}
-  .b-good{background:rgba(34,197,94,.15);color:var(--grn);}
-  .b-new{background:rgba(79,142,247,.15);color:var(--muted);}
+  /* Society cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px;}
+  .scard{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:14px 16px;transition:border-color .2s;}
+  .scard:hover{border-color:var(--acc);}
+  .scard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .scard-name{font-weight:700;font-size:13px;}
+  .scard-flats{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+  .badge{border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;}
+  .b-hot{background:rgba(239,68,68,.15);color:var(--red);}
+  .b-warn{background:rgba(245,158,11,.15);color:var(--ylw);}
+  .b-good{background:rgba(34,197,94,.15);color:var(--grn);}
+  .b-new{background:rgba(79,142,247,.15);color:var(--muted);}
 
-  .metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
-  .metric{background:var(--card);border-radius:6px;padding:7px 8px;text-align:center;}
-  .metric-v{font-family:var(--mono);font-size:14px;font-weight:600;}
-  .metric-l{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:2px;}
+  .metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+  .metric{background:var(--card);border-radius:6px;padding:7px 8px;text-align:center;}
+  .metric-v{font-family:var(--mono);font-size:14px;font-weight:600;}
+  .metric-l{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:2px;}
 
-  .pen-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-  .pen-bar{flex:1;height:5px;border-radius:4px;background:var(--bdr);overflow:hidden;}
-  .pen-fill{height:100%;border-radius:4px;}
-  html[data-theme="dark"] .pen-fill{background:var(--prowater-lime);}
-  html[data-theme="light"] .pen-fill{background:var(--prowater-green);}
-  .pen-txt{font-family:var(--mono);font-size:10px;white-space:nowrap;}
+  .pen-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .pen-bar{flex:1;height:5px;border-radius:4px;background:var(--bdr);overflow:hidden;}
+  .pen-fill{height:100%;border-radius:4px;}
+  html[data-theme="dark"] .pen-fill{background:var(--prowater-lime);}
+  html[data-theme="light"] .pen-fill{background:var(--prowater-green);}
+  .pen-txt{font-family:var(--mono);font-size:10px;white-space:nowrap;}
 
-  .actions{display:flex;gap:6px;}
-  .abtn{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bdr);background:none;color:var(--txt2);font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px;}
-  .abtn:hover{background:var(--card);color:var(--txt);border-color:var(--acc);}
-  .abtn.primary{background:rgba(20,74,41,.15);border-color:var(--prowater-green);color:var(--txt);}
+  .actions{display:flex;gap:6px;}
+  .abtn{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bdr);background:none;color:var(--txt2);font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px;}
+  .abtn:hover{background:var(--card);color:var(--txt);border-color:var(--acc);}
+  .abtn.primary{background:rgba(20,74,41,.15);border-color:var(--prowater-green);color:var(--txt);}
 
-  .last-note{background:var(--card);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11px;color:var(--txt2);line-height:1.4;border-left:2px solid var(--prowater-green);}
-  .note-agent{font-size:10px;font-weight:600;color:var(--acc);margin-bottom:2px;}
-  .note-time{font-size:9px;color:var(--muted);margin-top:3px;}
-  .cb-flag{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);border-radius:6px;padding:5px 8px;font-size:10px;color:var(--orn);margin-bottom:8px;}
+  .last-note{background:var(--card);border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:11px;color:var(--txt2);line-height:1.4;border-left:2px solid var(--prowater-green);}
+  .note-agent{font-size:10px;font-weight:600;color:var(--acc);margin-bottom:2px;}
+  .note-time{font-size:9px;color:var(--muted);margin-top:3px;}
+  .cb-flag{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);border-radius:6px;padding:5px 8px;font-size:10px;color:var(--orn);margin-bottom:8px;}
 
-  /* Follow-up */
-  .fup-item{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;}
-  .fup-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-  .fup-dot.red{background:var(--red);} .fup-dot.ylw{background:var(--ylw);} .fup-dot.grn{background:var(--grn);}
-  .fup-body{flex:1;}
-  .fup-name{font-weight:700;font-size:13px;}
-  .fup-note{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.4;}
-  .fup-time{font-size:10px;color:var(--muted);margin-top:4px;}
-  .fup-actions{display:flex;gap:6px;flex-shrink:0;}
-  .icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--bdr);background:none;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .icon-btn:hover{background:var(--card);color:var(--txt);}
+  /* Follow-up */
+  .fup-item{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;}
+  .fup-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+  .fup-dot.red{background:var(--red);} .fup-dot.ylw{background:var(--ylw);} .fup-dot.grn{background:var(--grn);}
+  .fup-body{flex:1;}
+  .fup-name{font-weight:700;font-size:13px;}
+  .fup-note{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.4;}
+  .fup-time{font-size:10px;color:var(--muted);margin-top:4px;}
+  .fup-actions{display:flex;gap:6px;flex-shrink:0;}
+  .icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--bdr);background:none;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .icon-btn:hover{background:var(--card);color:var(--txt);}
 
-  /* Compare */
-  .cmp-wrap{overflow-x:auto;}
-  .cmp-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;}
-  .cmp-table th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--bdr);}
-  .cmp-table td{padding:10px 12px;border-bottom:1px solid var(--bdr);}
-  .cmp-table tbody tr{cursor:pointer;transition:background .15s;}
-  .cmp-table tbody tr:hover td{background:var(--surf);}
-  .sort-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;margin-left:3px;}
-  .sort-btn.active{color:var(--acc);}
+  /* Compare */
+  .cmp-wrap{overflow-x:auto;}
+  .cmp-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;}
+  .cmp-table th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--bdr);}
+  .cmp-table td{padding:10px 12px;border-bottom:1px solid var(--bdr);}
+  .cmp-table tbody tr{cursor:pointer;transition:background .15s;}
+  .cmp-table tbody tr:hover td{background:var(--surf);}
+  .sort-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;margin-left:3px;}
+  .sort-btn.active{color:var(--acc);}
 
-  /* Search */
-  .search-row{display:flex;gap:8px;margin-bottom:14px;align-items:center;}
-  .search-row input{flex:1;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;color:var(--txt);font-size:12px;outline:none;}
-  .search-row input:focus{border-color:var(--acc);}
-  .search-row input::placeholder{color:var(--muted);}
-  .filter-btn{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;color:var(--txt2);font-size:11px;padding:7px 12px;cursor:pointer;font-weight:600;}
-  .filter-btn.on{background:rgba(20,74,41,.15);border-color:var(--prowater-green);color:var(--txt);}
+  /* Search */
+  .search-row{display:flex;gap:8px;margin-bottom:14px;align-items:center;}
+  .search-row input{flex:1;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;color:var(--txt);font-size:12px;outline:none;}
+  .search-row input:focus{border-color:var(--acc);}
+  .search-row input::placeholder{color:var(--muted);}
+  .filter-btn{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;color:var(--txt2);font-size:11px;padding:7px 12px;cursor:pointer;font-weight:600;}
+  .filter-btn.on{background:rgba(20,74,41,.15);border-color:var(--prowater-green);color:var(--txt);}
 
-  /* Modals */
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;}
-  .modal-bg.open{display:flex;}
-  .modal{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;padding:22px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;}
-  .modal-title{font-size:15px;font-weight:700;margin-bottom:4px;}
-  .modal-sub{font-size:11px;color:var(--muted);margin-bottom:16px;}
-  .form-lbl{font-size:11px;color:var(--txt2);margin-bottom:5px;display:block;}
-  .form-ctrl{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:7px;color:var(--txt);padding:8px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;margin-bottom:12px;}
-  .form-ctrl:focus{border-color:var(--acc);}
-  textarea.form-ctrl{height:72px;resize:vertical;}
-  .form-row{display:flex;gap:8px;margin-top:4px;}
-  .form-row button{flex:1;padding:9px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;}
-  .btn-cancel{background:var(--card);color:var(--txt2);}
-  .btn-save{background:var(--prowater-green);color:#fff;}
+  /* Modals */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;}
+  .modal-bg.open{display:flex;}
+  .modal{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;padding:22px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+  .modal-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .modal-sub{font-size:11px;color:var(--muted);margin-bottom:16px;}
+  .form-lbl{font-size:11px;color:var(--txt2);margin-bottom:5px;display:block;}
+  .form-ctrl{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:7px;color:var(--txt);padding:8px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;margin-bottom:12px;}
+  .form-ctrl:focus{border-color:var(--acc);}
+  textarea.form-ctrl{height:72px;resize:vertical;}
+  .form-row{display:flex;gap:8px;margin-top:4px;}
+  .form-row button{flex:1;padding:9px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;}
+  .btn-cancel{background:var(--card);color:var(--txt2);}
+  .btn-save{background:var(--prowater-green);color:#fff;}
 
-  /* Detail modal pen ring */
-  .pen-ring-wrap{position:relative;width:120px;height:120px;margin:0 auto 16px;}
-  .pen-ring-wrap svg{transform:rotate(-90deg);}
-  .pen-ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .pen-ring-pct{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--red);}
-  .pen-ring-txt{font-size:10px;color:var(--muted);}
-  .pstats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
-  .pstat{background:var(--card);border-radius:8px;padding:10px;text-align:center;}
-  .pstat-v{font-family:var(--mono);font-size:18px;font-weight:600;margin-bottom:2px;}
-  .pstat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-  .dprow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-  .dprow-lbl{font-size:11px;color:var(--txt2);width:72px;flex-shrink:0;}
-  .dprow-bar{flex:1;height:6px;background:var(--bdr);border-radius:4px;overflow:hidden;}
-  .dprow-fill{height:100%;border-radius:4px;}
-  .dprow-val{font-family:var(--mono);font-size:11px;width:32px;text-align:right;flex-shrink:0;}
-  .target-note{font-size:11px;color:var(--txt2);background:var(--card);border-radius:8px;padding:10px 12px;line-height:1.6;margin:12px 0;}
-  .log-entry{background:var(--card);border-left:2px solid var(--prowater-green);border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:11px;color:var(--txt2);line-height:1.4;}
+  /* Detail modal pen ring */
+  .pen-ring-wrap{position:relative;width:120px;height:120px;margin:0 auto 16px;}
+  .pen-ring-wrap svg{transform:rotate(-90deg);}
+  .pen-ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .pen-ring-pct{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--red);}
+  .pen-ring-txt{font-size:10px;color:var(--muted);}
+  .pstats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+  .pstat{background:var(--card);border-radius:8px;padding:10px;text-align:center;}
+  .pstat-v{font-family:var(--mono);font-size:18px;font-weight:600;margin-bottom:2px;}
+  .pstat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .dprow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .dprow-lbl{font-size:11px;color:var(--txt2);width:72px;flex-shrink:0;}
+  .dprow-bar{flex:1;height:6px;background:var(--bdr);border-radius:4px;overflow:hidden;}
+  .dprow-fill{height:100%;border-radius:4px;}
+  .dprow-val{font-family:var(--mono);font-size:11px;width:32px;text-align:right;flex-shrink:0;}
+  .target-note{font-size:11px;color:var(--txt2);background:var(--card);border-radius:8px;padding:10px 12px;line-height:1.6;margin:12px 0;}
+  .log-entry{background:var(--card);border-left:2px solid var(--prowater-green);border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:11px;color:var(--txt2);line-height:1.4;}
 
-  /* Sync indicator */
-  .sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;background:var(--muted);}
-  .sync-dot.ok{background:var(--grn);}
-  .sync-dot.err{background:var(--red);}
-  .sync-dot.loading{background:var(--ylw);animation:pulse 1s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  /* Sync indicator */
+  .sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;background:var(--muted);}
+  .sync-dot.ok{background:var(--grn);}
+  .sync-dot.err{background:var(--red);}
+  .sync-dot.loading{background:var(--ylw);animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-  .empty{text-align:center;padding:32px;color:var(--muted);font-size:12px;}
-  @media(max-width:600px){body{padding:12px;}.kpi-val{font-size:18px;}}
+  .empty{text-align:center;padding:32px;color:var(--muted);font-size:12px;}
+  @media(max-width:600px){body{padding:12px;}.kpi-val{font-size:18px;}}
 
-  /* Snapshot Tracking Modifications */
-  .delta-pill{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono);margin-left:6px;}
-  .delta-pill.plus{background:rgba(34,197,94,0.15);color:var(--grn);}
-  .delta-pill.minus{background:rgba(239,68,68,0.15);color:var(--red);}
+  /* Snapshot Tracking Modifications */
+  .delta-pill{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono);margin-left:6px;}
+  .delta-pill.plus{background:rgba(34,197,94,0.15);color:var(--grn);}
+  .delta-pill.minus{background:rgba(239,68,68,0.15);color:var(--red);}
 </style>
 </head>
 <body>
 
 <div class="prowater-header">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <button class="hdr-btn" onclick="toggleDrawer()" style="padding:8px 10px;">☰</button>
-    <svg width="28" height="28" viewBox="0 0 100 100">
-      <path d="M35 75 C20 60,20 40,35 25 C50 40,50 60,35 75Z" fill="#144a29"/>
-      <path d="M52 80 C40 70,40 55,52 45 C64 55,64 70,52 80Z" fill="#93d445"/>
-      <circle cx="68" cy="40" r="10" fill="#22c55e"/>
-    </svg>
-    <div class="logo-text">ProWater<span>DASHBOARD</span></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span id="syncStatus" style="font-size:11px;color:var(--muted);font-family:var(--mono);">
-      <span class="sync-dot" id="syncDot"></span><span id="syncTxt">Not connected</span>
-    </span>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="hdr-btn" onclick="toggleDrawer()" style="padding:8px 10px;">☰</button>
+    <svg width="28" height="28" viewBox="0 0 100 100">
+      <path d="M35 75 C20 60,20 40,35 25 C50 40,50 60,35 75Z" fill="#144a29"/>
+      <path d="M52 80 C40 70,40 55,52 45 C64 55,64 70,52 80Z" fill="#93d445"/>
+      <circle cx="68" cy="40" r="10" fill="#22c55e"/>
+    </svg>
+    <div class="logo-text">ProWater<span>DASHBOARD</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span id="syncStatus" style="font-size:11px;color:var(--muted);font-family:var(--mono);">
+      <span class="sync-dot" id="syncDot"></span><span id="syncTxt">Not connected</span>
+    </span>
 
-    <div id="drawerOverlay" onclick="toggleDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998"></div>
-    <div id="callDrawer" style="display:none;position:fixed;left:0;top:0;width:320px;height:100%;background:var(--surf);border-right:1px solid var(--bdr);padding:20px;overflow:auto;z-index:9999;box-shadow:4px 0 20px rgba(0,0,0,.35)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h3>☰ ProWater CRM</h3>
-        <button onclick="toggleDrawer()" style="background:none;border:none;font-size:22px;color:var(--txt);cursor:pointer">✕</button>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px">
-        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('overview');toggleDrawer()">🏠 Dashboard</a>
-        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('today')">📞 Today's Calls</a>
-        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('upcoming')">📅 Upcoming Callbacks</a>
-        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('history')">📜 Call History</a>
-        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('snapshots');toggleDrawer()">⏳ Historical Snapshots</a>
-        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('compare');toggleDrawer()">📊 Reports</a>
-      </div>
-      <hr style="border:0;border-top:1px solid var(--bdr);margin-bottom:14px;">
-      <div id="drawerFocusArea">
-        <h4>Today's Follow-ups</h4>
-        <div id="todayCalls"></div>
-      </div>
-    </div>
-    <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
-  </div>
+    <div id="drawerOverlay" onclick="toggleDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998"></div>
+    <div id="callDrawer" style="display:none;position:fixed;left:0;top:0;width:320px;height:100%;background:var(--surf);border-right:1px solid var(--bdr);padding:20px;overflow:auto;z-index:9999;box-shadow:4px 0 20px rgba(0,0,0,.35)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3>☰ ProWater CRM</h3>
+        <button onclick="toggleDrawer()" style="background:none;border:none;font-size:22px;color:var(--txt);cursor:pointer">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px">
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('overview');toggleDrawer()">🏠 Dashboard</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('today')">📞 Today's Calls</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('upcoming')">📅 Upcoming Callbacks</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="renderDrawerFocus('history')">📜 Call History</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('snapshots');toggleDrawer()">⏳ Historical Snapshots</a>
+        <a href="#" style="text-decoration:none;color:inherit;padding:8px;border-radius:4px;" onclick="showTab('compare');toggleDrawer()">📊 Reports</a>
+      </div>
+      <hr style="border:0;border-top:1px solid var(--bdr);margin-bottom:14px;">
+      <div id="drawerFocusArea">
+        <h4>Today's Follow-ups</h4>
+        <div id="todayCalls"></div>
+      </div>
+    </div>
+    <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+  </div>
 </div>
 
 <div id="setupBanner" class="setup-banner">
-  <strong>One-time setup — connect Google Sheets backend (5 min)</strong><br><br>
-  <div class="step"><div class="num">1</div><div>Open your Google Sheet → <strong>Extensions → Apps Script</strong></div></div>
-  <div class="step"><div class="num">2</div><div>Delete everything → paste the code from <strong>AppScript_Backend.js</strong> (downloaded alongside this file)</div></div>
-  <div class="step"><div class="num">3</div><div>Click <strong>Deploy → New deployment → Web app</strong> → Execute as: <strong>Me</strong> → Access: <strong>Anyone</strong> → Deploy</div></div>
-  <div class="step"><div class="num">4</div><div>Copy the <strong>Web App URL</strong> and paste it below. Done — logs sync across all devices instantly.</div></div>
-  <div class="step"><div class="num">5</div><div>Also paste your <strong>Google Sheet URL</strong> for society data.</div></div>
+  <strong>One-time setup — connect Google Sheets backend (5 min)</strong><br><br>
+  <div class="step"><div class="num">1</div><div>Open your Google Sheet → <strong>Extensions → Apps Script</strong></div></div>
+  <div class="step"><div class="num">2</div><div>Delete everything → paste the code from <strong>AppScript_Backend.js</strong> (downloaded alongside this file)</div></div>
+  <div class="step"><div class="num">3</div><div>Click <strong>Deploy → New deployment → Web app</strong> → Execute as: <strong>Me</strong> → Access: <strong>Anyone</strong> → Deploy</div></div>
+  <div class="step"><div class="num">4</div><div>Copy the <strong>Web App URL</strong> and paste it below. Done — logs sync across all devices instantly.</div></div>
+  <div class="step"><div class="num">5</div><div>Also paste your <strong>Google Sheet URL</strong> for society data.</div></div>
 </div>
 
 <div class="conn-bar">
-  <input type="text" id="scriptUrl" placeholder="Apps Script Web App URL (from Deploy → Web app URL)…"/>
-  <button onclick="connectBackend()">Connect Backend</button>
+  <input type="text" id="scriptUrl" placeholder="Apps Script Web App URL (from Deploy → Web app URL)…"/>
+  <button onclick="connectBackend()">Connect Backend</button>
 </div>
 <div class="conn-bar">
-  <input type="text" id="sheetUrl" placeholder="Google Sheet URL (for society data)…"/>
-  <button onclick="loadSheet()">Load Sheet</button>
+  <input type="text" id="sheetUrl" placeholder="Google Sheet URL (for society data)…"/>
+  <button onclick="loadSheet()">Load Sheet</button>
 </div>
 <div class="conn-status" id="connStatus">Logs are saving locally until backend is connected.</div>
 
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-  <label style="font-size:11px;color:var(--muted);font-weight:600;">YOUR NAME:</label>
-  <input type="text" id="agentName" placeholder="Enter your name to tag call logs…"
-    style="background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:7px 12px;color:var(--txt);font-size:12px;outline:none;width:220px;"
-    oninput="localStorage.setItem('pw_agent',this.value)"/>
+  <label style="font-size:11px;color:var(--muted);font-weight:600;">YOUR NAME:</label>
+  <input type="text" id="agentName" placeholder="Enter your name to tag call logs…"
+    style="background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:7px 12px;color:var(--txt);font-size:12px;outline:none;width:220px;"
+    oninput="localStorage.setItem('pw_agent',this.value)"/>
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="showTab('overview')">Overview</button>
-  <button class="tab" onclick="showTab('followup')">Follow-ups</button>
-  <button class="tab" onclick="showTab('compare')">Compare</button>
-  <button class="tab" id="tabBtnSnapshots" style="display:none;" onclick="showTab('snapshots')">Snapshots</button>
+  <button class="tab active" onclick="showTab('overview')">Overview</button>
+  <button class="tab" onclick="showTab('followup')">Follow-ups</button>
+  <button class="tab" onclick="showTab('compare')">Compare</button>
+  <button class="tab" id="tabBtnSnapshots" style="display:none;" onclick="showTab('snapshots')">Snapshots</button>
 </div>
 
 <div id="tab-overview"></div>
@@ -259,59 +259,59 @@
 <div id="tab-snapshots" style="display:none"></div>
 
 <div class="modal-bg" id="logModal">
-  <div class="modal">
-    <div class="modal-title" id="logModalTitle">Log call</div>
-    <div class="modal-sub" id="logModalSub"></div>
-    <label class="form-lbl">Your name</label>
-    <input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
-    <label class="form-lbl">Notes from call / visit</label>
-    <textarea class="form-ctrl" id="logNote" placeholder="e.g. Spoke to committee, interested in 12 more flats…"></textarea>
-    <label class="form-lbl">Outcome</label>
-    <select class="form-ctrl" id="logOutcome">
-      <option value="positive">Positive — progressing well</option>
-      <option value="callback">Needs callback / follow-up</option>
-      <option value="blocked">Blocked — needs attention</option>
-      <option value="neutral">Neutral / informational</option>
-    </select>
-    <label class="form-lbl" id="cbDateLabel" style="display:none">Callback date</label>
-    <input type="date" class="form-ctrl" id="cbDate" style="display:none"/>
-    <div id="logSaving" style="font-size:11px;color:var(--ylw);margin-bottom:8px;display:none;">Saving to sheet…</div>
-    <div class="form-row">
-      <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
-      <button class="btn-save" id="logSaveBtn" onclick="saveLog()">Save log</button>
-    </div>
-  </div>
+  <div class="modal">
+    <div class="modal-title" id="logModalTitle">Log call</div>
+    <div class="modal-sub" id="logModalSub"></div>
+    <label class="form-lbl">Your name</label>
+    <input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
+    <label class="form-lbl">Notes from call / visit</label>
+    <textarea class="form-ctrl" id="logNote" placeholder="e.g. Spoke to committee, interested in 12 more flats…"></textarea>
+    <label class="form-lbl">Outcome</label>
+    <select class="form-ctrl" id="logOutcome">
+      <option value="positive">Positive — progressing well</option>
+      <option value="callback">Needs callback / follow-up</option>
+      <option value="blocked">Blocked — needs attention</option>
+      <option value="neutral">Neutral / informational</option>
+    </select>
+    <label class="form-lbl" id="cbDateLabel" style="display:none">Callback date</label>
+    <input type="date" class="form-ctrl" id="cbDate" style="display:none"/>
+    <div id="logSaving" style="font-size:11px;color:var(--ylw);margin-bottom:8px;display:none;">Saving to sheet…</div>
+    <div class="form-row">
+      <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
+      <button class="btn-save" id="logSaveBtn" onclick="saveLog()">Save log</button>
+    </div>
+  </div>
 </div>
 
 <div class="modal-bg" id="detailModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
-      <div class="modal-title" id="detailTitle"></div>
-      <button style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;" onclick="document.getElementById('detailModal').classList.remove('open')">✕</button>
-    </div>
-    <div class="modal-sub" id="detailSub"></div>
-    <div class="pen-ring-wrap">
-      <svg width="120" height="120" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="48" fill="none" stroke="#2a2e42" stroke-width="10"/>
-        <circle cx="60" cy="60" r="48" fill="none" stroke="#ef4444" stroke-width="10"
-          stroke-dasharray="301.59" id="detailRing" stroke-dashoffset="0" stroke-linecap="round"/>
-      </svg>
-      <div class="pen-ring-label">
-        <div class="pen-ring-pct" id="detailRingPct"></div>
-        <div class="pen-ring-txt">remaining</div>
-      </div>
-    </div>
-    <div class="pstats">
-      <div class="pstat"><div class="pstat-v" style="color:var(--ylw)" id="dTotal"></div><div class="pstat-l">Total</div></div>
-      <div class="pstat"><div class="pstat-v" style="color:var(--grn)" id="dDone"></div><div class="pstat-l">Onboarded</div></div>
-      <div class="pstat"><div class="pstat-v" style="color:var(--red)" id="dLeft"></div><div class="pstat-l">Remaining</div></div>
-    </div>
-    <div class="dprow"><div class="dprow-lbl">Achieved</div><div class="dprow-bar"><div class="dprow-fill" id="dBarDone" style="background:var(--grn)"></div></div><div class="dprow-val up" id="dBarDonePct"></div></div>
-    <div class="dprow" style="margin-bottom:0"><div class="dprow-lbl">Remaining</div><div class="dprow-bar"><div class="dprow-fill" id="dBarLeft" style="background:var(--red)"></div></div><div class="dprow-val dn" id="dBarLeftPct"></div></div>
-    <div class="target-note" id="dTargetNote"></div>
-    <div id="dLogHistory"></div>
-    <button class="btn-save" style="width:100%;padding:9px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;margin-top:12px;" id="dLogBtn" onclick="openLogFromDetail()">📝 Log a call</button>
-  </div>
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+      <div class="modal-title" id="detailTitle"></div>
+      <button style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;" onclick="document.getElementById('detailModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-sub" id="detailSub"></div>
+    <div class="pen-ring-wrap">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="48" fill="none" stroke="#2a2e42" stroke-width="10"/>
+        <circle cx="60" cy="60" r="48" fill="none" stroke="#ef4444" stroke-width="10"
+          stroke-dasharray="301.59" id="detailRing" stroke-dashoffset="0" stroke-linecap="round"/>
+      </svg>
+      <div class="pen-ring-label">
+        <div class="pen-ring-pct" id="detailRingPct"></div>
+        <div class="pen-ring-txt">remaining</div>
+      </div>
+    </div>
+    <div class="pstats">
+      <div class="pstat"><div class="pstat-v" style="color:var(--ylw)" id="dTotal"></div><div class="pstat-l">Total</div></div>
+      <div class="pstat"><div class="pstat-v" style="color:var(--grn)" id="dDone"></div><div class="pstat-l">Onboarded</div></div>
+      <div class="pstat"><div class="pstat-v" style="color:var(--red)" id="dLeft"></div><div class="pstat-l">Remaining</div></div>
+    </div>
+    <div class="dprow"><div class="dprow-lbl">Achieved</div><div class="dprow-bar"><div class="dprow-fill" id="dBarDone" style="background:var(--grn)"></div></div><div class="dprow-val up" id="dBarDonePct"></div></div>
+    <div class="dprow" style="margin-bottom:0"><div class="dprow-lbl">Remaining</div><div class="dprow-bar"><div class="dprow-fill" id="dBarLeft" style="background:var(--red)"></div></div><div class="dprow-val dn" id="dBarLeftPct"></div></div>
+    <div class="target-note" id="dTargetNote"></div>
+    <div id="dLogHistory"></div>
+    <button class="btn-save" style="width:100%;padding:9px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;margin-top:12px;" id="dLogBtn" onclick="openLogFromDetail()">📝 Log a call</button>
+  </div>
 </div>
 
 <script>
@@ -319,8 +319,8 @@
 // STATE
 // ═══════════════════════════════════════════════════
 let SCRIPT_URL = localStorage.getItem('pw_script_url') || '';
-let SHEET_URL  = localStorage.getItem('pw_sheet_url') || '';
-let backendOk  = false;
+let SHEET_URL  = localStorage.getItem('pw_sheet_url') || '';
+let backendOk  = false;
 
 let logs = {}, callbacks = {};
 try { logs = JSON.parse(localStorage.getItem('pw_logs')||'{}'); } catch(e){}
@@ -330,20 +330,20 @@ let historicalSnapshots = [];
 try { historicalSnapshots = JSON.parse(localStorage.getItem('pw_snapshots')||'[]'); } catch(e){}
 
 let ACTIVE = [
-  {id:1,name:"CBR Aakruti (OT)",flats:108,ob:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
-  {id:2,name:"SVS Ananda OD",flats:168,ob:17,pen:10,launch:"Sep 24",months:21,revMay:4700,revJun:4450,remark:""},
-  {id:3,name:"MJR Hydra",flats:300,ob:61,pen:20,launch:"Jan 26",months:5,revMay:14980,revJun:11800,remark:""},
-  {id:4,name:"Ashish JK (DP)",flats:206,ob:31,pen:15,launch:"Apr 26",months:2,revMay:17600,revJun:8375,remark:""},
-  {id:5,name:"Prabhavati",flats:80,ob:18,pen:22,launch:"May 26",months:0,revMay:7134,revJun:4158,remark:""},
+  {id:1,name:"CBR Aakruti (OT)",flats:108,ob:43,pen:40,launch:"Jun 24",months:25,revMay:11732,revJun:8089,remark:""},
+  {id:2,name:"SVS Ananda OD",flats:168,ob:17,pen:10,launch:"Sep 24",months:21,revMay:4700,revJun:4450,remark:""},
+  {id:3,name:"MJR Hydra",flats:300,ob:61,pen:20,launch:"Jan 26",months:5,revMay:14980,revJun:11800,remark:""},
+  {id:4,name:"Ashish JK (DP)",flats:206,ob:31,pen:15,launch:"Apr 26",months:2,revMay:17600,revJun:8375,remark:""},
+  {id:5,name:"Prabhavati",flats:80,ob:18,pen:22,launch:"May 26",months:0,revMay:7134,revJun:4158,remark:""},
 ];
 let PIPELINE = [
-  {id:101,name:"Coronet Green",flats:100,remark:"Expected launch: 22nd June"},
-  {id:102,name:"Sai Poorna Premier",flats:220,remark:"Achieved 16% interest. Expected: 5th July"},
-  {id:103,name:"Estalla Maple Square",flats:207,remark:"Penetration focus"},
-  {id:104,name:"Sai Royale",flats:104,remark:"Feasibility check done"},
-  {id:105,name:"Deep Square",flats:140,remark:"2nd meeting fixed 27/28"},
-  {id:106,name:"Sai Poorna Luxuria",flats:180,remark:"June 30 CB"},
-  {id:107,name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July"},
+  {id:101,name:"Coronet Green",flats:100,remark:"Expected launch: 22nd June"},
+  {id:102,name:"Sai Poorna Premier",flats:220,remark:"Achieved 16% interest. Expected: 5th July"},
+  {id:103,name:"Estalla Maple Square",flats:207,remark:"Penetration focus"},
+  {id:104,name:"Sai Royale",flats:104,remark:"Feasibility check done"},
+  {id:105,name:"Deep Square",flats:140,remark:"2nd meeting fixed 27/28"},
+  {id:106,name:"Sai Poorna Luxuria",flats:180,remark:"June 30 CB"},
+  {id:107,name:"Sumukha Tropical Garden",flats:154,remark:"Expected launch: 20th July"},
 ];
 
 let _detailId = null, currentLogId = null, currentLogName = '';
@@ -353,109 +353,109 @@ let sortKey='pen', sortDir=-1, filterUrgent=false, searchQ='', currentTab='overv
 // BACKEND API
 // ═══════════════════════════════════════════════════
 function setSyncStatus(state, msg) {
-  const dot = document.getElementById('syncDot');
-  const txt = document.getElementById('syncTxt');
-  if(dot && txt) {
-    dot.className = 'sync-dot ' + state;
-    txt.textContent = msg;
-  }
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncTxt');
+  if(dot && txt) {
+    dot.className = 'sync-dot ' + state;
+    txt.textContent = msg;
+  }
 }
 
 async function apiCall(action, data={}) {
-  if (!SCRIPT_URL) return null;
-  try {
-    let res;
-    if (action === 'getAllLogs') {
-      res = await fetch(`${SCRIPT_URL}?action=getAllLogs&t=${Date.now()}`, {
-        method:'GET',
-        cache:'no-store'
-      });
-    } else {
-      res = await fetch(SCRIPT_URL, {
-        method:'POST',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({action,...data})
-      });
-    }
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    return await res.json();
-  } catch(e){
-    console.error('API error',e);
-    return null;
-  }
+  if (!SCRIPT_URL) return null;
+  try {
+    let res;
+    if (action === 'getAllLogs') {
+      res = await fetch(`${SCRIPT_URL}?action=getAllLogs&t=${Date.now()}`, {
+        method:'GET',
+        cache:'no-store'
+      });
+    } else {
+      res = await fetch(SCRIPT_URL, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({action,...data})
+      });
+    }
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.json();
+  } catch(e){
+    console.error('API error',e);
+    return null;
+  }
 }
 
 async function connectBackend() {
-  const url = document.getElementById('scriptUrl').value.trim();
-  if (!url) { alert('Paste your Apps Script Web App URL first.'); return; }
-  SCRIPT_URL = url;
-  localStorage.setItem('pw_script_url', url);
-  setSyncStatus('loading', 'Connecting…');
-  document.getElementById('connStatus').textContent = 'Testing connection…';
-  document.getElementById('connStatus').className = 'conn-status';
+  const url = document.getElementById('scriptUrl').value.trim();
+  if (!url) { alert('Paste your Apps Script Web App URL first.'); return; }
+  SCRIPT_URL = url;
+  localStorage.setItem('pw_script_url', url);
+  setSyncStatus('loading', 'Connecting…');
+  document.getElementById('connStatus').textContent = 'Testing connection…';
+  document.getElementById('connStatus').className = 'conn-status';
 
-  const result = await apiCall('getAllLogs');
-  if (result && result.grouped !== undefined) {
-    backendOk = true;
-    logs = {};
-    callbacks = {};
-    const allSocs = [...ACTIVE, ...PIPELINE];
-    Object.entries(result.grouped).forEach(([name, entries]) => {
-      const soc = allSocs.find(s => s.name === name);
-      if (soc) logs[soc.id] = entries;
-    });
-    Object.entries(result.callbacks || {}).forEach(([name, date]) => {
-      const soc = allSocs.find(s => s.name === name);
-      if (soc) callbacks[soc.id] = date;
-    });
-    setSyncStatus('ok', 'Backend connected ✓');
-    document.getElementById('connStatus').textContent = '✅ Backend connected — logs sync across all devices in real time.';
-    document.getElementById('connStatus').className = 'conn-status ok';
-    document.getElementById('setupBanner').style.display = 'none';
-    renderCurrent();
-  } else {
-    backendOk = false;
-    setSyncStatus('err', 'Connection failed');
-    document.getElementById('connStatus').textContent = '❌ Could not connect. Check the URL and make sure the deployment is set to "Anyone" access.';
-    document.getElementById('connStatus').className = 'conn-status err';
-  }
+  const result = await apiCall('getAllLogs');
+  if (result && result.grouped !== undefined) {
+    backendOk = true;
+    logs = {};
+    callbacks = {};
+    const allSocs = [...ACTIVE, ...PIPELINE];
+    Object.entries(result.grouped).forEach(([name, entries]) => {
+      const soc = allSocs.find(s => s.name === name);
+      if (soc) logs[soc.id] = entries;
+    });
+    Object.entries(result.callbacks || {}).forEach(([name, date]) => {
+      const soc = allSocs.find(s => s.name === name);
+      if (soc) callbacks[soc.id] = date;
+    });
+    setSyncStatus('ok', 'Backend connected ✓');
+    document.getElementById('connStatus').textContent = '✅ Backend connected — logs sync across all devices in real time.';
+    document.getElementById('connStatus').className = 'conn-status ok';
+    document.getElementById('setupBanner').style.display = 'none';
+    renderCurrent();
+  } else {
+    backendOk = false;
+    setSyncStatus('err', 'Connection failed');
+    document.getElementById('connStatus').textContent = '❌ Could not connect. Check the URL and make sure the deployment is set to "Anyone" access.';
+    document.getElementById('connStatus').className = 'conn-status err';
+  }
 }
 
 async function pushLogToSheet(logData) {
-  if (!backendOk) return;
-  setSyncStatus('loading', 'Saving…');
-  const result = await apiCall('saveLog', logData);
-  if (result && result.success) {
-    setSyncStatus('ok', 'Saved ✓ ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
-  } else {
-    setSyncStatus('err', 'Save failed — stored locally');
-  }
+  if (!backendOk) return;
+  setSyncStatus('loading', 'Saving…');
+  const result = await apiCall('saveLog', logData);
+  if (result && result.success) {
+    setSyncStatus('ok', 'Saved ✓ ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
+  } else {
+    setSyncStatus('err', 'Save failed — stored locally');
+  }
 }
 
 async function refreshLogsFromSheet() {
-  if (!backendOk) return;
-  setSyncStatus('loading', 'Syncing…');
-  const result = await apiCall('getAllLogs');
-  if (!result) { setSyncStatus('err', 'Sync failed'); return; }
-  logs = {}; callbacks = {};
-  const allSocs = [...ACTIVE, ...PIPELINE];
-  Object.entries(result.grouped || {}).forEach(([name, entries]) => {
-    const soc = allSocs.find(s => s.name === name);
-    if (soc) logs[soc.id] = entries;
-  });
-  Object.entries(result.callbacks || {}).forEach(([name, date]) => {
-    const soc = allSocs.find(s => s.name === name);
-    if (soc && date !== 'callback-done') callbacks[soc.id] = date;
-  });
-  setSyncStatus('ok', 'Synced ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
+  if (!backendOk) return;
+  setSyncStatus('loading', 'Syncing…');
+  const result = await apiCall('getAllLogs');
+  if (!result) { setSyncStatus('err', 'Sync failed'); return; }
+  logs = {}; callbacks = {};
+  const allSocs = [...ACTIVE, ...PIPELINE];
+  Object.entries(result.grouped || {}).forEach(([name, entries]) => {
+    const soc = allSocs.find(s => s.name === name);
+    if (soc) logs[soc.id] = entries;
+  });
+  Object.entries(result.callbacks || {}).forEach(([name, date]) => {
+    const soc = allSocs.find(s => s.name === name);
+    if (soc && date !== 'callback-done') callbacks[soc.id] = date;
+  });
+  setSyncStatus('ok', 'Synced ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
 }
 
 // ═══════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════
 function saveLocal() {
-  localStorage.setItem('pw_logs', JSON.stringify(logs));
-  localStorage.setItem('pw_callbacks', JSON.stringify(callbacks));
+  localStorage.setItem('pw_logs', JSON.stringify(logs));
+  localStorage.setItem('pw_callbacks', JSON.stringify(callbacks));
 }
 function getLogsById(id){ return logs[id]||[]; }
 function lastLog(id){ const l=getLogsById(id); return l.length?l[l.length-1]:null; }
@@ -463,526 +463,526 @@ function fmt(n){ return '₹'+n.toLocaleString('en-IN'); }
 function fmtS(n){ return n>=1000?'₹'+(n/1000).toFixed(1)+'k':'₹'+n; }
 
 function checkHealthOverride(r) {
-  let s=0;
-  if(r.pen>=40)s+=40;else if(r.pen>=25)s+=25;else if(r.pen>=15)s+=15;else s+=5;
-  const t=r.revJun-r.revMay;
-  if(t>0)s+=30;else if(t===0)s+=15;
-  return Math.min(s,100);
+  let s=0;
+  if(r.pen>=40)s+=40;else if(r.pen>=25)s+=25;else if(r.pen>=15)s+=15;else s+=5;
+  const t=r.revJun-r.revMay;
+  if(t>0)s+=30;else if(t===0)s+=15;
+  return Math.min(s,100);
 }
 function urgencyReasons(r){
-  const rs=[];
-  if(r.revJun<r.revMay) rs.push(`Revenue dropped ₹${(r.revMay-r.revJun).toLocaleString()} vs May`);
-  if(r.pen<15) rs.push(`Low penetration (${r.pen}%)`);
-  if(r.months>12&&r.pen<25) rs.push(`${r.months}mo live, under 25% pen`);
-  if(!lastLog(r.id)) rs.push('No call logged yet');
-  if(callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()) rs.push('Callback overdue');
-  return rs;
+  const rs=[];
+  if(r.revJun<r.revMay) rs.push(`Revenue dropped ₹${(r.revMay-r.revJun).toLocaleString()} vs May`);
+  if(r.pen<15) rs.push(`Low penetration (${r.pen}%)`);
+  if(r.months>12&&r.pen<25) rs.push(`${r.months}mo live, under 25% pen`);
+  if(!lastLog(r.id)) rs.push('No call logged yet');
+  if(callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()) rs.push('Callback overdue');
+  return rs;
 }
 function isUrgent(r){ return urgencyReasons(r).length>0; }
 
 function logCardHtml(ll) {
-  if(!ll) return '';
-  return `<div class="last-note">
-    ${ll.agentName?`<div class="note-agent">👤 ${ll.agentName}</div>`:''}
-    ${ll.note}
-    <div class="note-time">${ll.time} · ${ll.outcome==='blocked'?'🔴':ll.outcome==='callback'?'🟡':'🟢'} ${ll.outcome}</div>
-  </div>`;
+  if(!ll) return '';
+  return `<div class="last-note">
+    ${ll.agentName?`<div class="note-agent">👤 ${ll.agentName}</div>`:''}
+    ${ll.note}
+    <div class="note-time">${ll.time} · ${ll.outcome==='blocked'?'🔴':ll.outcome==='callback'?'🟡':'🟢'} ${ll.outcome}</div>
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════
 // OVERVIEW TAB
 // ═══════════════════════════════════════════════════
 function renderOverview(){
-  const filtered=ACTIVE.filter(r=>{
-    if(filterUrgent&&!isUrgent(r)) return false;
-    if(searchQ&&!r.name.toLowerCase().includes(searchQ.toLowerCase())) return false;
-    return true;
-  });
-  const ob=ACTIVE.reduce((a,r)=>a+r.ob,0);
-  const aFlats=ACTIVE.reduce((a,r)=>a+r.flats,0);
-  const revMay=ACTIVE.reduce((a,r)=>a+r.revMay,0);
-  const revJun=ACTIVE.reduce((a,r)=>a+r.revJun,0);
-  const delta=revJun-revMay;
-  const avgPen=ACTIVE.length ? Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length) : 0;
-  const urgent=ACTIVE.filter(isUrgent).length;
-  const cbDue=ACTIVE.filter(r=>callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()).length;
+  const filtered=ACTIVE.filter(r=>{
+    if(filterUrgent&&!isUrgent(r)) return false;
+    if(searchQ&&!r.name.toLowerCase().includes(searchQ.toLowerCase())) return false;
+    return true;
+  });
+  const ob=ACTIVE.reduce((a,r)=>a+r.ob,0);
+  const aFlats=ACTIVE.reduce((a,r)=>a+r.flats,0);
+  const revMay=ACTIVE.reduce((a,r)=>a+r.revMay,0);
+  const revJun=ACTIVE.reduce((a,r)=>a+r.revJun,0);
+  const delta=revJun-revMay;
+  const avgPen=ACTIVE.length ? Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length) : 0;
+  const urgent=ACTIVE.filter(isUrgent).length;
+  const cbDue=ACTIVE.filter(r=>callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()).length;
 
-  let html=`<div class="kpis">
-    <div class="kpi"><div class="kpi-lbl">Onboarded</div><div class="kpi-val">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
-    <div class="kpi"><div class="kpi-lbl">Avg Pen.</div><div class="kpi-val">${avgPen}%</div><div class="kpi-sub">${100-avgPen}% gap</div></div>
-    <div class="kpi"><div class="kpi-lbl">Revenue Jun</div><div class="kpi-val" style="font-size:16px">${fmtS(revJun)}</div><div class="kpi-sub ${delta>=0?'up':'dn'}">${delta>=0?'▲':'▼'} ${fmtS(Math.abs(delta))} vs May</div></div>
-    <div class="kpi"><div class="kpi-lbl">Urgent</div><div class="kpi-val" style="color:${urgent>0?'var(--red)':'var(--grn)'}">${urgent}</div><div class="kpi-sub">need action</div></div>
-    <div class="kpi"><div class="kpi-lbl">Callbacks due</div><div class="kpi-val" style="color:${cbDue>0?'var(--orn)':'var(--grn)'}">${cbDue}</div><div class="kpi-sub">overdue today</div></div>
-  </div>
-  <div class="search-row">
-    <input placeholder="Search societies…" value="${searchQ}" oninput="searchQ=this.value;renderOverview()"/>
-    <button class="filter-btn ${filterUrgent?'on':''}" onclick="filterUrgent=!filterUrgent;renderOverview()">⚡ Urgent</button>
-    ${backendOk?`<button class="filter-btn" onclick="refreshLogsFromSheet().then(renderCurrent)">🔄 Sync</button>`:''}
-  </div>
-  <div class="sec">Active societies (${filtered.length})</div><div class="cards">`;
+  let html=`<div class="kpis">
+    <div class="kpi"><div class="kpi-lbl">Onboarded</div><div class="kpi-val">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
+    <div class="kpi"><div class="kpi-lbl">Avg Pen.</div><div class="kpi-val">${avgPen}%</div><div class="kpi-sub">${100-avgPen}% gap</div></div>
+    <div class="kpi"><div class="kpi-lbl">Revenue Jun</div><div class="kpi-val" style="font-size:16px">${fmtS(revJun)}</div><div class="kpi-sub ${delta>=0?'up':'dn'}">${delta>=0?'▲':'▼'} ${fmtS(Math.abs(delta))} vs May</div></div>
+    <div class="kpi"><div class="kpi-lbl">Urgent</div><div class="kpi-val" style="color:${urgent>0?'var(--red)':'var(--grn)'}">${urgent}</div><div class="kpi-sub">need action</div></div>
+    <div class="kpi"><div class="kpi-lbl">Callbacks due</div><div class="kpi-val" style="color:${cbDue>0?'var(--orn)':'var(--grn)'}">${cbDue}</div><div class="kpi-sub">overdue today</div></div>
+  </div>
+  <div class="search-row">
+    <input placeholder="Search societies…" value="${searchQ}" oninput="searchQ=this.value;renderOverview()"/>
+    <button class="filter-btn ${filterUrgent?'on':''}" onclick="filterUrgent=!filterUrgent;renderOverview()">⚡ Urgent</button>
+    ${backendOk?`<button class="filter-btn" onclick="refreshLogsFromSheet().then(renderCurrent)">🔄 Sync</button>`:''}
+  </div>
+  <div class="sec">Active societies (${filtered.length})</div><div class="cards">`;
 
-  filtered.forEach(r=>{
-    const sc=checkHealthOverride(r);
-    const hl=sc>=70?{c:'b-good',t:'Healthy'}:sc>=45?{c:'b-warn',t:'Watch'}:{c:'b-hot',t:'Critical'};
-    const d=r.revJun-r.revMay;
-    const ll=lastLog(r.id);
-    const cb=callbacks[r.id];
-    html+=`<div class="scard">
-      <div class="scard-top">
-        <div><div class="scard-name">${r.name}</div><div class="scard-flats">${r.flats} flats · ${r.months===0?'Just launched':r.months+'mo live'}</div></div>
-        <span class="badge ${hl.c}">${hl.t}</span>
-      </div>
-      ${cb&&new Date(cb)<=new Date()?`<div class="cb-flag">📞 Callback overdue</div>`:''}
-      ${cb&&!(new Date(cb)<=new Date())?`<div class="cb-flag" style="background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);">📅 Callback Scheduled</div>`:''}
-      ${logCardHtml(ll)}
-      <div class="metrics">
-        <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
-        <div class="metric"><div class="metric-v" style="color:var(--acc)">${r.pen}%</div><div class="metric-l">Pen.</div></div>
-        <div class="metric"><div class="metric-v ${d>=0?'up':'dn'}">${d>=0?'▲':'▼'}${fmtS(Math.abs(d))}</div><div class="metric-l">Jun trend</div></div>
-      </div>
-      <div class="pen-row">
-        <div class="pen-bar"><div class="pen-fill" style="width:${r.pen}%"></div></div>
-        <div class="pen-txt"><span style="color:var(--acc)">${r.pen}%</span> <span style="color:var(--red);font-size:10px">/ ${100-r.pen}% left</span></div>
-      </div>
-      <div class="actions">
-        <button class="abtn primary" onclick="openLog(${r.id},'${esc(r.name)}')">📝 Log call</button>
-        <button class="abtn" onclick="openLog(${r.id},'${esc(r.name)}','callback')">📅 Set CB</button>
-        <button class="abtn" onclick="openDetail(${r.id})">📊 Details</button>
-      </div>
-    </div>`;
-  });
-  html+=`</div><div class="sec">Pipeline (${PIPELINE.length})</div><div class="cards">`;
-  PIPELINE.forEach(p=>{
-    const ll=lastLog(p.id);
-    html+=`<div class="scard">
-      <div class="scard-top"><div><div class="scard-name">${p.name}</div><div class="scard-flats">${p.flats} flats</div></div><span class="badge b-new">Pipeline</span></div>
-      ${logCardHtml(ll)}
-      <div style="font-size:11px;color:var(--txt2);line-height:1.4;margin-bottom:8px;">${p.remark||'—'}</div>
-      <div class="actions">
-        <button class="abtn primary" onclick="openLog(${p.id},'${esc(p.name)}','pipeline')">📝 Log note</button>
-        <button class="abtn" onclick="openDetail(${p.id})">📊 Details</button>
-      </div>
-    </div>`;
-  });
-  html+=`</div>`;
-  document.getElementById('tab-overview').innerHTML=html;
+  filtered.forEach(r=>{
+    const sc=checkHealthOverride(r);
+    const hl=sc>=70?{c:'b-good',t:'Healthy'}:sc>=45?{c:'b-warn',t:'Watch'}:{c:'b-hot',t:'Critical'};
+    const d=r.revJun-r.revMay;
+    const ll=lastLog(r.id);
+    const cb=callbacks[r.id];
+    html+=`<div class="scard">
+      <div class="scard-top">
+        <div><div class="scard-name">${r.name}</div><div class="scard-flats">${r.flats} flats · ${r.months===0?'Just launched':r.months+'mo live'}</div></div>
+        <span class="badge ${hl.c}">${hl.t}</span>
+      </div>
+      ${cb&&new Date(cb)<=new Date()?`<div class="cb-flag">📞 Callback overdue</div>`:''}
+      ${cb&&!(new Date(cb)<=new Date())?`<div class="cb-flag" style="background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);">📅 Callback Scheduled</div>`:''}
+      ${logCardHtml(ll)}
+      <div class="metrics">
+        <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
+        <div class="metric"><div class="metric-v" style="color:var(--acc)">${r.pen}%</div><div class="metric-l">Pen.</div></div>
+        <div class="metric"><div class="metric-v ${d>=0?'up':'dn'}">${d>=0?'▲':'▼'}${fmtS(Math.abs(d))}</div><div class="metric-l">Jun trend</div></div>
+      </div>
+      <div class="pen-row">
+        <div class="pen-bar"><div class="pen-fill" style="width:${r.pen}%"></div></div>
+        <div class="pen-txt"><span style="color:var(--acc)">${r.pen}%</span> <span style="color:var(--red);font-size:10px">/ ${100-r.pen}% left</span></div>
+      </div>
+      <div class="actions">
+        <button class="abtn primary" onclick="openLog(${r.id},'${esc(r.name)}')">📝 Log call</button>
+        <button class="abtn" onclick="openLog(${r.id},'${esc(r.name)}','callback')">📅 Set CB</button>
+        <button class="abtn" onclick="openDetail(${r.id})">📊 Details</button>
+      </div>
+    </div>`;
+  });
+  html+=`</div><div class="sec">Pipeline (${PIPELINE.length})</div><div class="cards">`;
+  PIPELINE.forEach(p=>{
+    const ll=lastLog(p.id);
+    html+=`<div class="scard">
+      <div class="scard-top"><div><div class="scard-name">${p.name}</div><div class="scard-flats">${p.flats} flats</div></div><span class="badge b-new">Pipeline</span></div>
+      ${logCardHtml(ll)}
+      <div style="font-size:11px;color:var(--txt2);line-height:1.4;margin-bottom:8px;">${p.remark||'—'}</div>
+      <div class="actions">
+        <button class="abtn primary" onclick="openLog(${p.id},'${esc(p.name)}','pipeline')">📝 Log note</button>
+        <button class="abtn" onclick="openDetail(${p.id})">📊 Details</button>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+  document.getElementById('tab-overview').innerHTML=html;
 }
 
 // ═══════════════════════════════════════════════════
 // FOLLOW-UPS TAB
 // ═══════════════════════════════════════════════════
 function renderFollowup(){
-  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-    <div class="sec" style="margin:0;flex:1">Pending callbacks & flagged</div>
-    ${backendOk?`<button class="filter-btn" onclick="refreshLogsFromSheet().then(renderCurrent)" style="margin-left:10px;">🔄 Sync now</button>`:''}
-  </div>`;
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div class="sec" style="margin:0;flex:1">Pending callbacks & flagged</div>
+    ${backendOk?`<button class="filter-btn" onclick="refreshLogsFromSheet().then(renderCurrent)" style="margin-left:10px;">🔄 Sync now</button>`:''}
+  </div>`;
 
-  const pending=ACTIVE.filter(r=>callbacks[r.id]||urgencyReasons(r).length)
-    .sort((a,b)=>{
-      const ao=callbacks[a.id]&&new Date(callbacks[a.id])<=new Date()?0:1;
-      const bo=callbacks[b.id]&&new Date(callbacks[b.id])<=new Date()?0:1;
-      return ao-bo;
-    });
+  const pending=ACTIVE.filter(r=>callbacks[r.id]||urgencyReasons(r).length)
+    .sort((a,b)=>{
+      const ao=callbacks[a.id]&&new Date(callbacks[a.id])<=new Date()?0:1;
+      const bo=callbacks[b.id]&&new Date(callbacks[b.id])<=new Date()?0:1;
+      return ao-bo;
+    });
 
-  if(!pending.length) html+=`<div class="empty">No pending follow-ups.</div>`;
-  else pending.forEach(r=>{
-    const cb=callbacks[r.id]; const ll=lastLog(r.id);
-    const overdue=cb&&new Date(cb)<=new Date();
-    const reasons=urgencyReasons(r);
-    html+=`<div class="fup-item">
-      <div class="fup-dot ${overdue?'red':reasons.length?'ylw':'grn'}"></div>
-      <div class="fup-body">
-        <div class="fup-name">${r.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${r.flats} flats</span></div>
-        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;">${overdue?'⚠ Overdue:':'📅'} ${cb}</div>`:''}
-        ${reasons.length?`<div class="fup-note">${reasons.join(' · ')}</div>`:''}
-        ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:'<div class="fup-note" style="color:var(--muted)">No call logged yet</div>'}
-      </div>
-      <div class="fup-actions">
-        <button class="icon-btn" onclick="openLog(${r.id},'${esc(r.name)}')">📝</button>
-        <button class="icon-btn" title="Mark done" onclick="markCbDone(${r.id},'${esc(r.name)}')">✓</button>
-      </div>
-    </div>`;
-  });
+  if(!pending.length) html+=`<div class="empty">No pending follow-ups.</div>`;
+  else pending.forEach(r=>{
+    const cb=callbacks[r.id]; const ll=lastLog(r.id);
+    const overdue=cb&&new Date(cb)<=new Date();
+    const reasons=urgencyReasons(r);
+    html+=`<div class="fup-item">
+      <div class="fup-dot ${overdue?'red':reasons.length?'ylw':'grn'}"></div>
+      <div class="fup-body">
+        <div class="fup-name">${r.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${r.flats} flats</span></div>
+        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;">${overdue?'⚠ Overdue:':'📅'} ${cb}</div>`:''}
+        ${reasons.length?`<div class="fup-note">${reasons.join(' · ')}</div>`:''}
+        ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:'<div class="fup-note" style="color:var(--muted)">No call logged yet</div>'}
+      </div>
+      <div class="fup-actions">
+        <button class="icon-btn" onclick="openLog(${r.id},'${esc(r.name)}')">📝</button>
+        <button class="icon-btn" title="Mark done" onclick="markCbDone(${r.id},'${esc(r.name)}')">✓</button>
+      </div>
+    </div>`;
+  });
 
-  // Pipeline with logs
-  const pipeLogged=PIPELINE.filter(p=>getLogsById(p.id).length||callbacks[p.id]);
-  if(pipeLogged.length){
-    html+=`<div class="sec" style="margin-top:16px">Pipeline follow-ups</div>`;
-    pipeLogged.forEach(p=>{
-      const ll=lastLog(p.id); const cb=callbacks[p.id];
-      html+=`<div class="fup-item">
-        <div class="fup-dot ylw"></div>
-        <div class="fup-body">
-          <div class="fup-name">${p.name} <span style="font-size:10px;color:var(--muted)">(Pipeline · ${p.flats} flats)</span></div>
-          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;">📅 ${cb}</div>`:''}
-          ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:''}
-        </div>
-        <div class="fup-actions">
-          <button class="icon-btn" onclick="openLog(${p.id},'${esc(p.name)}','pipeline')">📝</button>
-        </div>
-      </div>`;
-    });
-  }
+  // Pipeline with logs
+  const pipeLogged=PIPELINE.filter(p=>getLogsById(p.id).length||callbacks[p.id]);
+  if(pipeLogged.length){
+    html+=`<div class="sec" style="margin-top:16px">Pipeline follow-ups</div>`;
+    pipeLogged.forEach(p=>{
+      const ll=lastLog(p.id); const cb=callbacks[p.id];
+      html+=`<div class="fup-item">
+        <div class="fup-dot ylw"></div>
+        <div class="fup-body">
+          <div class="fup-name">${p.name} <span style="font-size:10px;color:var(--muted)">(Pipeline · ${p.flats} flats)</span></div>
+          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;">📅 ${cb}</div>`:''}
+          ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:''}
+        </div>
+        <div class="fup-actions">
+          <button class="icon-btn" onclick="openLog(${p.id},'${esc(p.name)}','pipeline')">📝</button>
+        </div>
+      </div>`;
+    });
+  }
 
-  // Full history
-  html+=`<div class="sec" style="margin-top:16px">All call history</div>`;
-  const allWithLogs=[...ACTIVE,...PIPELINE].filter(r=>getLogsById(r.id).length);
-  if(!allWithLogs.length) html+=`<div class="empty">No calls logged yet.</div>`;
-  else allWithLogs.forEach(r=>{
-    html+=`<div style="margin-bottom:14px;">
-      <div style="font-weight:700;font-size:12px;margin-bottom:6px;">${r.name}${PIPELINE.find(p=>p.id===r.id)?` <span style="font-size:10px;color:var(--muted)">(Pipeline)</span>`:''}</div>`;
-    getLogsById(r.id).slice().reverse().forEach(l=>{
-      html+=`<div class="last-note">
-        ${l.agentName?`<div class="note-agent">👤 ${l.agentName}</div>`:''}
-        ${l.note}
-        <div class="note-time">${l.time} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div>
-      </div>`;
-    });
-    html+=`</div>`;
-  });
+  // Full history
+  html+=`<div class="sec" style="margin-top:16px">All call history</div>`;
+  const allWithLogs=[...ACTIVE,...PIPELINE].filter(r=>getLogsById(r.id).length);
+  if(!allWithLogs.length) html+=`<div class="empty">No calls logged yet.</div>`;
+  else allWithLogs.forEach(r=>{
+    html+=`<div style="margin-bottom:14px;">
+      <div style="font-weight:700;font-size:12px;margin-bottom:6px;">${r.name}${PIPELINE.find(p=>p.id===r.id)?` <span style="font-size:10px;color:var(--muted)">(Pipeline)</span>`:''}</div>`;
+    getLogsById(r.id).slice().reverse().forEach(l=>{
+      html+=`<div class="last-note">
+        ${l.agentName?`<div class="note-agent">👤 ${l.agentName}</div>`:''}
+        ${l.note}
+        <div class="note-time">${l.time} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
 
-  document.getElementById('tab-followup').innerHTML=html;
+  document.getElementById('tab-followup').innerHTML=html;
 }
 
 // ═══════════════════════════════════════════════════
 // COMPARE TAB
 // ═══════════════════════════════════════════════════
 function renderCompare(){
-  const sorted=[...ACTIVE].sort((a,b)=>{
-    let va=a[sortKey],vb=b[sortKey];
-    if(sortKey==='score'){va=checkHealthOverride(a);vb=checkHealthOverride(b);}
-    if(sortKey==='trend'){va=a.revJun-a.revMay;vb=b.revJun-b.revMay;}
-    return (va-vb)*sortDir;
-  });
-  function sBtn(k,l){
-    const on=sortKey===k;
-    return `${l}<button class="sort-btn ${on?'active':''}" onclick="sortKey='${k}';sortDir=${on}?-sortDir:-1;renderCompare()">${sortDir===-1&&on?'↓':'↑'}</button>`;
-  }
-  let html=`<div class="cmp-wrap"><table class="cmp-table"><thead><tr>
-    <th>Society</th><th>${sBtn('pen','Pen.')}</th><th>${sBtn('ob','Onboarded')}</th>
-    <th>${sBtn('revJun','Rev Jun')}</th><th>${sBtn('trend','Trend')}</th>
-    <th>${sBtn('score','Health')}</th><th>Last log</th>
-  </tr></thead><tbody>`;
-  sorted.forEach(r=>{
-    const sc=checkHealthOverride(r);
-    const scC=sc>=70?'b-good':sc>=45?'b-warn':'b-hot';
-    const trend=r.revJun-r.revMay;
-    const ll=lastLog(r.id);
-    html+=`<tr onclick="openDetail(${r.id})" title="Click for details">
-      <td><strong style="${sc<45?'color:var(--red)':''}">${r.name}</strong><div style="font-size:10px;color:var(--muted)">${r.months===0?'Just launched':r.months+'mo live'}</div></td>
-      <td><div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:4px;border-radius:3px;background:var(--bdr);overflow:hidden;"><div style="height:100%;width:${r.pen}%;background:var(--acc);border-radius:3px;"></div></div><span style="font-family:var(--mono);font-size:11px">${r.pen}%</span><span style="font-size:10px;color:var(--red)">${100-r.pen}%↑</span></div></td>
-      <td><span style="font-family:var(--mono);font-size:12px">${r.ob}</span><div style="font-size:10px;color:var(--muted)">of ${r.flats}</div></td>
-      <td><span style="font-family:var(--mono);font-size:12px">${fmt(r.revJun)}</span></td>
-      <td class="${trend>=0?'up':'dn'}" style="font-family:var(--mono);font-size:11px;">${trend>=0?'▲':'▼'} ${fmtS(Math.abs(trend))}</td>
-      <td><span class="badge ${scC}">${sc}</span></td>
-      <td style="font-size:11px;color:var(--txt2)">
-        ${ll?`${ll.agentName?`<span style="font-size:10px;font-weight:600;color:var(--acc);">${ll.agentName}</span><br>`:''}
-        "${ll.note.substring(0,28)}…"
-        <div style="font-size:9px;color:var(--muted)">${ll.time}</div>`:'<span style="color:var(--muted)">—</span>'}
-      </td>
-    </tr>`;
-  });
-  html+=`</tbody></table></div>`;
+  const sorted=[...ACTIVE].sort((a,b)=>{
+    let va=a[sortKey],vb=b[sortKey];
+    if(sortKey==='score'){va=checkHealthOverride(a);vb=checkHealthOverride(b);}
+    if(sortKey==='trend'){va=a.revJun-a.revMay;vb=b.revJun-b.revMay;}
+    return (va-vb)*sortDir;
+  });
+  function sBtn(k,l){
+    const on=sortKey===k;
+    return `${l}<button class="sort-btn ${on?'active':''}" onclick="sortKey='${k}';sortDir=${on}?-sortDir:-1;renderCompare()">${sortDir===-1&&on?'↓':'↑'}</button>`;
+  }
+  let html=`<div class="cmp-wrap"><table class="cmp-table"><thead><tr>
+    <th>Society</th><th>${sBtn('pen','Pen.')}</th><th>${sBtn('ob','Onboarded')}</th>
+    <th>${sBtn('revJun','Rev Jun')}</th><th>${sBtn('trend','Trend')}</th>
+    <th>${sBtn('score','Health')}</th><th>Last log</th>
+  </tr></thead><tbody>`;
+  sorted.forEach(r=>{
+    const sc=checkHealthOverride(r);
+    const scC=sc>=70?'b-good':sc>=45?'b-warn':'b-hot';
+    const trend=r.revJun-r.revMay;
+    const ll=lastLog(r.id);
+    html+=`<tr onclick="openDetail(${r.id})" title="Click for details">
+      <td><strong style="${sc<45?'color:var(--red)':''}">${r.name}</strong><div style="font-size:10px;color:var(--muted)">${r.months===0?'Just launched':r.months+'mo live'}</div></td>
+      <td><div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:4px;border-radius:3px;background:var(--bdr);overflow:hidden;"><div style="height:100%;width:${r.pen}%;background:var(--acc);border-radius:3px;"></div></div><span style="font-family:var(--mono);font-size:11px">${r.pen}%</span><span style="font-size:10px;color:var(--red)">${100-r.pen}%↑</span></div></td>
+      <td><span style="font-family:var(--mono);font-size:12px">${r.ob}</span><div style="font-size:10px;color:var(--muted)">of ${r.flats}</div></td>
+      <td><span style="font-family:var(--mono);font-size:12px">${fmt(r.revJun)}</span></td>
+      <td class="${trend>=0?'up':'dn'}" style="font-family:var(--mono);font-size:11px;">${trend>=0?'▲':'▼'} ${fmtS(Math.abs(trend))}</td>
+      <td><span class="badge ${scC}">${sc}</span></td>
+      <td style="font-size:11px;color:var(--txt2)">
+        ${ll?`${ll.agentName?`<span style="font-size:10px;font-weight:600;color:var(--acc);">${ll.agentName}</span><br>`:''}
+        "${ll.note.substring(0,28)}…"
+        <div style="font-size:9px;color:var(--muted)">${ll.time}</div>`:'<span style="color:var(--muted)">—</span>'}
+      </td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div>`;
 
-  const topPen=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.pen-a.pen)[0] : null;
-  const topRev=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.revJun-a.revJun)[0] : null;
-  const mostLeft=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(b.flats-b.ob)-(a.flats-a.ob))[0] : null;
-  const worstTrend=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(a.revJun-a.revMay)-(b.revJun-b.revMay))[0] : null;
+  const topPen=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.pen-a.pen)[0] : null;
+  const topRev=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.revJun-a.revJun)[0] : null;
+  const mostLeft=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(b.flats-b.ob)-(a.flats-a.ob))[0] : null;
+  const worstTrend=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(a.revJun-a.revMay)-(b.revJun-b.revMay))[0] : null;
 
-  if (topPen) {
-    html+=`<div class="sec">Key insights</div>
-    <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
-      <div class="scard" style="cursor:pointer" onclick="openDetail(${topPen.id})"><div class="scard-name" style="color:var(--grn)">🏆 Top penetration</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${topPen.pen}%</div><div style="font-size:11px;color:var(--txt2)">${topPen.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-      <div class="scard" style="cursor:pointer" onclick="openDetail(${topRev.id})"><div class="scard-name" style="color:var(--grn)">💰 Top revenue Jun</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0">${fmt(topRev.revJun)}</div><div style="font-size:11px;color:var(--txt2)">${topRev.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-      <div class="scard" style="cursor:pointer" onclick="openDetail(${mostLeft.id})"><div class="scard-name" style="color:var(--acc)">🎯 Biggest opportunity</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${mostLeft.flats-mostLeft.ob} flats</div><div style="font-size:11px;color:var(--txt2)">${mostLeft.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-      <div class="scard" style="cursor:pointer" onclick="openDetail(${worstTrend.id})"><div class="scard-name" style="color:var(--red)">📉 Needs intervention</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0;color:var(--red)">${fmt(Math.max(0,worstTrend.revMay-worstTrend.revJun))} drop</div><div style="font-size:11px;color:var(--txt2)">${worstTrend.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
-    </div>`;
-  }
-  document.getElementById('tab-compare').innerHTML=html;
+  if (topPen) {
+    html+=`<div class="sec">Key insights</div>
+    <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${topPen.id})"><div class="scard-name" style="color:var(--grn)">🏆 Top penetration</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${topPen.pen}%</div><div style="font-size:11px;color:var(--txt2)">${topPen.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${topRev.id})"><div class="scard-name" style="color:var(--grn)">💰 Top revenue Jun</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0">${fmt(topRev.revJun)}</div><div style="font-size:11px;color:var(--txt2)">${topRev.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${mostLeft.id})"><div class="scard-name" style="color:var(--acc)">🎯 Biggest opportunity</div><div style="font-size:20px;font-family:var(--mono);font-weight:700;margin:6px 0">${mostLeft.flats-mostLeft.ob} flats</div><div style="font-size:11px;color:var(--txt2)">${mostLeft.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+      <div class="scard" style="cursor:pointer" onclick="openDetail(${worstTrend.id})"><div class="scard-name" style="color:var(--red)">📉 Needs intervention</div><div style="font-size:18px;font-family:var(--mono);font-weight:700;margin:6px 0;color:var(--red)">${fmt(Math.max(0,worstTrend.revMay-worstTrend.revJun))} drop</div><div style="font-size:11px;color:var(--txt2)">${worstTrend.name}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Click for details →</div></div>
+    </div>`;
+  }
+  document.getElementById('tab-compare').innerHTML=html;
 }
 
 // ═══════════════════════════════════════════════════
 // HISTORICAL SNAPSHOTS VIEW TAB
 // ═══════════════════════════════════════════════════
 function renderSnapshots() {
-  let html = `<div class="sec">Historical Data Matrix Snapshots</div>`;
-  if (!historicalSnapshots.length) {
-    html += `<div class="empty">No historical changes documented yet. Load a modified layout sheet to see comparative day-to-day deltas.</div>`;
-  } else {
-    html += `<div style="display:flex; flex-direction:column; gap:16px;">`;
-    historicalSnapshots.slice().reverse().forEach(snap => {
-      html += `<div style="background:var(--surf); border:1px solid var(--bdr); padding:16px; border-radius:12px;">
-        <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:var(--acc);">📅 Snapshot Log Reference: ${snap.date}</div>`;
-      if (!snap.changes || !snap.changes.length) {
-        html += `<div style="font-size:11px; color:var(--muted);">Zero onboarding changes detected during this transaction window.</div>`;
-      } else {
-        html += `<table class="cmp-table" style="margin-bottom:0;"><thead><tr><th>Society</th><th>Metric Variance Shift</th></tr></thead><tbody>`;
-        snap.changes.forEach(c => {
-          html += `<tr>
-            <td><strong>${c.name}</strong></td>
-            <td>
-              Onboarded: ${c.oldOb} ➔ <strong>${c.newOb}</strong> <span class="delta-pill plus">+${c.obDiff} flats</span><br>
-              Penetration: ${c.oldPen}% ➔ <strong>${c.newPen}%</strong> <span class="delta-pill plus">+${c.penDiff}%</span>
-            </td>
-          </tr>`;
-        });
-        html += `</tbody></table>`;
-      }
-      html += `</div>`;
-    });
-    html += `</div>`;
-  }
-  document.getElementById('tab-snapshots').innerHTML = html;
+  let html = `<div class="sec">Historical Data Matrix Snapshots</div>`;
+  if (!historicalSnapshots.length) {
+    html += `<div class="empty">No historical changes documented yet. Load a modified layout sheet to see comparative day-to-day deltas.</div>`;
+  } else {
+    html += `<div style="display:flex; flex-direction:column; gap:16px;">`;
+    historicalSnapshots.slice().reverse().forEach(snap => {
+      html += `<div style="background:var(--surf); border:1px solid var(--bdr); padding:16px; border-radius:12px;">
+        <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:var(--acc);">📅 Snapshot Log Reference: ${snap.date}</div>`;
+      if (!snap.changes || !snap.changes.length) {
+        html += `<div style="font-size:11px; color:var(--muted);">Zero onboarding changes detected during this transaction window.</div>`;
+      } else {
+        html += `<table class="cmp-table" style="margin-bottom:0;"><thead><tr><th>Society</th><th>Metric Variance Shift</th></tr></thead><tbody>`;
+        snap.changes.forEach(c => {
+          html += `<tr>
+            <td><strong>${c.name}</strong></td>
+            <td>
+              Onboarded: ${c.oldOb} ➔ <strong>${c.newOb}</strong> <span class="delta-pill plus">+${c.obDiff} flats</span><br>
+              Penetration: ${c.oldPen}% ➔ <strong>${c.newPen}%</strong> <span class="delta-pill plus">+${c.penDiff}%</span>
+            </td>
+          </tr>`;
+        });
+        html += `</tbody></table>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+  document.getElementById('tab-snapshots').innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════
 // DETAIL MODAL
 // ═══════════════════════════════════════════════════
 function openDetail(id){
-  const all=[...ACTIVE,...PIPELINE];
-  const r=all.find(x=>x.id===id);
-  if(!r) return;
-  _detailId=id;
-  const isPipe=!!PIPELINE.find(p=>p.id===id);
-  const rem=isPipe?100:(100-(r.pen||0));
-  const fLeft=isPipe?r.flats:(r.flats-(r.ob||0));
-  const pen=r.pen||0;
-  const circ=301.59;
+  const all=[...ACTIVE,...PIPELINE];
+  const r=all.find(x=>x.id===id);
+  if(!r) return;
+  _detailId=id;
+  const isPipe=!!PIPELINE.find(p=>p.id===id);
+  const rem=isPipe?100:(100-(r.pen||0));
+  const fLeft=isPipe?r.flats:(r.flats-(r.ob||0));
+  const pen=r.pen||0;
+  const circ=301.59;
 
-  document.getElementById('detailTitle').textContent=r.name;
-  document.getElementById('detailSub').textContent=(isPipe?'Pipeline · ':'Active · ')+r.flats+' total flats'+(r.ob?' · '+r.ob+' onboarded':'');
-  document.getElementById('detailRing').style.strokeDashoffset=isPipe?0:circ-(rem/100)*circ;
-  document.getElementById('detailRingPct').textContent=isPipe?'—':rem+'%';
-  document.getElementById('dTotal').textContent=r.flats;
-  document.getElementById('dDone').textContent=r.ob||0;
-  document.getElementById('dLeft').textContent=fLeft;
-  document.getElementById('dBarDone').style.width=pen+'%';
-  document.getElementById('dBarDonePct').textContent=pen+'%';
-  document.getElementById('dBarLeft').style.width=rem+'%';
-  document.getElementById('dBarLeftPct').textContent=rem+'%';
+  document.getElementById('detailTitle').textContent=r.name;
+  document.getElementById('detailSub').textContent=(isPipe?'Pipeline · ':'Active · ')+r.flats+' total flats'+(r.ob?' · '+r.ob+' onboarded':'');
+  document.getElementById('detailRing').style.strokeDashoffset=isPipe?0:circ-(rem/100)*circ;
+  document.getElementById('detailRingPct').textContent=isPipe?'—':rem+'%';
+  document.getElementById('dTotal').textContent=r.flats;
+  document.getElementById('dDone').textContent=r.ob||0;
+  document.getElementById('dLeft').textContent=fLeft;
+  document.getElementById('dBarDone').style.width=pen+'%';
+  document.getElementById('dBarDonePct').textContent=pen+'%';
+  document.getElementById('dBarLeft').style.width=rem+'%';
+  document.getElementById('dBarLeftPct').textContent=rem+'%';
 
-  if(!isPipe){
-    const next=Math.ceil((pen+1)/10)*10;
-    const toNext=Math.max(0,Math.ceil((next/100)*r.flats)-(r.ob||0));
-    document.getElementById('dTargetNote').innerHTML=`To reach <strong>${next}% penetration</strong>, you need <strong>${toNext} more flat${toNext!==1?'s':''}</strong> onboarded.<br>${fLeft} flats still untouched out of ${r.flats}.`;
-  } else {
-    document.getElementById('dTargetNote').innerHTML=`Pipeline society — ${r.flats} flats total.<br>${r.remark||''}`;
-  }
+  if(!isPipe){
+    const next=Math.ceil((pen+1)/10)*10;
+    const toNext=Math.max(0,Math.ceil((next/100)*r.flats)-(r.ob||0));
+    document.getElementById('dTargetNote').innerHTML=`To reach <strong>${next}% penetration</strong>, you need <strong>${toNext} more flat${toNext!==1?'s':''}</strong> onboarded.<br>${fLeft} flats still untouched out of ${r.flats}.`;
+  } else {
+    document.getElementById('dTargetNote').innerHTML=`Pipeline society — ${r.flats} flats total.<br>${r.remark||''}`;
+  }
 
-  const logList=getLogsById(id);
-  let lh=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Call history (${logList.length})</div>`;
-  if(!logList.length) lh+=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px;">No calls logged yet.</div>`;
-  else logList.slice().reverse().forEach(l=>{
-    lh+=`<div class="log-entry">
-      ${l.agentName?`<div style="font-size:10px;font-weight:600;color:var(--acc);margin-bottom:2px;">👤 ${l.agentName}</div>`:''}
-      ${l.note}
-      <div class="note-time">${l.time} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div>
-    </div>`;
-  });
-  document.getElementById('dLogHistory').innerHTML=lh;
-  document.getElementById('dLogBtn').textContent=isPipe?'📝 Log pipeline note':'📝 Log a call';
-  document.getElementById('detailModal').classList.add('open');
+  const logList=getLogsById(id);
+  let lh=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Call history (${logList.length})</div>`;
+  if(!logList.length) lh+=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px;">No calls logged yet.</div>`;
+  else logList.slice().reverse().forEach(l=>{
+    lh+=`<div class="log-entry">
+      ${l.agentName?`<div style="font-size:10px;font-weight:600;color:var(--acc);margin-bottom:2px;">👤 ${l.agentName}</div>`:''}
+      ${l.note}
+      <div class="note-time">${l.time} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div>
+    </div>`;
+  });
+  document.getElementById('dLogHistory').innerHTML=lh;
+  document.getElementById('dLogBtn').textContent=isPipe?'📝 Log pipeline note':'📝 Log a call';
+  document.getElementById('detailModal').classList.add('open');
 }
 
 function openLogFromDetail(){
-  const all=[...ACTIVE,...PIPELINE];
-  const r=all.find(x=>x.id===_detailId);
-  if(!r) return;
-  const isPipe=!!PIPELINE.find(p=>p.id===_detailId);
-  document.getElementById('detailModal').classList.remove('open');
-  openLog(r.id, r.name, isPipe?'pipeline':'');
+  const all=[...ACTIVE,...PIPELINE];
+  const r=all.find(x=>x.id===_detailId);
+  if(!r) return;
+  const isPipe=!!PIPELINE.find(p=>p.id===_detailId);
+  document.getElementById('detailModal').classList.remove('open');
+  openLog(r.id, r.name, isPipe?'pipeline':'');
 }
 
 // ═══════════════════════════════════════════════════
 // LOG MODAL
 // ═══════════════════════════════════════════════════
 function openLog(id, name, mode){
-  currentLogId=id; currentLogName=name||'';
-  document.getElementById('logModalTitle').textContent=mode==='pipeline'?'Log pipeline note':'Log call / visit';
-  document.getElementById('logModalSub').textContent=name||'';
-  document.getElementById('logAgent').value=localStorage.getItem('pw_agent')||'';
-  document.getElementById('logNote').value='';
-  document.getElementById('logOutcome').value='positive';
-  document.getElementById('cbDateLabel').style.display='none';
-  document.getElementById('cbDate').style.display='none';
-  document.getElementById('cbDate').value='';
-  if(mode==='callback'){
-    document.getElementById('logOutcome').value='callback';
-    document.getElementById('cbDateLabel').style.display='block';
-    document.getElementById('cbDate').style.display='block';
-  }
-  document.getElementById('logSaving').style.display='none';
-  document.getElementById('logModal').classList.add('open');
+  currentLogId=id; currentLogName=name||'';
+  document.getElementById('logModalTitle').textContent=mode==='pipeline'?'Log pipeline note':'Log call / visit';
+  document.getElementById('logModalSub').textContent=name||'';
+  document.getElementById('logAgent').value=localStorage.getItem('pw_agent')||'';
+  document.getElementById('logNote').value='';
+  document.getElementById('logOutcome').value='positive';
+  document.getElementById('cbDateLabel').style.display='none';
+  document.getElementById('cbDate').style.display='none';
+  document.getElementById('cbDate').value='';
+  if(mode==='callback'){
+    document.getElementById('logOutcome').value='callback';
+    document.getElementById('cbDateLabel').style.display='block';
+    document.getElementById('cbDate').style.display='block';
+  }
+  document.getElementById('logSaving').style.display='none';
+  document.getElementById('logModal').classList.add('open');
 }
 
 document.getElementById('logOutcome').addEventListener('change',function(){
-  const s=this.value==='callback';
-  document.getElementById('cbDateLabel').style.display=s?'block':'none';
-  document.getElementById('cbDate').style.display=s?'block':'none';
+  const s=this.value==='callback';
+  document.getElementById('cbDateLabel').style.display=s?'block':'none';
+  document.getElementById('cbDate').style.display=s?'block':'none';
 });
 
 function closeLogModal(){ document.getElementById('logModal').classList.remove('open'); }
 
 async function saveLog(){
-  const note=document.getElementById('logNote').value.trim();
-  if(!note){alert('Please add a note.');return;}
-  const agentName=document.getElementById('logAgent').value.trim();
-  const outcome=document.getElementById('logOutcome').value;
-  const cbDate=document.getElementById('cbDate').value;
+  const note=document.getElementById('logNote').value.trim();
+  if(!note){alert('Please add a note.');return;}
+  const agentName=document.getElementById('logAgent').value.trim();
+  const outcome=document.getElementById('logOutcome').value;
+  const cbDate=document.getElementById('cbDate').value;
 
-  if(agentName) localStorage.setItem('pw_agent',agentName);
+  if(agentName) localStorage.setItem('pw_agent',agentName);
 
-  const now=new Date();
-  const time=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-  const entry={note,agentName,outcome,callbackDate:cbDate,time};
+  const now=new Date();
+  const time=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+  const entry={note,agentName,outcome,callbackDate:cbDate,time};
 
-  if(!logs[currentLogId]) logs[currentLogId]=[];
-  logs[currentLogId].push(entry);
-  if(outcome==='callback'&&cbDate) callbacks[currentLogId]=cbDate;
+  if(!logs[currentLogId]) logs[currentLogId]=[];
+  logs[currentLogId].push(entry);
+  if(outcome==='callback'&&cbDate) callbacks[currentLogId]=cbDate;
 
-  saveLocal();
+  saveLocal();
 
-  if(backendOk){
-    document.getElementById('logSaving').style.display='block';
-    document.getElementById('logSaveBtn').disabled=true;
-    const all=[...ACTIVE,...PIPELINE];
-    const r=all.find(x=>x.id===currentLogId);
-    await pushLogToSheet({
-      societyName: r?r.name:currentLogName,
-      agentName, note, outcome,
-      callbackDate: cbDate,
-      type: PIPELINE.find(p=>p.id===currentLogId)?'pipeline':'active'
-    });
-    document.getElementById('logSaveBtn').disabled=false;
-  }
+  if(backendOk){
+    document.getElementById('logSaving').style.display='block';
+    document.getElementById('logSaveBtn').disabled=true;
+    const all=[...ACTIVE,...PIPELINE];
+    const r=all.find(x=>x.id===currentLogId);
+    await pushLogToSheet({
+      societyName: r?r.name:currentLogName,
+      agentName, note, outcome,
+      callbackDate: cbDate,
+      type: PIPELINE.find(p=>p.id===currentLogId)?'pipeline':'active'
+    });
+    document.getElementById('logSaveBtn').disabled=false;
+  }
 
-  closeLogModal();
-  renderCurrent();
+  closeLogModal();
+  renderCurrent();
 }
 
 async function markCbDone(id, name){
-  delete callbacks[id];
-  saveLocal();
-  if(backendOk) await apiCall('clearCallback',{societyName:name});
-  renderCurrent();
+  delete callbacks[id];
+  saveLocal();
+  if(backendOk) await apiCall('clearCallback',{societyName:name});
+  renderCurrent();
 }
 
 function saveLocal(){
-  localStorage.setItem('pw_logs',JSON.stringify(logs));
-  localStorage.setItem('pw_callbacks',JSON.stringify(callbacks));
+  localStorage.setItem('pw_logs',JSON.stringify(logs));
+  localStorage.setItem('pw_callbacks',JSON.stringify(callbacks));
 }
 
 // ═══════════════════════════════════════════════════
 // SHEET LOADER & COMPARATIVE TRACKER PROTOCOLS
 // ═══════════════════════════════════════════════════
 async function loadSheet(){
-  const input=document.getElementById('sheetUrl').value.trim();
-  if(!input){alert('Paste your Google Sheet link first.');return;}
-  const m=input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if(!m){alert("Doesn't look like a Google Sheets URL.");return;}
-  const sheetId=m[1];
-  const btn=document.querySelector('.conn-bar button:last-child');
-  btn.textContent='Loading…'; btn.disabled=true;
-  localStorage.setItem('pw_sheet_url',input);
-  try{
-    const res=await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`,{credentials:'omit'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const raw=await res.text();
-    const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
-    const table=json.table;
-    if(!table||!table.cols) throw new Error('Empty sheet.');
-    const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
-    const idx=k=>cols.findIndex(h=>h.includes(k));
-    const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
-    const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
-    
-    const baselineMap = {};
-    ACTIVE.forEach(r => { baselineMap[r.name] = { ob: r.ob, pen: r.pen }; });
+  const input=document.getElementById('sheetUrl').value.trim();
+  if(!input){alert('Paste your Google Sheet link first.');return;}
+  const m=input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  if(!m){alert("Doesn't look like a Google Sheets URL.");return;}
+  const sheetId=m[1];
+  const btn=document.querySelector('.conn-bar button:last-child');
+  btn.textContent='Loading…'; btn.disabled=true;
+  localStorage.setItem('pw_sheet_url',input);
+  try{
+    const res=await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`,{credentials:'omit'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const raw=await res.text();
+    const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
+    const table=json.table;
+    if(!table||!table.cols) throw new Error('Empty sheet.');
+    const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
+    const idx=k=>cols.findIndex(h=>h.includes(k));
+    const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
+    const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
+    
+    const baselineMap = {};
+    ACTIVE.forEach(r => { baselineMap[r.name] = { ob: r.ob, pen: r.pen }; });
 
-    const nA=[],nP=[]; let cnt=200;
-    let dayChanges = [];
+    const nA=[],nP=[]; let cnt=200;
+    let dayChanges = [];
 
-    (table.rows||[]).forEach(row=>{
-      const name=cell(row,'society')||cell(row,'name');
-      if(!name||/total|overall|^s\.?no/i.test(name)) return;
-      const ob=num(cell(row,'onboard'));
-      const oldObj=baselineMap[name];
-      const id=cnt++;
-      const obj={id,name,flats:num(cell(row,'total'))||num(cell(row,'flat')),ob,
-        pen:num(cell(row,'penetr'))||num(cell(row,'pen')),
-        launch:cell(row,'launch')||cell(row,'month')||'—',
-        months:num(cell(row,'months')),
-        revMay:num(cell(row,'may')),
-        revJun:num(cell(row,'june'))||num(cell(row,'jun')),
-        remark:cell(row,'remark')||cell(row,'pendency'),
-      };
-      
-      if (oldObj && ob > oldObj.ob) {
-        dayChanges.push({
-          name: name,
-          oldOb: oldObj.ob,
-          newOb: ob,
-          obDiff: ob - oldObj.ob,
-          oldPen: oldObj.pen,
-          newPen: obj.pen,
-          penDiff: obj.pen - oldObj.pen
-        });
-      }
+    (table.rows||[]).forEach(row=>{
+      const name=cell(row,'society')||cell(row,'name');
+      if(!name||/total|overall|^s\.?no/i.test(name)) return;
+      const ob=num(cell(row,'onboard'));
+      const oldObj=baselineMap[name];
+      const id=cnt++;
+      const obj={id,name,flats:num(cell(row,'total'))||num(cell(row,'flat')),ob,
+        pen:num(cell(row,'penetr'))||num(cell(row,'pen')),
+        launch:cell(row,'launch')||cell(row,'month')||'—',
+        months:num(cell(row,'months')),
+        revMay:num(cell(row,'may')),
+        revJun:num(cell(row,'june'))||num(cell(row,'jun')),
+        remark:cell(row,'remark')||cell(row,'pendency'),
+      };
+      
+      if (oldObj && ob > oldObj.ob) {
+        dayChanges.push({
+          name: name,
+          oldOb: oldObj.ob,
+          newOb: ob,
+          obDiff: ob - oldObj.ob,
+          oldPen: oldObj.pen,
+          newPen: obj.pen,
+          penDiff: obj.pen - oldObj.pen
+        });
+      }
 
-      if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
-    });
-    
-    if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
-    
-    if (dayChanges.length > 0) {
-      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
-      historicalSnapshots.push({
-        date: todayString,
-        changes: dayChanges
-      });
-      localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
-    }
+      if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
+    });
+    
+    if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
+    
+    if (dayChanges.length > 0) {
+      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+      historicalSnapshots.push({
+        date: todayString,
+        changes: dayChanges
+      });
+      localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
+    }
 
-    ACTIVE=nA; PIPELINE=nP;
-    document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
-    document.getElementById('connStatus').textContent='✅ Sheet loaded. Logs preserved.';
-    renderCurrent();
-  } catch(e){
-    alert('Could not load sheet.\n\n'+e.message);
-  } finally{
-    btn.textContent='Load Sheet'; btn.disabled=false;
-  }
+    ACTIVE=nA; PIPELINE=nP;
+    document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
+    document.getElementById('connStatus').textContent='✅ Sheet loaded. Logs preserved.';
+    renderCurrent();
+  } catch(e){
+    alert('Could not load sheet.\n\n'+e.message);
+  } finally{
+    btn.textContent='Load Sheet'; btn.disabled=false;
+  }
 }
 
 // ═══════════════════════════════════════════════════
 // TABS & UTILS
 // ═══════════════════════════════════════════════════
 function showTab(tab){
-  currentTab=tab;
-  document.querySelectorAll('.tab').forEach((b)=>{
-    const onclickAttr = b.getAttribute('onclick') || '';
-    b.classList.toggle('active', onclickAttr.includes(`'${tab}'`));
-  });
-  ['overview','followup','compare','snapshots'].forEach(t=>{
-    const el = document.getElementById('tab-'+t);
-    if(el) el.style.display=t===tab?'block':'none';
-  });
-  renderCurrent();
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach((b)=>{
+    const onclickAttr = b.getAttribute('onclick') || '';
+    b.classList.toggle('active', onclickAttr.includes(`'${tab}'`));
+  });
+  ['overview','followup','compare','snapshots'].forEach(t=>{
+    const el = document.getElementById('tab-'+t);
+    if(el) el.style.display=t===tab?'block':'none';
+  });
+  renderCurrent();
 }
 
 function renderCurrent(){
-  if(currentTab==='overview') renderOverview();
-  else if(currentTab==='followup') renderFollowup();
-  else if(currentTab==='compare') renderCompare();
-  else if(currentTab==='snapshots') renderSnapshots();
+  if(currentTab==='overview') renderOverview();
+  else if(currentTab==='followup') renderFollowup();
+  else if(currentTab==='compare') renderCompare();
+  else if(currentTab==='snapshots') renderSnapshots();
 }
 
 function toggleTheme(){
-  const h=document.documentElement;
-  const t=h.getAttribute('data-theme')==='dark'?'light':'dark';
-  h.setAttribute('data-theme',t);
-  document.getElementById('themeBtn').textContent=t==='dark'?'☀️ Light':'🌙 Dark';
-  renderCurrent();
+  const h=document.documentElement;
+  const t=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',t);
+  document.getElementById('themeBtn').textContent=t==='dark'?'☀️ Light':'🌙 Dark';
+  renderCurrent();
 }
 function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 
@@ -990,72 +990,72 @@ function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 // DRAWER CONTENT ROUTER
 // ═══════════════════════════════════════════════════
 function renderDrawerFocus(mode) {
-  const area = document.getElementById('drawerFocusArea');
-  const todayStr = new Date().toISOString().slice(0,10);
-  let h = '';
+  const area = document.getElementById('drawerFocusArea');
+  const todayStr = new Date().toISOString().slice(0,10);
+  let h = '';
 
-  if (mode === 'today') {
-    h = '<h4>Today\'s Follow-ups</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
-    let count = 0;
-    Object.entries(callbacks).forEach(([id,date])=>{
-      if(date === todayStr){
-        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--orn);">
-          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Callback Due Today</small>
-        </div>`;
-        count++;
-      }
-    });
-    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No active entries due today.</p>';
-    h += '</div>';
-  } 
-  else if (mode === 'upcoming') {
-    h = '<h4>Upcoming Callbacks</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
-    let count = 0;
-    Object.entries(callbacks).forEach(([id,date])=>{
-      if(date > todayStr){
-        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--muted);">
-          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Target: ${date}</small>
-        </div>`;
-        count++;
-      }
-    });
-    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No future items indexed.</p>';
-    h += '</div>';
-  } 
-  else if (mode === 'history') {
-    h = '<h4>Recent History Streams</h4><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:300px;overflow-y:auto;">';
-    let count = 0;
-    [...ACTIVE,...PIPELINE].forEach(r => {
-      const logList = getLogsById(r.id);
-      if (logList.length) {
-        const last = logList[logList.length - 1];
-        h += `<div style="padding:8px;background:var(--card);border-radius:6px;font-size:11px;">
-          <strong style="color:var(--acc);">${r.name}</strong>
-          <div style="color:var(--txt2);margin-top:3px;font-style:italic;">"${last.note.substring(0,40)}..."</div>
-          <small style="color:var(--muted);">${last.time}</small>
-        </div>`;
-        count++;
-      }
-    });
-    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No transactional history traces logged.</p>';
-    h += '</div>';
-  }
-  area.innerHTML = h;
+  if (mode === 'today') {
+    h = '<h4>Today\'s Follow-ups</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
+    let count = 0;
+    Object.entries(callbacks).forEach(([id,date])=>{
+      if(date === todayStr){
+        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
+        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--orn);">
+          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Callback Due Today</small>
+        </div>`;
+        count++;
+      }
+    });
+    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No active entries due today.</p>';
+    h += '</div>';
+  } 
+  else if (mode === 'upcoming') {
+    h = '<h4>Upcoming Callbacks</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
+    let count = 0;
+    Object.entries(callbacks).forEach(([id,date])=>{
+      if(date > todayStr){
+        const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
+        h+=`<div style="padding:10px;background:var(--card);border-radius:6px;border-left:3px solid var(--muted);">
+          <b>${s?s.name:id}</b><br><small style="color:var(--txt2)">Target: ${date}</small>
+        </div>`;
+        count++;
+      }
+    });
+    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No future items indexed.</p>';
+    h += '</div>';
+  } 
+  else if (mode === 'history') {
+    h = '<h4>Recent History Streams</h4><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:300px;overflow-y:auto;">';
+    let count = 0;
+    [...ACTIVE,...PIPELINE].forEach(r => {
+      const logList = getLogsById(r.id);
+      if (logList.length) {
+        const last = logList[logList.length - 1];
+        h += `<div style="padding:8px;background:var(--card);border-radius:6px;font-size:11px;">
+          <strong style="color:var(--acc);">${r.name}</strong>
+          <div style="color:var(--txt2);margin-top:3px;font-style:italic;">"${last.note.substring(0,40)}..."</div>
+          <small style="color:var(--muted);">${last.time}</small>
+        </div>`;
+        count++;
+      }
+    });
+    if(!count) h += '<p style="color:var(--muted);font-size:11px;">No transactional history traces logged.</p>';
+    h += '</div>';
+  }
+  area.innerHTML = h;
 }
 
 function toggleDrawer(){
-  const d=document.getElementById('callDrawer');
-  const o=document.getElementById('drawerOverlay');
-  const open = d && d.style.display==='block';
-  if(open){d.style.display='none';o.style.display='none';return;}
-  
-  renderDrawerFocus('today');
-  if(d && o) {
-    d.style.display='block';
-    o.style.display='block';
-  }
+  const d=document.getElementById('callDrawer');
+  const o=document.getElementById('drawerOverlay');
+  const open = d && d.style.display==='block';
+  if(open){d.style.display='none';o.style.display='none';return;}
+  
+  renderDrawerFocus('today');
+  if(d && o) {
+    d.style.display='block';
+    o.style.display='block';
+  }
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const d=document.getElementById('callDrawer');if(d && d.style.display==='block')toggleDrawer();}});
 
@@ -1063,20 +1063,20 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const d=document.ge
 // INIT
 // ═══════════════════════════════════════════════════
 if(SCRIPT_URL) document.getElementById('scriptUrl').value=SCRIPT_URL;
-if(SHEET_URL)  document.getElementById('sheetUrl').value=SHEET_URL;
+if(SHEET_URL)  document.getElementById('sheetUrl').value=SHEET_URL;
 if(localStorage.getItem('pw_agent'))
-  document.getElementById('agentName').value=localStorage.getItem('pw_agent');
+  document.getElementById('agentName').value=localStorage.getItem('pw_agent');
 
 if (historicalSnapshots.length > 0) {
-  document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
+  document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
 }
 
 if(SCRIPT_URL){
-  document.getElementById('setupBanner').style.display='none';
-  connectBackend();
+  document.getElementById('setupBanner').style.display='none';
+  connectBackend();
 }
 if(SHEET_URL){
-  loadSheet();
+  loadSheet();
 }
 
 renderOverview();

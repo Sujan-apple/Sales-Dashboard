@@ -133,7 +133,7 @@
   /* Modals */
   .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;}
   .modal-bg.open{display:flex;}
-  .modal{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;padding:22px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+  .modal{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;padding:22px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 25px 70px rgba(0,0,0,0.5);}
   .modal-title{font-size:15px;font-weight:700;margin-bottom:4px;}
   .modal-sub{font-size:11px;color:var(--muted);margin-bottom:16px;}
   .form-lbl{font-size:11px;color:var(--txt2);margin-bottom:5px;display:block;}
@@ -174,7 +174,7 @@
   @media(max-width:600px){body{padding:12px;}.kpi-val{font-size:18px;}}
 
   /* Snapshot Tracking Modifications */
-  .delta-pill{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono);margin-left:6px;}
+  .delta-pill{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono);margin:2px 4px 2px 0;}
   .delta-pill.plus{background:rgba(34,197,94,0.15);color:var(--grn);}
   .delta-pill.minus{background:rgba(239,68,68,0.15);color:var(--red);}
 </style>
@@ -686,8 +686,8 @@ function renderCompare(){
 
   const topPen=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.pen-a.pen)[0] : null;
   const topRev=ACTIVE.length ? [...ACTIVE].sort((a,b)=>b.revJun-a.revJun)[0] : null;
-  const mostLeft=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(b.flats-b.ob)-(a.flats-a.ob))[0] : null;
-  const worstTrend=ACTIVE.length ? [...ACTIVE].sort((a,b)=>(a.revJun-a.revMay)-(b.revJun-b.revMay))[0] : null;
+  const mostLeft=ACTIVE.length ? [...ACTIVE].sort((a,b)=(b.flats-b.ob)-(a.flats-a.ob))[0] : null;
+  const worstTrend=ACTIVE.length ? [...ACTIVE].sort((a,b)=(a.revJun-a.revMay)-(b.revJun-b.revMay))[0] : null;
 
   if (topPen) {
     html+=`<div class="sec">Key insights</div>
@@ -865,11 +865,6 @@ async function markCbDone(id, name){
   saveLocal();
   if(backendOk) await apiCall('clearCallback',{societyName:name});
   renderCurrent();
-}
-
-function saveLocal(){
-  localStorage.setItem('pw_logs',JSON.stringify(logs));
-  localStorage.setItem('pw_callbacks',JSON.stringify(callbacks));
 }
 
 // ═══════════════════════════════════════════════════

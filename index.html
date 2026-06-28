@@ -412,6 +412,7 @@ async function connectBackend() {
     document.getElementById('connStatus').textContent = '✅ Backend connected — logs sync across all devices in real time.';
     document.getElementById('connStatus').className = 'conn-status ok';
     document.getElementById('setupBanner').style.display = 'none';
+    await loadSnapshotsFromSheet();
     renderCurrent();
   } else {
     backendOk = false;
@@ -429,6 +430,34 @@ async function pushLogToSheet(logData) {
     setSyncStatus('ok', 'Saved ✓ ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
   } else {
     setSyncStatus('err', 'Save failed — stored locally');
+  }
+}
+
+async function pushSnapshotToSheet(snap) {
+  if (!backendOk) return;
+  setSyncStatus('loading', 'Saving snapshot…');
+  const result = await apiCall('saveSnapshot', { date: snap.date, changes: JSON.stringify(snap.changes) });
+  if (result && result.success) {
+    setSyncStatus('ok', 'Snapshot saved ✓');
+  } else {
+    setSyncStatus('err', 'Snapshot save failed — stored locally');
+  }
+}
+
+async function loadSnapshotsFromSheet() {
+  if (!backendOk) return;
+  setSyncStatus('loading', 'Loading snapshots…');
+  const result = await apiCall('getSnapshots');
+  if (result && result.snapshots) {
+    historicalSnapshots = result.snapshots.map(s => ({
+      date: s.date,
+      changes: typeof s.changes === 'string' ? JSON.parse(s.changes) : s.changes
+    }));
+    localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
+    if (historicalSnapshots.length > 0) {
+      document.getElementById('tabBtnSnapshots').style.display = 'inline-block';
+    }
+    setSyncStatus('ok', 'Snapshots loaded ✓');
   }
 }
 
@@ -604,7 +633,6 @@ function renderFollowup(){
     </div>`;
   });
 
-  // Pipeline with logs
   const pipeLogged=PIPELINE.filter(p=>getLogsById(p.id).length||callbacks[p.id]);
   if(pipeLogged.length){
     html+=`<div class="sec" style="margin-top:16px">Pipeline follow-ups</div>`;
@@ -624,7 +652,6 @@ function renderFollowup(){
     });
   }
 
-  // Full history
   html+=`<div class="sec" style="margin-top:16px">All call history</div>`;
   const allWithLogs=[...ACTIVE,...PIPELINE].filter(r=>getLogsById(r.id).length);
   if(!allWithLogs.length) html+=`<div class="empty">No calls logged yet.</div>`;
@@ -702,18 +729,18 @@ function renderCompare(){
 }
 
 // ═══════════════════════════════════════════════════
-// HISTORICAL SNAPSHOTS VIEW TAB
+// HISTORICAL SNAPSHOTS TAB
 // ═══════════════════════════════════════════════════
 function renderSnapshots() {
   const fieldMeta = {
-    ob:      { label: 'Onboarded Flats', fmt: v => v + ' flats',  color: (o,n) => n>o ? 'plus' : 'minus' },
-    pen:     { label: 'Penetration',     fmt: v => v + '%',       color: (o,n) => n>o ? 'plus' : 'minus' },
-    revMay:  { label: 'Revenue May',     fmt: v => '₹'+v.toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
-    revJun:  { label: 'Revenue Jun',     fmt: v => '₹'+v.toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
-    flats:   { label: 'Total Flats',     fmt: v => v + ' flats',  color: () => 'plus' },
-    months:  { label: 'Months Live',     fmt: v => v + ' mo',     color: () => 'plus' },
-    launch:  { label: 'Launch Date',     fmt: v => v || '—',      color: () => 'plus' },
-    remark:  { label: 'Remark',          fmt: v => v || '—',      color: () => 'plus' },
+    ob:     { label: 'Onboarded Flats', fmt: v => v + ' flats',                          color: (o,n) => n>o ? 'plus' : 'minus' },
+    pen:    { label: 'Penetration',     fmt: v => v + '%',                                color: (o,n) => n>o ? 'plus' : 'minus' },
+    revMay: { label: 'Revenue May',     fmt: v => '₹'+Number(v).toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
+    revJun: { label: 'Revenue Jun',     fmt: v => '₹'+Number(v).toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
+    flats:  { label: 'Total Flats',     fmt: v => v + ' flats',                          color: () => 'plus' },
+    months: { label: 'Months Live',     fmt: v => v + ' mo',                             color: () => 'plus' },
+    launch: { label: 'Launch Date',     fmt: v => v || '—',                              color: () => 'plus' },
+    remark: { label: 'Remark',          fmt: v => v || '—',                              color: () => 'plus' },
   };
 
   let html = `<div class="sec">Historical Snapshots</div>`;
@@ -731,22 +758,27 @@ function renderSnapshots() {
         html += `<div style="font-size:11px;color:var(--muted);">No changes detected in this load.</div>`;
       } else {
         snap.changes.forEach(c => {
+          // guard against old flat format
+          if (!c.changes || typeof c.changes !== 'object') return;
+
           html += `<div style="margin-bottom:12px;background:var(--card);border-radius:8px;padding:10px 12px;">
             <div style="font-weight:700;font-size:12px;margin-bottom:8px;color:var(--txt);">🏢 ${c.name}</div>
             <div style="display:flex;flex-direction:column;gap:5px;">`;
 
           Object.entries(c.changes).forEach(([key, val]) => {
             const meta = fieldMeta[key] || { label: key, fmt: v => v, color: () => 'plus' };
-            const dir  = val.new > val.old ? '+' : val.new < val.old ? '-' : '~';
-            const cls  = meta.color(val.old, val.new);
-            const diff = (typeof val.new === 'number' && typeof val.old === 'number')
-              ? ` <span class="delta-pill ${cls}">${dir}${Math.abs(val.new - val.old)}</span>`
+            const isNum = typeof val.new === 'number' && typeof val.old === 'number';
+            const dir   = isNum ? (val.new > val.old ? '+' : val.new < val.old ? '-' : '~') : '~';
+            const cls   = meta.color(val.old, val.new);
+            const diff  = isNum
+              ? `<span class="delta-pill ${cls}">${dir}${Math.abs(val.new - val.old)}</span>`
               : '';
+
             html += `<div style="display:flex;align-items:center;gap:8px;font-size:11px;">
               <span style="color:var(--muted);width:110px;flex-shrink:0;">${meta.label}</span>
-              <span style="color:var(--txt2)">${meta.fmt(val.old)}</span>
+              <span style="color:var(--txt2);">${meta.fmt(val.old)}</span>
               <span style="color:var(--muted);">→</span>
-              <span style="font-weight:600;color:var(--txt)">${meta.fmt(val.new)}</span>
+              <span style="font-weight:600;color:var(--txt);">${meta.fmt(val.new)}</span>
               ${diff}
             </div>`;
           });
@@ -896,13 +928,8 @@ async function markCbDone(id, name){
   renderCurrent();
 }
 
-function saveLocal(){
-  localStorage.setItem('pw_logs',JSON.stringify(logs));
-  localStorage.setItem('pw_callbacks',JSON.stringify(callbacks));
-}
-
 // ═══════════════════════════════════════════════════
-// SHEET LOADER & COMPARATIVE TRACKER PROTOCOLS
+// SHEET LOADER & SNAPSHOT TRACKER
 // ═══════════════════════════════════════════════════
 async function loadSheet(){
   const input=document.getElementById('sheetUrl').value.trim();
@@ -924,9 +951,17 @@ async function loadSheet(){
     const idx=k=>cols.findIndex(h=>h.includes(k));
     const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
     const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
-    
+
+    // Build baseline from current ACTIVE for delta comparison
     const baselineMap = {};
-   ACTIVE.forEach(r => { baselineMap[r.name] = { ob: r.ob, pen: r.pen, revMay: r.revMay, revJun: r.revJun, flats: r.flats, months: r.months, launch: r.launch, remark: r.remark }; });
+    ACTIVE.forEach(r => {
+      baselineMap[r.name] = {
+        ob: r.ob, pen: r.pen,
+        revMay: r.revMay, revJun: r.revJun,
+        flats: r.flats, months: r.months,
+        launch: r.launch, remark: r.remark
+      };
+    });
 
     const nA=[],nP=[]; let cnt=200;
     let dayChanges = [];
@@ -935,44 +970,48 @@ async function loadSheet(){
       const name=cell(row,'society')||cell(row,'name');
       if(!name||/total|overall|^s\.?no/i.test(name)) return;
       const ob=num(cell(row,'onboard'));
-      const oldObj=baselineMap[name];
       const id=cnt++;
-      const obj={id,name,flats:num(cell(row,'total'))||num(cell(row,'flat')),ob,
-        pen:num(cell(row,'penetr'))||num(cell(row,'pen')),
-        launch:cell(row,'launch')||cell(row,'month')||'—',
-        months:num(cell(row,'months')),
-        revMay:num(cell(row,'may')),
-        revJun:num(cell(row,'june'))||num(cell(row,'jun')),
-        remark:cell(row,'remark')||cell(row,'pendency'),
+      const obj={
+        id, name,
+        flats:  num(cell(row,'total'))||num(cell(row,'flat')),
+        ob,
+        pen:    num(cell(row,'penetr'))||num(cell(row,'pen')),
+        launch: cell(row,'launch')||cell(row,'month')||'—',
+        months: num(cell(row,'months')),
+        revMay: num(cell(row,'may')),
+        revJun: num(cell(row,'june'))||num(cell(row,'jun')),
+        remark: cell(row,'remark')||cell(row,'pendency'),
       };
-      
+
+      // Detect all field changes vs baseline
+      const oldObj = baselineMap[name];
       if (oldObj) {
-  const changes = {};
-  if (obj.ob !== oldObj.ob)           { changes.ob      = { old: oldObj.ob,      new: obj.ob      }; }
-  if (obj.pen !== oldObj.pen)         { changes.pen     = { old: oldObj.pen,     new: obj.pen     }; }
-  if (obj.revMay !== oldObj.revMay)   { changes.revMay  = { old: oldObj.revMay,  new: obj.revMay  }; }
-  if (obj.revJun !== oldObj.revJun)   { changes.revJun  = { old: oldObj.revJun,  new: obj.revJun  }; }
-  if (obj.flats !== oldObj.flats)     { changes.flats   = { old: oldObj.flats,   new: obj.flats   }; }
-  if (obj.months !== oldObj.months)   { changes.months  = { old: oldObj.months,  new: obj.months  }; }
-  if (obj.launch !== oldObj.launch)   { changes.launch  = { old: oldObj.launch,  new: obj.launch  }; }
-  if (obj.remark !== oldObj.remark)   { changes.remark  = { old: oldObj.remark,  new: obj.remark  }; }
-  if (Object.keys(changes).length > 0) {
-    dayChanges.push({ name, changes });
-  }
-}
+        const changes = {};
+        if (obj.ob      !== oldObj.ob)     changes.ob      = { old: oldObj.ob,     new: obj.ob      };
+        if (obj.pen     !== oldObj.pen)     changes.pen     = { old: oldObj.pen,    new: obj.pen     };
+        if (obj.revMay  !== oldObj.revMay)  changes.revMay  = { old: oldObj.revMay, new: obj.revMay  };
+        if (obj.revJun  !== oldObj.revJun)  changes.revJun  = { old: oldObj.revJun, new: obj.revJun  };
+        if (obj.flats   !== oldObj.flats)   changes.flats   = { old: oldObj.flats,  new: obj.flats   };
+        if (obj.months  !== oldObj.months)  changes.months  = { old: oldObj.months, new: obj.months  };
+        if (obj.launch  !== oldObj.launch)  changes.launch  = { old: oldObj.launch, new: obj.launch  };
+        if (obj.remark  !== oldObj.remark)  changes.remark  = { old: oldObj.remark, new: obj.remark  };
+        if (Object.keys(changes).length > 0) {
+          dayChanges.push({ name, changes });
+        }
+      }
 
       if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
     });
-    
+
     if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
-    
+
+    // Save snapshot if any changes detected
     if (dayChanges.length > 0) {
       const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
-      historicalSnapshots.push({
-        date: todayString,
-        changes: dayChanges
-      });
+      const newSnap = { date: todayString, changes: dayChanges };
+      historicalSnapshots.push(newSnap);
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
+      await pushSnapshotToSheet(newSnap);
     }
 
     ACTIVE=nA; PIPELINE=nP;
@@ -1019,7 +1058,7 @@ function toggleTheme(){
 function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 
 // ═══════════════════════════════════════════════════
-// DRAWER CONTENT ROUTER
+// DRAWER
 // ═══════════════════════════════════════════════════
 function renderDrawerFocus(mode) {
   const area = document.getElementById('drawerFocusArea');
@@ -1040,7 +1079,7 @@ function renderDrawerFocus(mode) {
     });
     if(!count) h += '<p style="color:var(--muted);font-size:11px;">No active entries due today.</p>';
     h += '</div>';
-  } 
+  }
   else if (mode === 'upcoming') {
     h = '<h4>Upcoming Callbacks</h4><div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">';
     let count = 0;
@@ -1055,7 +1094,7 @@ function renderDrawerFocus(mode) {
     });
     if(!count) h += '<p style="color:var(--muted);font-size:11px;">No future items indexed.</p>';
     h += '</div>';
-  } 
+  }
   else if (mode === 'history') {
     h = '<h4>Recent History Streams</h4><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:300px;overflow-y:auto;">';
     let count = 0;
@@ -1082,14 +1121,12 @@ function toggleDrawer(){
   const o=document.getElementById('drawerOverlay');
   const open = d && d.style.display==='block';
   if(open){d.style.display='none';o.style.display='none';return;}
-  
   renderDrawerFocus('today');
-  if(d && o) {
-    d.style.display='block';
-    o.style.display='block';
-  }
+  if(d && o) { d.style.display='block'; o.style.display='block'; }
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){const d=document.getElementById('callDrawer');if(d && d.style.display==='block')toggleDrawer();}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){const d=document.getElementById('callDrawer');if(d && d.style.display==='block')toggleDrawer();}
+});
 
 // ═══════════════════════════════════════════════════
 // INIT

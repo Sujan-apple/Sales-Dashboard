@@ -705,33 +705,62 @@ function renderCompare(){
 // HISTORICAL SNAPSHOTS VIEW TAB
 // ═══════════════════════════════════════════════════
 function renderSnapshots() {
-  let html = `<div class="sec">Historical Data Matrix Snapshots</div>`;
+  const fieldMeta = {
+    ob:      { label: 'Onboarded Flats', fmt: v => v + ' flats',  color: (o,n) => n>o ? 'plus' : 'minus' },
+    pen:     { label: 'Penetration',     fmt: v => v + '%',       color: (o,n) => n>o ? 'plus' : 'minus' },
+    revMay:  { label: 'Revenue May',     fmt: v => '₹'+v.toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
+    revJun:  { label: 'Revenue Jun',     fmt: v => '₹'+v.toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
+    flats:   { label: 'Total Flats',     fmt: v => v + ' flats',  color: () => 'plus' },
+    months:  { label: 'Months Live',     fmt: v => v + ' mo',     color: () => 'plus' },
+    launch:  { label: 'Launch Date',     fmt: v => v || '—',      color: () => 'plus' },
+    remark:  { label: 'Remark',          fmt: v => v || '—',      color: () => 'plus' },
+  };
+
+  let html = `<div class="sec">Historical Snapshots</div>`;
+
   if (!historicalSnapshots.length) {
-    html += `<div class="empty">No historical changes documented yet. Load a modified layout sheet to see comparative day-to-day deltas.</div>`;
+    html += `<div class="empty">No snapshots yet. Load a sheet to begin tracking changes.</div>`;
   } else {
-    html += `<div style="display:flex; flex-direction:column; gap:16px;">`;
+    html += `<div style="display:flex;flex-direction:column;gap:16px;">`;
+
     historicalSnapshots.slice().reverse().forEach(snap => {
-      html += `<div style="background:var(--surf); border:1px solid var(--bdr); padding:16px; border-radius:12px;">
-        <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:var(--acc);">📅 Snapshot Log Reference: ${snap.date}</div>`;
+      html += `<div style="background:var(--surf);border:1px solid var(--bdr);padding:16px;border-radius:12px;">
+        <div style="font-weight:700;font-size:14px;margin-bottom:12px;color:var(--acc);">📅 ${snap.date}</div>`;
+
       if (!snap.changes || !snap.changes.length) {
-        html += `<div style="font-size:11px; color:var(--muted);">Zero onboarding changes detected during this transaction window.</div>`;
+        html += `<div style="font-size:11px;color:var(--muted);">No changes detected in this load.</div>`;
       } else {
-        html += `<table class="cmp-table" style="margin-bottom:0;"><thead><tr><th>Society</th><th>Metric Variance Shift</th></tr></thead><tbody>`;
         snap.changes.forEach(c => {
-          html += `<tr>
-            <td><strong>${c.name}</strong></td>
-            <td>
-              Onboarded: ${c.oldOb} ➔ <strong>${c.newOb}</strong> <span class="delta-pill plus">+${c.obDiff} flats</span><br>
-              Penetration: ${c.oldPen}% ➔ <strong>${c.newPen}%</strong> <span class="delta-pill plus">+${c.penDiff}%</span>
-            </td>
-          </tr>`;
+          html += `<div style="margin-bottom:12px;background:var(--card);border-radius:8px;padding:10px 12px;">
+            <div style="font-weight:700;font-size:12px;margin-bottom:8px;color:var(--txt);">🏢 ${c.name}</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">`;
+
+          Object.entries(c.changes).forEach(([key, val]) => {
+            const meta = fieldMeta[key] || { label: key, fmt: v => v, color: () => 'plus' };
+            const dir  = val.new > val.old ? '+' : val.new < val.old ? '-' : '~';
+            const cls  = meta.color(val.old, val.new);
+            const diff = (typeof val.new === 'number' && typeof val.old === 'number')
+              ? ` <span class="delta-pill ${cls}">${dir}${Math.abs(val.new - val.old)}</span>`
+              : '';
+            html += `<div style="display:flex;align-items:center;gap:8px;font-size:11px;">
+              <span style="color:var(--muted);width:110px;flex-shrink:0;">${meta.label}</span>
+              <span style="color:var(--txt2)">${meta.fmt(val.old)}</span>
+              <span style="color:var(--muted);">→</span>
+              <span style="font-weight:600;color:var(--txt)">${meta.fmt(val.new)}</span>
+              ${diff}
+            </div>`;
+          });
+
+          html += `</div></div>`;
         });
-        html += `</tbody></table>`;
       }
+
       html += `</div>`;
     });
+
     html += `</div>`;
   }
+
   document.getElementById('tab-snapshots').innerHTML = html;
 }
 
@@ -897,7 +926,7 @@ async function loadSheet(){
     const num=v=>parseInt(v.replace(/[^0-9.-]/g,''))||0;
     
     const baselineMap = {};
-    ACTIVE.forEach(r => { baselineMap[r.name] = { ob: r.ob, pen: r.pen }; });
+   ACTIVE.forEach(r => { baselineMap[r.name] = { ob: r.ob, pen: r.pen, revMay: r.revMay, revJun: r.revJun, flats: r.flats, months: r.months, launch: r.launch, remark: r.remark }; });
 
     const nA=[],nP=[]; let cnt=200;
     let dayChanges = [];
@@ -917,17 +946,20 @@ async function loadSheet(){
         remark:cell(row,'remark')||cell(row,'pendency'),
       };
       
-      if (oldObj && ob > oldObj.ob) {
-        dayChanges.push({
-          name: name,
-          oldOb: oldObj.ob,
-          newOb: ob,
-          obDiff: ob - oldObj.ob,
-          oldPen: oldObj.pen,
-          newPen: obj.pen,
-          penDiff: obj.pen - oldObj.pen
-        });
-      }
+      if (oldObj) {
+  const changes = {};
+  if (obj.ob !== oldObj.ob)           { changes.ob      = { old: oldObj.ob,      new: obj.ob      }; }
+  if (obj.pen !== oldObj.pen)         { changes.pen     = { old: oldObj.pen,     new: obj.pen     }; }
+  if (obj.revMay !== oldObj.revMay)   { changes.revMay  = { old: oldObj.revMay,  new: obj.revMay  }; }
+  if (obj.revJun !== oldObj.revJun)   { changes.revJun  = { old: oldObj.revJun,  new: obj.revJun  }; }
+  if (obj.flats !== oldObj.flats)     { changes.flats   = { old: oldObj.flats,   new: obj.flats   }; }
+  if (obj.months !== oldObj.months)   { changes.months  = { old: oldObj.months,  new: obj.months  }; }
+  if (obj.launch !== oldObj.launch)   { changes.launch  = { old: oldObj.launch,  new: obj.launch  }; }
+  if (obj.remark !== oldObj.remark)   { changes.remark  = { old: oldObj.remark,  new: obj.remark  }; }
+  if (Object.keys(changes).length > 0) {
+    dayChanges.push({ name, changes });
+  }
+}
 
       if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
     });

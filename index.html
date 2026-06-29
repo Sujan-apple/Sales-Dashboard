@@ -1699,11 +1699,8 @@ async function loadSheet(){
       else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
 
-    // === STRONG GUARD: Only create snapshot if changes exist AND it's not today already ===
-    const todayKey = new Date().toISOString().slice(0,10); // YYYY-MM-DD
-    const alreadyHasToday = historicalSnapshots.some(s => s.date.includes(todayKey) || s.date === todayKey);
-
-    if (dayChanges.length > 0 && !alreadyHasToday) {
+    // AUTO SNAPSHOT ONLY IF REAL CHANGES DETECTED
+    if (dayChanges.length > 0) {
       const dd = String(new Date().getDate()).padStart(2,'0');
       const mm = String(new Date().getMonth()+1).padStart(2,'0');
       const yy = String(new Date().getFullYear()).slice(2);
@@ -1714,11 +1711,9 @@ async function loadSheet(){
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
       await pushSnapshotToSheet(newSnap);
       
-      console.log(`%c✅ New Snapshot Created (${dayChanges.length} changes)`, "color: green; font-weight: bold");
-    } else if (dayChanges.length === 0) {
-      console.log("%c🔄 No changes detected - Snapshot skipped", "color: orange");
+      console.log(`%c✅ Auto Snapshot Created (${dayChanges.length} changes)`, "color: green; font-weight: bold");
     } else {
-      console.log("%c⏭️ Snapshot for today already exists - skipped", "color: blue");
+      console.log("%c🔄 No changes detected - No snapshot created", "color: gray");
     }
 
     ACTIVE = nA; 

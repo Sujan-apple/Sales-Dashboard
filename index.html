@@ -1668,7 +1668,7 @@ async function loadSheet(){
 
       const obj = {
         id: 200 + nA.length + nP.length,
-        name,
+        name: name.trim(),
         flats: num(cell(row,'total')) || num(cell(row,'flat')),
         ob: num(cell(row,'onboard')),
         pen: num(cell(row,'penetr')) || num(cell(row,'pen')),
@@ -1682,15 +1682,19 @@ async function loadSheet(){
       const oldObj = baselineMap[name];
       if (oldObj) {
         const changes = {};
+
+        // Strict comparison
         if (obj.ob !== oldObj.ob) changes.ob = {old: oldObj.ob, new: obj.ob};
         if (obj.pen !== oldObj.pen) changes.pen = {old: oldObj.pen, new: obj.pen};
         if (obj.revMay !== oldObj.revMay) changes.revMay = {old: oldObj.revMay, new: obj.revMay};
         if (obj.revJun !== oldObj.revJun) changes.revJun = {old: oldObj.revJun, new: obj.revJun};
         if (obj.flats !== oldObj.flats) changes.flats = {old: oldObj.flats, new: obj.flats};
-        
-        // Only record remark if meaningfully different
-        if (obj.remark && obj.remark !== oldObj.remark) {
-          changes.remark = {old: oldObj.remark, new: obj.remark};
+
+        // Very strict remark check
+        const oldRemark = (oldObj.remark || '').trim();
+        const newRemark = obj.remark.trim();
+        if (newRemark && newRemark !== oldRemark && newRemark.length > 2) {
+          changes.remark = {old: oldRemark, new: newRemark};
         }
 
         if (Object.keys(changes).length > 0) {
@@ -1702,7 +1706,7 @@ async function loadSheet(){
       else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
 
-    // FIXED: Only create snapshot if there are REAL changes
+    // ONLY create snapshot if there are meaningful changes
     if (dayChanges.length > 0) {
       const dd = String(new Date().getDate()).padStart(2,'0');
       const mm = String(new Date().getMonth()+1).padStart(2,'0');
@@ -1714,9 +1718,9 @@ async function loadSheet(){
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
       await pushSnapshotToSheet(newSnap);
       
-      console.log(`Snapshot created with ${dayChanges.length} changes`);
+      console.log(`✅ Snapshot created (${dayChanges.length} real changes)`);
     } else {
-      console.log("No changes detected - skipping snapshot");
+      console.log("🔄 No real changes detected - skipping snapshot");
     }
 
     ACTIVE = nA; 

@@ -1235,7 +1235,29 @@ function logCardHtml(ll) {
     <div class="note-time">${ll.time} · ${ll.outcome==='blocked'?'🔴':ll.outcome==='callback'?'🟡':'🟢'} ${ll.outcome}</div>
   </div>`;
 }
-
+// Clean Date Formatter - DD-MM-YY (No Z timestamp)
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  
+  // Handle ISO strings with T...Z
+  let d = new Date(dateStr);
+  
+  // Fix 1970 bug (invalid date)
+  if (isNaN(d.getTime())) {
+    // Try parsing as YYYY-MM-DD
+    if (typeof dateStr === 'string' && dateStr.includes('-')) {
+      d = new Date(dateStr.split('T')[0]);
+    }
+  }
+  
+  if (isNaN(d.getTime())) return dateStr; // fallback
+  
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = String(d.getFullYear()).slice(2);
+  
+  return `${day}-${month}-${year}`;
+}
 // ═══════════════════════════════════════════════════
 // OVERVIEW TAB
 // ═══════════════════════════════════════════════════
@@ -1691,26 +1713,32 @@ async function saveLog(){
 
   const agentName = document.getElementById('logAgent').value.trim();
   const outcome = document.getElementById('logOutcome').value;
-  const cbDate = document.getElementById('cbDate').value;
-  const cbEmail = document.getElementById('cbEmail').value.trim();
+  let cbDate = document.getElementById('cbDate').value;
+  const cbEmail = document.getElementById('cbEmail') ? document.getElementById('cbEmail').value.trim() : '';
 
   if(agentName) localStorage.setItem('pw_agent', agentName);
 
   const now = new Date();
-  const time = now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+  const time = formatDate(now);   // Clean date
+
   const entry = {note, agentName, outcome, callbackDate: cbDate, time};
 
   if(!logs[currentLogId]) logs[currentLogId] = [];
   logs[currentLogId].push(entry);
-  if(outcome==='callback' && cbDate) callbacks[currentLogId] = cbDate;
+  
+  if(outcome==='callback' && cbDate) {
+    callbacks[currentLogId] = cbDate;
+  }
 
   saveLocal();
 
   if(backendOk){
     document.getElementById('logSaving').style.display = 'block';
     document.getElementById('logSaveBtn').disabled = true;
+    
     const all = [...ACTIVE, ...PIPELINE];
     const r = all.find(x => x.id === currentLogId);
+
     await pushLogToSheet({
       societyName: r ? r.name : currentLogName,
       agentName: agentName,
@@ -1720,17 +1748,11 @@ async function saveLog(){
       callbackEmail: cbEmail,
       type: PIPELINE.find(p => p.id === currentLogId) ? 'pipeline' : 'active'
     });
+    
     document.getElementById('logSaveBtn').disabled = false;
   }
 
   closeLogModal();
-  renderCurrent();
-}
-
-async function markCbDone(id, name){
-  delete callbacks[id];
-  saveLocal();
-  if(backendOk) await apiCall('clearCallback',{societyName:name});
   renderCurrent();
 }
 
@@ -1867,29 +1889,14 @@ function renderDrawerFocus(mode) {
     Object.entries(callbacks).forEach(([id,date])=>{
       if(date > todayStr){
         const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);background:var(--glass2);"><b>${s?s.name:id}</b><small style="color:var(--txt2);">📅 ${date}</small></div>`;
-        count++;
-      }
-    });
-    if(!count) h += `<p style="color:var(--muted);font-size:11px;padding:8px 0;">No upcoming callbacks scheduled.</p>`;
-  }
-  else if (mode === 'history') {
-    h = `<h4 style="margin-bottom:10px;">📜 Recent Call History</h4><div style="max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;">`;
-    let count = 0;
-    [...ACTIVE,...PIPELINE].forEach(r => {
-      const logList = getLogsById(r.id);
-      if (logList.length) {
-        const last = logList[logList.length - 1];
-        h += `<div style="padding:8px 10px;background:var(--glass2);border-radius:var(--radius-sm);font-size:11px;border:1px solid var(--bdr);">
-          <strong style="color:var(--acc);display:block;margin-bottom:3px;">${r.name}</strong>
-          <div style="color:var(--txt2);font-style:italic;">"${last.note.substring(0,50)}…"</div>
-          <small style="color:var(--muted);">${last.time}${last.agentName?' · '+last.agentName:''}</small>
+        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);">
+          <b>${s?s.name:id}</b>
+          <small style="color:var(--txt2);">📅 ${formatDate(date)}</small>
         </div>`;
         count++;
       }
     });
-    if(!count) h += `<p style="color:var(--muted);font-size:11px;">No calls logged yet.</p>`;
-    h += '</div>';
+    if(!count) h += `<p style="color:var(--muted);font-size:11px;padding:8px 0;">No upcoming callbacks scheduled.</p>`;
   }
   area.innerHTML = h;
 }
@@ -1922,22 +1929,19 @@ document.addEventListener('keydown', e => {
 // INIT
 // ═══════════════════════════════════════════════════
 window.onload = async function () {
-  document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
+    document.getElementById("agentName").value = localStorage.getItem("pw_agent") || "";
 
-  const statusEl = document.getElementById('connStatus');
-  statusEl.textContent = '🔄 Connecting…';
+    const statusEl = document.getElementById('connStatus');
+    statusEl.textContent = "🔄 Initializing...";
 
-  // Render immediately with default data
-  renderCurrent();
-
-  // Connect backend
-  await connectBackend();
-
-  // Load sheet with slight delay
-  setTimeout(async () => {
-    await loadSheet();
-    renderCurrent();
-  }, 500);
+    // Auto connect + load with better sequencing
+    await connectBackend();
+    
+    setTimeout(async () => {
+        await loadSheet();
+        renderCurrent();
+        statusEl.textContent = backendOk ? "✅ Fully Loaded" : "⚠️ Partial Load (Local)";
+    }, 1000);
 };
 
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);

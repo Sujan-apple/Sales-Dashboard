@@ -1036,12 +1036,13 @@ select.form-ctrl { cursor: pointer; }
   <div class="modal">
     <div class="modal-title" id="logModalTitle">Log call</div>
     <div class="modal-sub" id="logModalSub"></div>
+    
     <label class="form-lbl">Your name</label>
-<input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
-<label class="form-lbl" id="cbEmailLabel" style="display:none">Your email (for callback reminder)</label>
-<input type="email" class="form-ctrl" id="cbEmail" style="display:none" placeholder="yourname@office.com"/>
+    <input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
+    
     <label class="form-lbl">Notes from call / visit</label>
-    <textarea class="form-ctrl" id="logNote" placeholder="e.g. Spoke to committee, interested in 12 more flats…"></textarea>
+    <textarea class="form-ctrl" id="logNote" placeholder="e.g. Spoke to committee..."></textarea>
+    
     <label class="form-lbl">Outcome</label>
     <select class="form-ctrl" id="logOutcome">
       <option value="positive">Positive — progressing well</option>
@@ -1049,9 +1050,15 @@ select.form-ctrl { cursor: pointer; }
       <option value="blocked">Blocked — needs attention</option>
       <option value="neutral">Neutral / informational</option>
     </select>
+    
     <label class="form-lbl" id="cbDateLabel" style="display:none">Callback date</label>
     <input type="date" class="form-ctrl" id="cbDate" style="display:none"/>
+    
+    <label class="form-lbl" id="cbEmailLabel" style="display:none">Callback email (for reminder)</label>
+    <input type="email" class="form-ctrl" id="cbEmail" style="display:none" placeholder="your@email.com"/>
+    
     <div id="logSaving" style="font-size:11px;color:var(--ylw);margin-bottom:8px;display:none;">Saving to sheet…</div>
+    
     <div class="form-row">
       <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
       <button class="btn-save" id="logSaveBtn" onclick="saveLog()">Save log</button>
@@ -1712,10 +1719,10 @@ function openLog(id, name, mode){
 
 document.getElementById('logOutcome').addEventListener('change',function(){
   const s = this.value === 'callback';
-  document.getElementById('cbDateLabel').style.display  = s ? 'block' : 'none';
-  document.getElementById('cbDate').style.display       = s ? 'block' : 'none';
+  document.getElementById('cbDateLabel').style.display = s ? 'block' : 'none';
+  document.getElementById('cbDate').style.display = s ? 'block' : 'none';
   document.getElementById('cbEmailLabel').style.display = s ? 'block' : 'none';
-  document.getElementById('cbEmail').style.display      = s ? 'block' : 'none';
+  document.getElementById('cbEmail').style.display = s ? 'block' : 'none';
 });
 
 function closeLogModal(){

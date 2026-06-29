@@ -1640,7 +1640,8 @@ async function markCbDone(id, name){
 
 // ── SHEET LOADER ──
 async function loadSheet(){
-  if (!SHEET_URL) return;
+ if (window.isSheetLoading) return;
+  window.isSheetLoading = true;
   const sheetId = '1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw';
   const statusEl = document.getElementById('connStatus');
 
@@ -1702,24 +1703,32 @@ async function loadSheet(){
       if(obj.ob > 0) nA.push(obj); 
       else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
-        // ── FIXED SNAPSHOT CREATION (Prevents duplicates on mobile) ──
+       // ── STRONG DUPLICATE PREVENTION ──
     if (dayChanges.length > 0) {
       const dd = String(new Date().getDate()).padStart(2,'0');
       const mm = String(new Date().getMonth()+1).padStart(2,'0');
       const yy = String(new Date().getFullYear()).slice(2);
       const todayString = `${dd}-${mm}-${yy}`;
 
-      // Stronger duplicate prevention
-      const existingToday = historicalSnapshots.some(s => s.date === todayString);
-      
-      if (!existingToday) {
-        const newSnap = { date: todayString, changes: dayChanges };
+      // Check if we already have a snapshot for today
+      const hasTodaySnapshot = historicalSnapshots.some(s => s.date === todayString);
+
+      if (!hasTodaySnapshot) {
+        const newSnap = { 
+          date: todayString, 
+          changes: dayChanges 
+        };
         historicalSnapshots.push(newSnap);
         localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
-        await pushSnapshotToSheet(newSnap);
-        console.log(`✅ New snapshot created: ${dayChanges.length} changes`);
+        
+        // Only push to backend if connected
+        if (backendOk) {
+          await pushSnapshotToSheet(newSnap);
+        }
+        
+        console.log(`New snapshot created for ${todayString} with ${dayChanges.length} changes`);
       } else {
-        console.log("⏭️ Snapshot for today already exists - skipping");
+        console.log(`Snapshot for today (${todayString}) already exists. Skipping.`);
       }
     }
 

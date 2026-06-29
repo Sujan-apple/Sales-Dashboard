@@ -7,16 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════
-   TOKENS
-══════════════════════════════════════ */
 :root {
   --pw-dark:  #0d2b1a;
   --pw-mid:   #144a29;
   --pw-lime:  #93d445;
   --pw-green: #3a8f3a;
   --pw-teal:  #1a5c35;
-
   --bg:    #f0f7f2;
   --bg2:   #e4f0e9;
   --surf:  rgba(255,255,255,0.75);
@@ -39,17 +35,11 @@
   --glow:  0 0 40px rgba(20,74,41,0.06);
   --shadow:0 8px 32px rgba(0,0,0,0.10);
   --shadow-sm:0 4px 16px rgba(0,0,0,0.06);
-
   --mono:     'JetBrains Mono', monospace;
   --radius:   14px;
   --radius-sm:8px;
 }
-
-/* ══════════════════════════════════════
-   RESET & BASE
-══════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg);
@@ -59,7 +49,6 @@ body {
   line-height: 1.5;
   overflow-x: hidden;
 }
-
 body::before {
   content: '';
   position: fixed;
@@ -70,7 +59,6 @@ body::before {
   pointer-events: none;
   z-index: 0;
 }
-
 .page-wrap {
   position: relative;
   z-index: 1;
@@ -78,10 +66,6 @@ body::before {
   max-width: 1400px;
   margin: 0 auto;
 }
-
-/* ══════════════════════════════════════
-   GLASS MIXIN
-══════════════════════════════════════ */
 .glass {
   background: var(--surf);
   backdrop-filter: blur(20px) saturate(1.4);
@@ -89,10 +73,6 @@ body::before {
   border: 1px solid var(--bdr);
   box-shadow: var(--shadow);
 }
-
-/* ══════════════════════════════════════
-   HEADER
-══════════════════════════════════════ */
 .header {
   display: flex;
   align-items: center;
@@ -108,13 +88,9 @@ body::before {
   border: 1px solid rgba(20,74,41,0.15);
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
 }
-
 .header-left { display: flex; align-items: center; gap: 12px; }
-
 .pw-logo-svg { width: 100px; height: 44px; flex-shrink: 0; }
-
 .hdr-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-
 .hdr-btn {
   background: var(--glass2);
   border: 1px solid var(--bdr);
@@ -130,7 +106,6 @@ body::before {
   transition: all .2s;
 }
 .hdr-btn:hover { background: rgba(20,74,41,0.12); border-color: var(--bdr2); transform: translateY(-1px); }
-
 .sync-badge {
   display: flex;
   align-items: center;
@@ -148,10 +123,6 @@ body::before {
 .sync-dot.err { background: var(--red); }
 .sync-dot.loading { background: var(--ylw); animation: pulse 1s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* ══════════════════════════════════════
-   AGENT NAME ROW
-══════════════════════════════════════ */
 .agent-row {
   display: flex;
   align-items: center;
@@ -177,14 +148,9 @@ body::before {
 }
 .agent-input:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(26,107,58,0.1); }
 .agent-input::placeholder { color: var(--muted); }
-
 .conn-status { font-size: 11px; color: var(--muted); margin-bottom: 16px; padding: 8px 14px; background: rgba(255,255,255,0.6); border: 1px solid var(--bdr); border-radius: var(--radius-sm); }
 .conn-status.ok { color: var(--grn); }
 .conn-status.err { color: var(--red); }
-
-/* ══════════════════════════════════════
-   TABS
-══════════════════════════════════════ */
 .tabs {
   display: flex;
   gap: 3px;
@@ -215,10 +181,6 @@ body::before {
   box-shadow: 0 2px 12px rgba(20,74,41,0.3);
 }
 .tab:hover:not(.active) { color: var(--txt); background: var(--glass2); }
-
-/* ══════════════════════════════════════
-   KPI STRIP
-══════════════════════════════════════ */
 .kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -251,10 +213,6 @@ body::before {
 .kpi-sub { font-size: 10px; color: var(--txt2); margin-top: 5px; }
 .up { color: var(--grn); }
 .dn { color: var(--red); }
-
-/* ══════════════════════════════════════
-   SECTION DIVIDER
-══════════════════════════════════════ */
 .sec {
   font-size: 10px;
   font-weight: 700;
@@ -267,10 +225,6 @@ body::before {
   gap: 10px;
 }
 .sec::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
-
-/* ══════════════════════════════════════
-   SOCIETY CARDS
-══════════════════════════════════════ */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -302,15 +256,11 @@ body::before {
 .scard-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 .scard-name { font-weight: 700; font-size: 14px; letter-spacing: -.01em; color: var(--txt); }
 .scard-meta { font-size: 10px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
-
-/* Badges */
 .badge { border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; letter-spacing: .04em; }
 .b-hot  { background: rgba(220,38,38,0.10); color: var(--red); border: 1px solid rgba(220,38,38,0.20); }
 .b-warn { background: rgba(217,119,6,0.10); color: var(--ylw); border: 1px solid rgba(217,119,6,0.20); }
 .b-good { background: rgba(22,163,74,0.10); color: var(--grn); border: 1px solid rgba(22,163,74,0.20); }
 .b-new  { background: rgba(37,99,235,0.10); color: var(--blue); border: 1px solid rgba(37,99,235,0.20); }
-
-/* Metrics row */
 .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
 .metric {
   background: var(--glass2);
@@ -321,14 +271,10 @@ body::before {
 }
 .metric-v { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--txt); }
 .metric-l { font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-top: 2px; }
-
-/* Penetration bar */
 .pen-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .pen-bar { flex: 1; height: 6px; border-radius: 4px; background: rgba(20,74,41,0.1); overflow: hidden; }
 .pen-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--pw-mid), var(--acc)); transition: width .4s ease; }
 .pen-txt { font-family: var(--mono); font-size: 10px; white-space: nowrap; }
-
-/* Last note */
 .last-note {
   background: rgba(26,107,58,0.06);
   border-radius: var(--radius-sm);
@@ -341,8 +287,6 @@ body::before {
 }
 .note-agent { font-size: 10px; font-weight: 700; color: var(--acc); margin-bottom: 3px; }
 .note-time { font-size: 9px; color: var(--muted); margin-top: 4px; }
-
-/* Callback flag */
 .cb-flag {
   background: rgba(234,88,12,0.08);
   border: 1px solid rgba(234,88,12,0.20);
@@ -353,8 +297,6 @@ body::before {
   margin-bottom: 10px;
   font-weight: 600;
 }
-
-/* Action buttons */
 .actions { display: flex; gap: 6px; }
 .abtn {
   flex: 1;
@@ -379,8 +321,6 @@ body::before {
   color: var(--acc);
 }
 .abtn.primary:hover { background: rgba(20,74,41,0.14); }
-
-/* Search row */
 .search-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
 .search-input {
   flex: 1;
@@ -409,10 +349,6 @@ body::before {
 }
 .filter-btn:hover { border-color: var(--bdr2); color: var(--txt); }
 .filter-btn.on { background: rgba(20,74,41,0.1); border-color: rgba(20,74,41,0.35); color: var(--acc); }
-
-/* ══════════════════════════════════════
-   FOLLOW-UP TAB
-══════════════════════════════════════ */
 .fup-item {
   background: rgba(255,255,255,0.85);
   border: 1px solid var(--bdr);
@@ -449,10 +385,6 @@ body::before {
   transition: all .15s;
 }
 .icon-btn:hover { background: var(--glass2); color: var(--txt); border-color: var(--bdr2); }
-
-/* ══════════════════════════════════════
-   COMPARE TABLE
-══════════════════════════════════════ */
 .cmp-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .cmp-table th {
@@ -477,10 +409,6 @@ body::before {
 .cmp-table tbody tr:hover td { background: rgba(20,74,41,0.05); }
 .sort-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 10px; margin-left: 3px; }
 .sort-btn.active { color: var(--acc); }
-
-/* ══════════════════════════════════════
-   SNAPSHOT FULL PAGE OVERLAY
-══════════════════════════════════════ */
 .snapshot-overlay {
   display: none;
   position: fixed;
@@ -520,7 +448,6 @@ body::before {
 .snap-back-btn:hover { background: var(--glass2); border-color: var(--bdr2); }
 .snap-page-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--txt); }
 .snap-page-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
 .snap-report-header {
   display: flex;
   align-items: center;
@@ -531,7 +458,6 @@ body::before {
 }
 .snap-report-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--txt); }
 .snap-report-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
-
 .snap-timeline { position: relative; }
 .snap-timeline::before {
   content: '';
@@ -542,7 +468,6 @@ body::before {
   background: linear-gradient(to bottom, var(--acc), transparent);
   opacity: .2;
 }
-
 .snap-entry {
   display: flex;
   gap: 16px;
@@ -582,7 +507,6 @@ body::before {
   font-family: var(--mono);
   letter-spacing: .03em;
 }
-
 .snap-society-card {
   background: rgba(255,255,255,0.85);
   border: 1px solid var(--bdr);
@@ -593,7 +517,6 @@ body::before {
   box-shadow: var(--shadow-sm);
 }
 .snap-society-card:hover { border-color: var(--bdr2); }
-
 .snap-soc-header {
   display: flex;
   align-items: center;
@@ -616,7 +539,6 @@ body::before {
   letter-spacing: .05em;
   text-transform: uppercase;
 }
-
 .snap-fields { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
 .snap-field-row {
   display: flex;
@@ -636,7 +558,6 @@ body::before {
 .snap-arrow { color: var(--muted); font-size: 10px; flex-shrink: 0; }
 .snap-new-val { color: var(--txt); font-family: var(--mono); font-size: 11px; font-weight: 700; }
 .snap-delta { margin-left: auto; }
-
 .delta-pill {
   display: inline-flex;
   align-items: center;
@@ -650,7 +571,6 @@ body::before {
 .delta-pill.plus { background: rgba(22,163,74,0.12); color: var(--grn); border: 1px solid rgba(22,163,74,0.22); }
 .delta-pill.minus { background: rgba(220,38,38,0.10); color: var(--red); border: 1px solid rgba(220,38,38,0.18); }
 .delta-pill.neutral { background: var(--glass2); color: var(--muted); border: 1px solid var(--bdr); }
-
 .snap-empty {
   text-align: center;
   padding: 60px 20px;
@@ -659,10 +579,6 @@ body::before {
 .snap-empty-icon { font-size: 40px; margin-bottom: 12px; }
 .snap-empty-title { font-size: 15px; font-weight: 700; color: var(--txt2); margin-bottom: 6px; }
 .snap-empty-sub { font-size: 12px; line-height: 1.6; }
-
-/* ══════════════════════════════════════
-   DRAWER
-══════════════════════════════════════ */
 .drawer-overlay {
   display: none;
   position: fixed;
@@ -672,7 +588,6 @@ body::before {
   z-index: 9998;
 }
 .drawer-overlay.open { display: block; }
-
 .drawer {
   position: fixed;
   left: 0; top: 0;
@@ -690,7 +605,6 @@ body::before {
   transition: transform .3s cubic-bezier(.4,0,.2,1);
 }
 .drawer.open { transform: translateX(0); }
-
 .drawer-top {
   display: flex;
   justify-content: space-between;
@@ -700,7 +614,6 @@ body::before {
   background: rgba(255,255,255,0.7);
 }
 .drawer-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; color: var(--txt); }
-
 .drawer-close {
   background: var(--glass2);
   border: 1px solid var(--bdr);
@@ -711,7 +624,6 @@ body::before {
   font-size: 16px;
   display: flex; align-items: center; justify-content: center;
 }
-
 .drawer-nav { padding: 12px 12px 0; }
 .drawer-nav-item {
   display: flex;
@@ -731,9 +643,7 @@ body::before {
 .drawer-nav-item:hover { background: var(--glass2); color: var(--txt); border-color: var(--bdr); }
 .drawer-nav-item.active { background: rgba(20,74,41,0.1); color: var(--acc); border-color: rgba(20,74,41,0.2); }
 .drawer-nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
-
 .drawer-divider { height: 1px; background: var(--bdr); margin: 10px 12px; }
-
 .drawer-section-label {
   font-size: 9px;
   font-weight: 700;
@@ -742,7 +652,6 @@ body::before {
   color: var(--muted);
   padding: 6px 12px 4px;
 }
-
 .drawer-focus { padding: 12px; }
 .drawer-focus h4 { font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--txt2); }
 .drawer-cb-item {
@@ -755,10 +664,6 @@ body::before {
   color: var(--txt);
 }
 .drawer-cb-item b { display: block; margin-bottom: 2px; color: var(--txt); }
-
-/* ══════════════════════════════════════
-   MODALS
-══════════════════════════════════════ */
 .modal-bg {
   display: none;
   position: fixed;
@@ -771,7 +676,6 @@ body::before {
   padding: 16px;
 }
 .modal-bg.open { display: flex; }
-
 .modal {
   background: rgba(255,255,255,0.97);
   border: 1px solid var(--bdr);
@@ -785,7 +689,6 @@ body::before {
 }
 .modal-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; letter-spacing: -.02em; color: var(--txt); }
 .modal-sub { font-size: 11px; color: var(--muted); margin-bottom: 18px; }
-
 .form-lbl { font-size: 11px; color: var(--txt); margin-bottom: 5px; display: block; font-weight: 600; }
 .form-ctrl {
   width: 100%;
@@ -804,13 +707,10 @@ body::before {
 textarea.form-ctrl { height: 76px; resize: vertical; }
 select.form-ctrl { cursor: pointer; }
 .form-ctrl::placeholder { color: var(--muted); }
-
 .form-row { display: flex; gap: 8px; margin-top: 4px; }
 .form-row button { flex: 1; padding: 10px; border-radius: var(--radius-sm); border: none; font-size: 12px; font-weight: 700; cursor: pointer; letter-spacing: .02em; }
 .btn-cancel { background: var(--glass2); color: var(--txt2); border: 1px solid var(--bdr) !important; }
 .btn-save { background: linear-gradient(135deg, var(--pw-mid), var(--pw-teal)); color: #fff; }
-
-/* Detail modal */
 .pen-ring-wrap { position: relative; width: 120px; height: 120px; margin: 0 auto 16px; }
 .pen-ring-wrap svg { transform: rotate(-90deg); }
 .pen-ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -827,15 +727,7 @@ select.form-ctrl { cursor: pointer; }
 .dprow-val { font-family: var(--mono); font-size: 11px; width: 32px; text-align: right; flex-shrink: 0; }
 .target-note { font-size: 11px; color: var(--txt2); background: var(--glass2); border-radius: var(--radius-sm); padding: 10px 13px; line-height: 1.6; margin: 12px 0; border: 1px solid var(--bdr); }
 .log-entry { background: rgba(26,107,58,0.05); border-left: 2px solid var(--acc); border-radius: var(--radius-sm); padding: 8px 11px; margin-bottom: 6px; font-size: 11px; color: var(--txt2); line-height: 1.5; }
-
-/* ══════════════════════════════════════
-   EMPTY STATE
-══════════════════════════════════════ */
 .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 12px; }
-
-/* ══════════════════════════════════════
-   MOBILE
-══════════════════════════════════════ */
 @media (max-width: 600px) {
   .page-wrap { padding: 10px; }
   .header { padding: 10px 14px; }
@@ -854,7 +746,6 @@ select.form-ctrl { cursor: pointer; }
   .snap-dot-outer { width: 30px; height: 30px; font-size: 12px; }
   .hdr-right .sync-badge { display: none; }
 }
-
 @media (max-width: 400px) {
   .kpis { grid-template-columns: repeat(2, 1fr); }
   .actions { flex-wrap: wrap; }
@@ -865,7 +756,6 @@ select.form-ctrl { cursor: pointer; }
 <body>
 <div class="page-wrap">
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-left">
     <button class="hdr-btn" onclick="toggleDrawer()" title="Menu" style="padding:7px 10px;font-size:16px;">☰</button>
@@ -886,10 +776,8 @@ select.form-ctrl { cursor: pointer; }
   </div>
 </div>
 
-<!-- DRAWER OVERLAY -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
 
-<!-- DRAWER -->
 <div class="drawer" id="callDrawer">
   <div class="drawer-top">
     <div class="drawer-logo">
@@ -902,7 +790,6 @@ select.form-ctrl { cursor: pointer; }
     </div>
     <button class="drawer-close" onclick="toggleDrawer()">✕</button>
   </div>
-
   <div class="drawer-nav">
     <div class="drawer-section-label">Navigation</div>
     <a class="drawer-nav-item" onclick="showTab('overview');toggleDrawer()">
@@ -914,10 +801,8 @@ select.form-ctrl { cursor: pointer; }
     <a class="drawer-nav-item" onclick="showTab('compare');toggleDrawer()">
       <span class="drawer-nav-icon">📊</span> Compare &amp; Reports
     </a>
-
     <div class="drawer-divider"></div>
     <div class="drawer-section-label">History &amp; Tracking</div>
-
     <a class="drawer-nav-item" onclick="renderDrawerFocus('today');scrollToDrawerFocus()">
       <span class="drawer-nav-icon">📅</span> Today's Callbacks
     </a>
@@ -931,7 +816,6 @@ select.form-ctrl { cursor: pointer; }
       <span class="drawer-nav-icon">⏳</span> Change Snapshots
     </a>
   </div>
-
   <div class="drawer-divider"></div>
   <div class="drawer-focus" id="drawerFocusArea">
     <h4>Today's Callbacks</h4>
@@ -939,7 +823,6 @@ select.form-ctrl { cursor: pointer; }
   </div>
 </div>
 
-<!-- SNAPSHOT FULL PAGE OVERLAY -->
 <div class="snapshot-overlay" id="snapshotOverlay">
   <div class="snapshot-page">
     <div class="snapshot-page-header">
@@ -953,15 +836,13 @@ select.form-ctrl { cursor: pointer; }
   </div>
 </div>
 
-<!-- AGENT NAME ROW -->
 <div class="agent-row">
   <span class="agent-label">Your Name</span>
   <input type="text" id="agentName" class="agent-input" placeholder="Enter your name to tag call logs…"
     oninput="localStorage.setItem('pw_agent',this.value)"/>
-  <div id="connStatus" class="conn-status" style="margin:0;flex:1;">Connecting…</div>
+  <div id="connStatus" class="conn-status" style="margin:0;flex:1;">Click ↻ Refresh to connect.</div>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <button class="tab active" onclick="showTab('overview')">Overview</button>
   <button class="tab" onclick="showTab('followup')">Follow-ups</button>
@@ -972,18 +853,14 @@ select.form-ctrl { cursor: pointer; }
 <div id="tab-followup" style="display:none"></div>
 <div id="tab-compare" style="display:none"></div>
 
-<!-- LOG MODAL -->
 <div class="modal-bg" id="logModal">
   <div class="modal">
     <div class="modal-title" id="logModalTitle">Log call</div>
     <div class="modal-sub" id="logModalSub"></div>
-    
     <label class="form-lbl">Your name</label>
     <input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
-    
     <label class="form-lbl">Notes from call / visit</label>
     <textarea class="form-ctrl" id="logNote" placeholder="e.g. Spoke to committee..."></textarea>
-    
     <label class="form-lbl">Outcome</label>
     <select class="form-ctrl" id="logOutcome">
       <option value="positive">Positive — progressing well</option>
@@ -991,15 +868,11 @@ select.form-ctrl { cursor: pointer; }
       <option value="blocked">Blocked — needs attention</option>
       <option value="neutral">Neutral / informational</option>
     </select>
-    
     <label class="form-lbl" id="cbDateLabel" style="display:none">Callback date</label>
     <input type="date" class="form-ctrl" id="cbDate" style="display:none"/>
-    
     <label class="form-lbl" id="cbEmailLabel" style="display:none">Callback email (for reminder)</label>
     <input type="email" class="form-ctrl" id="cbEmail" style="display:none" placeholder="your@email.com"/>
-    
     <div id="logSaving" style="font-size:11px;color:var(--ylw);margin-bottom:8px;display:none;">Saving to sheet…</div>
-    
     <div class="form-row">
       <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
       <button class="btn-save" id="logSaveBtn" onclick="saveLog()">Save log</button>
@@ -1007,7 +880,6 @@ select.form-ctrl { cursor: pointer; }
   </div>
 </div>
 
-<!-- DETAIL MODAL -->
 <div class="modal-bg" id="detailModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
@@ -1040,9 +912,6 @@ select.form-ctrl { cursor: pointer; }
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiMnHO9j_OIgqcDkAg1TGOJYQpWz60FBvHypR50iDyEwocEpCyEL-CANf6loNK8sfr/exec";
 const SHEET_URL  = "https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing";
 let backendOk = false;
@@ -1050,6 +919,24 @@ let backendOk = false;
 let logs = {}, callbacks = {};
 try { logs = JSON.parse(localStorage.getItem('pw_logs')||'{}'); } catch(e){}
 try { callbacks = JSON.parse(localStorage.getItem('pw_callbacks')||'{}'); } catch(e){}
+
+// Strip T18:30:00.000Z from any stored callback dates (ISO -> YYYY-MM-DD only)
+Object.keys(callbacks).forEach(id => {
+  if(callbacks[id] && /T\d{2}:\d{2}/.test(callbacks[id]))
+    callbacks[id] = callbacks[id].slice(0,10);
+});
+// Fix broken log timestamps
+Object.keys(logs).forEach(id => {
+  logs[id] = (logs[id]||[]).map(e => {
+    let t = e.time || '';
+    if(/1970/.test(t) || /T\d{2}:\d{2}/.test(t)) {
+      const m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      t = m ? (m[3]+'-'+m[2]+'-'+m[1].slice(2)) : '(unknown)';
+      return {...e, time: t};
+    }
+    return e;
+  });
+});
 
 let historicalSnapshots = [];
 try { historicalSnapshots = JSON.parse(localStorage.getItem('pw_snapshots')||'[]'); } catch(e){}
@@ -1074,9 +961,29 @@ let PIPELINE = [
 let _detailId = null, currentLogId = null, currentLogName = '';
 let sortKey='pen', sortDir=-1, filterUrgent=false, searchQ='', currentTab='overview';
 
-// ═══════════════════════════════════════════════════
-// BACKEND API
-// ═══════════════════════════════════════════════════
+// ── DATE HELPERS ──
+function fmtDate(d){
+  if(!d) return '';
+  const s = String(d).trim();
+  // Parse YYYY-MM-DD from any ISO string (strips T18:30:00.000Z etc.)
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m){ return m[3]+'-'+m[2]+'-'+m[1].slice(2); }
+  return s;
+}
+function parseDateOnly(d){
+  // Returns a Date at local midnight — safe for any ISO string
+  if(!d) return null;
+  const s = String(d).trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+  return new Date(d);
+}
+function todayMidnight(){
+  const n = new Date();
+  return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+}
+
+// ── BACKEND ──
 function setSyncStatus(state, msg) {
   const dot = document.getElementById('syncDot');
   const txt = document.getElementById('syncTxt');
@@ -1197,9 +1104,7 @@ async function refreshLogsFromSheet() {
   setSyncStatus('ok', 'Synced ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
 }
 
-// ═══════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════
+// ── HELPERS ──
 function saveLocal() {
   localStorage.setItem('pw_logs', JSON.stringify(logs));
   localStorage.setItem('pw_callbacks', JSON.stringify(callbacks));
@@ -1208,6 +1113,11 @@ function getLogsById(id){ return logs[id]||[]; }
 function lastLog(id){ const l=getLogsById(id); return l.length?l[l.length-1]:null; }
 function fmt(n){ return '₹'+Number(n).toLocaleString('en-IN'); }
 function fmtS(n){ return n>=1000?'₹'+(n/1000).toFixed(1)+'k':'₹'+n; }
+
+function isOverdue(cbVal){
+  if(!cbVal) return false;
+  return parseDateOnly(cbVal) <= todayMidnight();
+}
 
 function checkHealthOverride(r) {
   let s=0;
@@ -1222,7 +1132,7 @@ function urgencyReasons(r){
   if(r.pen<15) rs.push(`Low penetration (${r.pen}%)`);
   if(r.months>12&&r.pen<25) rs.push(`${r.months}mo live, under 25% pen`);
   if(!lastLog(r.id)) rs.push('No call logged yet');
-  if(callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()) rs.push('Callback overdue');
+  if(callbacks[r.id] && isOverdue(callbacks[r.id])) rs.push('Callback overdue');
   return rs;
 }
 function isUrgent(r){ return urgencyReasons(r).length>0; }
@@ -1235,32 +1145,8 @@ function logCardHtml(ll) {
     <div class="note-time">${ll.time} · ${ll.outcome==='blocked'?'🔴':ll.outcome==='callback'?'🟡':'🟢'} ${ll.outcome}</div>
   </div>`;
 }
-// Clean Date Formatter - DD-MM-YY (No Z timestamp)
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  
-  // Handle ISO strings with T...Z
-  let d = new Date(dateStr);
-  
-  // Fix 1970 bug (invalid date)
-  if (isNaN(d.getTime())) {
-    // Try parsing as YYYY-MM-DD
-    if (typeof dateStr === 'string' && dateStr.includes('-')) {
-      d = new Date(dateStr.split('T')[0]);
-    }
-  }
-  
-  if (isNaN(d.getTime())) return dateStr; // fallback
-  
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const year = String(d.getFullYear()).slice(2);
-  
-  return `${day}-${month}-${year}`;
-}
-// ═══════════════════════════════════════════════════
-// OVERVIEW TAB
-// ═══════════════════════════════════════════════════
+
+// ── OVERVIEW TAB ──
 function renderOverview(){
   const filtered=ACTIVE.filter(r=>{
     if(filterUrgent&&!isUrgent(r)) return false;
@@ -1274,7 +1160,7 @@ function renderOverview(){
   const delta=revJun-revMay;
   const avgPen=ACTIVE.length ? Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length) : 0;
   const urgent=ACTIVE.filter(isUrgent).length;
-  const cbDue=ACTIVE.filter(r=>callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()).length;
+  const cbDue=ACTIVE.filter(r=>callbacks[r.id] && isOverdue(callbacks[r.id])).length;
 
   let html=`<div class="kpis">
     <div class="kpi"><div class="kpi-lbl">Onboarded</div><div class="kpi-val">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
@@ -1297,6 +1183,7 @@ function renderOverview(){
     const d=r.revJun-r.revMay;
     const ll=lastLog(r.id);
     const cb=callbacks[r.id];
+    const overdue = cb && isOverdue(cb);
     html+=`<div class="scard">
       <div class="scard-top">
         <div>
@@ -1305,8 +1192,8 @@ function renderOverview(){
         </div>
         <span class="badge ${hl.c}">${hl.t}</span>
       </div>
-      ${cb&&new Date(cb)<=new Date()?`<div class="cb-flag">📞 Callback overdue</div>`:''}
-      ${cb&&!(new Date(cb)<=new Date())?`<div class="cb-flag" style="background:rgba(234,88,12,0.06);border-color:rgba(234,88,12,0.18);">📅 Callback scheduled · ${cb}</div>`:''}
+      ${overdue?`<div class="cb-flag">📞 Callback overdue · ${fmtDate(cb)}</div>`:''}
+      ${cb&&!overdue?`<div class="cb-flag" style="background:rgba(234,88,12,0.06);border-color:rgba(234,88,12,0.18);">📅 Callback scheduled · ${fmtDate(cb)}</div>`:''}
       ${logCardHtml(ll)}
       <div class="metrics">
         <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
@@ -1345,9 +1232,7 @@ function renderOverview(){
   document.getElementById('tab-overview').innerHTML=html;
 }
 
-// ═══════════════════════════════════════════════════
-// FOLLOW-UPS TAB
-// ═══════════════════════════════════════════════════
+// ── FOLLOW-UPS TAB ──
 function renderFollowup(){
   let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
     <div class="sec" style="margin:0;flex:1">Pending callbacks & flagged</div>
@@ -1356,21 +1241,21 @@ function renderFollowup(){
 
   const pending=ACTIVE.filter(r=>callbacks[r.id]||urgencyReasons(r).length)
     .sort((a,b)=>{
-      const ao=callbacks[a.id]&&new Date(callbacks[a.id])<=new Date()?0:1;
-      const bo=callbacks[b.id]&&new Date(callbacks[b.id])<=new Date()?0:1;
+      const ao=callbacks[a.id]&&isOverdue(callbacks[a.id])?0:1;
+      const bo=callbacks[b.id]&&isOverdue(callbacks[b.id])?0:1;
       return ao-bo;
     });
 
   if(!pending.length) html+=`<div class="empty">No pending follow-ups. All good! 🎉</div>`;
   else pending.forEach(r=>{
     const cb=callbacks[r.id]; const ll=lastLog(r.id);
-    const overdue=cb&&new Date(cb)<=new Date();
+    const overdue=cb&&isOverdue(cb);
     const reasons=urgencyReasons(r);
     html+=`<div class="fup-item">
       <div class="fup-dot ${overdue?'red':reasons.length?'ylw':'grn'}"></div>
       <div class="fup-body">
         <div class="fup-name">${r.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${r.flats} flats</span></div>
-        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;font-weight:600;">${overdue?'⚠ Overdue:':'📅'} ${cb}</div>`:''}
+        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;font-weight:600;">${overdue?'⚠ Overdue:':'📅'} ${fmtDate(cb)}</div>`:''}
         ${reasons.length?`<div class="fup-note">${reasons.join(' · ')}</div>`:''}
         ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:'<div class="fup-note" style="color:var(--muted)">No call logged yet</div>'}
       </div>
@@ -1390,7 +1275,7 @@ function renderFollowup(){
         <div class="fup-dot ylw"></div>
         <div class="fup-body">
           <div class="fup-name">${p.name} <span style="font-size:10px;color:var(--muted)">(Pipeline · ${p.flats} flats)</span></div>
-          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;font-weight:600;">📅 ${cb}</div>`:''}
+          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;font-weight:600;">📅 ${fmtDate(cb)}</div>`:''}
           ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:''}
         </div>
         <div class="fup-actions">
@@ -1419,9 +1304,7 @@ function renderFollowup(){
   document.getElementById('tab-followup').innerHTML=html;
 }
 
-// ═══════════════════════════════════════════════════
-// COMPARE TAB
-// ═══════════════════════════════════════════════════
+// ── COMPARE TAB ──
 function renderCompare(){
   const sorted=[...ACTIVE].sort((a,b)=>{
     let va=a[sortKey],vb=b[sortKey];
@@ -1502,9 +1385,7 @@ function renderCompare(){
   document.getElementById('tab-compare').innerHTML=html;
 }
 
-// ═══════════════════════════════════════════════════
-// SNAPSHOT FULL PAGE
-// ═══════════════════════════════════════════════════
+// ── SNAPSHOT FULL PAGE ──
 const fieldMeta = {
   ob:     { label: 'Onboarded',   icon: '🏠', fmt: v => v + ' flats',                          color: (o,n) => n>o ? 'plus' : 'minus' },
   pen:    { label: 'Penetration', icon: '📈', fmt: v => v + '%',                                color: (o,n) => n>o ? 'plus' : 'minus' },
@@ -1606,9 +1487,7 @@ function closeSnapshotPage() {
   document.body.style.overflow = '';
 }
 
-// ═══════════════════════════════════════════════════
-// DETAIL MODAL
-// ═══════════════════════════════════════════════════
+// ── DETAIL MODAL ──
 function openDetail(id){
   const all=[...ACTIVE,...PIPELINE];
   const r=all.find(x=>x.id===id);
@@ -1664,9 +1543,7 @@ function openLogFromDetail(){
   openLog(r.id, r.name, isPipe?'pipeline':'');
 }
 
-// ═══════════════════════════════════════════════════
-// LOG MODAL
-// ═══════════════════════════════════════════════════
+// ── LOG MODAL ──
 function openLog(id, name, mode){
   currentLogId=id; currentLogName=name||'';
   document.getElementById('logModalTitle').textContent=mode==='pipeline'?'Log pipeline note':'Log call / visit';
@@ -1713,32 +1590,31 @@ async function saveLog(){
 
   const agentName = document.getElementById('logAgent').value.trim();
   const outcome = document.getElementById('logOutcome').value;
-  let cbDate = document.getElementById('cbDate').value;
-  const cbEmail = document.getElementById('cbEmail') ? document.getElementById('cbEmail').value.trim() : '';
+  const cbDate = document.getElementById('cbDate').value;
+  const cbEmail = document.getElementById('cbEmail').value.trim();
 
   if(agentName) localStorage.setItem('pw_agent', agentName);
 
   const now = new Date();
-  const time = formatDate(now);   // Clean date
+  // Store time as DD-MM-YY
+  const dd = String(now.getDate()).padStart(2,'0');
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const yy = String(now.getFullYear()).slice(2);
+  const time = dd+'-'+mm+'-'+yy;
 
   const entry = {note, agentName, outcome, callbackDate: cbDate, time};
 
   if(!logs[currentLogId]) logs[currentLogId] = [];
   logs[currentLogId].push(entry);
-  
-  if(outcome==='callback' && cbDate) {
-    callbacks[currentLogId] = cbDate;
-  }
+  if(outcome==='callback' && cbDate) callbacks[currentLogId] = cbDate;
 
   saveLocal();
 
   if(backendOk){
     document.getElementById('logSaving').style.display = 'block';
     document.getElementById('logSaveBtn').disabled = true;
-    
     const all = [...ACTIVE, ...PIPELINE];
     const r = all.find(x => x.id === currentLogId);
-
     await pushLogToSheet({
       societyName: r ? r.name : currentLogName,
       agentName: agentName,
@@ -1748,7 +1624,6 @@ async function saveLog(){
       callbackEmail: cbEmail,
       type: PIPELINE.find(p => p.id === currentLogId) ? 'pipeline' : 'active'
     });
-    
     document.getElementById('logSaveBtn').disabled = false;
   }
 
@@ -1756,9 +1631,14 @@ async function saveLog(){
   renderCurrent();
 }
 
-// ═══════════════════════════════════════════════════
-// SHEET LOADER
-// ═══════════════════════════════════════════════════
+async function markCbDone(id, name){
+  delete callbacks[id];
+  saveLocal();
+  if(backendOk) await apiCall('clearCallback',{societyName:name});
+  renderCurrent();
+}
+
+// ── SHEET LOADER ──
 async function loadSheet(){
   const sheetId = '1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw';
   const statusEl = document.getElementById('connStatus');
@@ -1770,73 +1650,85 @@ async function loadSheet(){
     const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
     const table=json.table;
     if(!table||!table.cols) throw new Error('Empty sheet.');
+
     const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
     const idx=k=>cols.findIndex(h=>h.includes(k));
     const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
     const num=v=>parseInt((v||'').replace(/[^0-9.-]/g,''))||0;
 
     const baselineMap = {};
-    ACTIVE.forEach(r => {
-      baselineMap[r.name] = { ob: r.ob, pen: r.pen, revMay: r.revMay, revJun: r.revJun, flats: r.flats, months: r.months, launch: r.launch, remark: r.remark };
-    });
+    ACTIVE.forEach(r => baselineMap[r.name] = {...r});
 
-    const nA=[],nP=[]; let cnt=200;
+    const nA=[], nP=[]; 
     let dayChanges = [];
 
     (table.rows||[]).forEach(row=>{
       const name=cell(row,'society')||cell(row,'name');
       if(!name||/total|overall|^s\.?no/i.test(name)) return;
-      const ob=num(cell(row,'onboard'));
-      const id=cnt++;
-      const obj={
-        id,name,
-        flats:  num(cell(row,'total'))||num(cell(row,'flat')),
-        ob,
-        pen:    num(cell(row,'penetr'))||num(cell(row,'pen')),
+
+      const obj = {
+        id: 200 + nA.length + nP.length,
+        name,
+        flats: num(cell(row,'total')) || num(cell(row,'flat')),
+        ob: num(cell(row,'onboard')),
+        pen: num(cell(row,'penetr')) || num(cell(row,'pen')),
         launch: cell(row,'launch')||cell(row,'month')||'—',
         months: num(cell(row,'months')),
         revMay: num(cell(row,'may')),
         revJun: num(cell(row,'june'))||num(cell(row,'jun')),
-        remark: cell(row,'remark')||cell(row,'pendency'),
+        remark: (cell(row,'remark')||cell(row,'pendency')||'').trim(),
       };
 
       const oldObj = baselineMap[name];
       if (oldObj) {
         const changes = {};
-        if (obj.ob     !== oldObj.ob)     changes.ob     = { old: oldObj.ob,     new: obj.ob     };
-        if (obj.pen    !== oldObj.pen)     changes.pen    = { old: oldObj.pen,    new: obj.pen    };
-        if (obj.revMay !== oldObj.revMay)  changes.revMay = { old: oldObj.revMay, new: obj.revMay };
-        if (obj.revJun !== oldObj.revJun)  changes.revJun = { old: oldObj.revJun, new: obj.revJun };
-        if (obj.flats  !== oldObj.flats)   changes.flats  = { old: oldObj.flats,  new: obj.flats  };
-        if (obj.remark !== oldObj.remark)  changes.remark = { old: oldObj.remark, new: obj.remark };
-        if (Object.keys(changes).length > 0) dayChanges.push({ name, changes });
+        if (obj.ob !== oldObj.ob) changes.ob = {old: oldObj.ob, new: obj.ob};
+        if (obj.pen !== oldObj.pen) changes.pen = {old: oldObj.pen, new: obj.pen};
+        if (obj.revMay !== oldObj.revMay) changes.revMay = {old: oldObj.revMay, new: obj.revMay};
+        if (obj.revJun !== oldObj.revJun) changes.revJun = {old: oldObj.revJun, new: obj.revJun};
+        if (obj.flats !== oldObj.flats) changes.flats = {old: oldObj.flats, new: obj.flats};
+        
+        // Fixed: only record remark change if it's meaningfully different
+        if (obj.remark && obj.remark !== oldObj.remark.trim()) {
+          changes.remark = {old: oldObj.remark, new: obj.remark};
+        }
+
+        if (Object.keys(changes).length > 0) {
+          dayChanges.push({ name, changes });
+        }
       }
 
-      if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
+      if(obj.ob > 0) nA.push(obj); 
+      else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
 
-    if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
-
+    // Only create snapshot if there are real changes
     if (dayChanges.length > 0) {
-      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+      const dd = String(new Date().getDate()).padStart(2,'0');
+      const mm = String(new Date().getMonth()+1).padStart(2,'0');
+      const yy = String(new Date().getFullYear()).slice(2);
+      const todayString = `${dd}-${mm}-${yy}`;
+
       const newSnap = { date: todayString, changes: dayChanges };
       historicalSnapshots.push(newSnap);
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
       await pushSnapshotToSheet(newSnap);
     }
 
-    ACTIVE=nA; PIPELINE=nP;
-    if(statusEl) { statusEl.textContent='✅ Sheet loaded successfully.'; statusEl.className='conn-status ok'; }
+    ACTIVE = nA; 
+    PIPELINE = nP;
+
+    if(statusEl) {
+      statusEl.textContent = `✅ Sheet loaded (${nA.length} active)`;
+      statusEl.className = 'conn-status ok';
+    }
     renderCurrent();
   } catch(e){
-    if(statusEl) { statusEl.textContent='Sheet data unavailable — using defaults.'; statusEl.className='conn-status'; }
-    console.warn('Sheet load failed:', e.message);
+    console.warn('Sheet load failed:', e);
+    if(statusEl) statusEl.textContent = 'Using default data';
   }
 }
-
-// ═══════════════════════════════════════════════════
-// TABS & UTILS
-// ═══════════════════════════════════════════════════
+// ── TABS ──
 function showTab(tab){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach((b)=>{
@@ -1858,9 +1750,7 @@ function renderCurrent(){
 
 function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 
-// ═══════════════════════════════════════════════════
-// DRAWER
-// ═══════════════════════════════════════════════════
+// ── DRAWER ──
 function scrollToDrawerFocus() {
   const area = document.getElementById('drawerFocusArea');
   if(area) setTimeout(()=>area.scrollIntoView({behavior:'smooth', block:'start'}), 100);
@@ -1868,16 +1758,17 @@ function scrollToDrawerFocus() {
 
 function renderDrawerFocus(mode) {
   const area = document.getElementById('drawerFocusArea');
-  const todayStr = new Date().toISOString().slice(0,10);
+  const today = todayMidnight();
   let h = '';
 
   if (mode === 'today') {
     h = `<h4 style="margin-bottom:10px;">📅 Today's Callbacks</h4>`;
     let count = 0;
     Object.entries(callbacks).forEach(([id,date])=>{
-      if(date === todayStr){
+      const d = parseDateOnly(date);
+      if(d && d.getTime() === today.getTime()){
         const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div class="drawer-cb-item"><b>${s?s.name:id}</b><small style="color:var(--txt2);">Callback Due Today</small></div>`;
+        h+=`<div class="drawer-cb-item"><b>${s?s.name:id}</b><small style="color:var(--txt2);">Callback Due Today · ${fmtDate(date)}</small></div>`;
         count++;
       }
     });
@@ -1887,16 +1778,32 @@ function renderDrawerFocus(mode) {
     h = `<h4 style="margin-bottom:10px;">🔔 Upcoming Callbacks</h4>`;
     let count = 0;
     Object.entries(callbacks).forEach(([id,date])=>{
-      if(date > todayStr){
+      const d = parseDateOnly(date);
+      if(d && d > today){
         const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);">
-          <b>${s?s.name:id}</b>
-          <small style="color:var(--txt2);">📅 ${formatDate(date)}</small>
-        </div>`;
+        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);background:var(--glass2);"><b>${s?s.name:id}</b><small style="color:var(--txt2);">📅 ${fmtDate(date)}</small></div>`;
         count++;
       }
     });
     if(!count) h += `<p style="color:var(--muted);font-size:11px;padding:8px 0;">No upcoming callbacks scheduled.</p>`;
+  }
+  else if (mode === 'history') {
+    h = `<h4 style="margin-bottom:10px;">📜 Recent Call History</h4><div style="max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;">`;
+    let count = 0;
+    [...ACTIVE,...PIPELINE].forEach(r => {
+      const logList = getLogsById(r.id);
+      if (logList.length) {
+        const last = logList[logList.length - 1];
+        h += `<div style="padding:8px 10px;background:var(--glass2);border-radius:var(--radius-sm);font-size:11px;border:1px solid var(--bdr);">
+          <strong style="color:var(--acc);display:block;margin-bottom:3px;">${r.name}</strong>
+          <div style="color:var(--txt2);font-style:italic;">"${last.note.substring(0,50)}…"</div>
+          <small style="color:var(--muted);">${last.time}${last.agentName?' · '+last.agentName:''}</small>
+        </div>`;
+        count++;
+      }
+    });
+    if(!count) h += `<p style="color:var(--muted);font-size:11px;">No calls logged yet.</p>`;
+    h += '</div>';
   }
   area.innerHTML = h;
 }
@@ -1925,23 +1832,24 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ═══════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════
+// ── INIT — auto-connect and load on page open ──
 window.onload = async function () {
-    document.getElementById("agentName").value = localStorage.getItem("pw_agent") || "";
+  document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
 
-    const statusEl = document.getElementById('connStatus');
-    statusEl.textContent = "🔄 Initializing...";
+  const statusEl = document.getElementById('connStatus');
+  statusEl.textContent = '🔄 Connecting…';
 
-    // Auto connect + load with better sequencing
-    await connectBackend();
-    
-    setTimeout(async () => {
-        await loadSheet();
-        renderCurrent();
-        statusEl.textContent = backendOk ? "✅ Fully Loaded" : "⚠️ Partial Load (Local)";
-    }, 1000);
+  // Render immediately with default/cached data
+  renderCurrent();
+
+  // Connect backend (loads logs + callbacks)
+  await connectBackend();
+
+  // Load sheet data with slight delay
+  setTimeout(async () => {
+    await loadSheet();
+    renderCurrent();
+  }, 500);
 };
 
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);

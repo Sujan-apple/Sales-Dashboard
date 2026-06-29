@@ -1739,6 +1739,11 @@ async function saveLog(){
   const cbDate = document.getElementById('cbDate').value;
   const cbEmail = document.getElementById('cbEmail') ? document.getElementById('cbEmail').value.trim() : '';
 
+  console.log("=== DEBUG ===");
+  console.log("Callback Date:", cbDate);
+  console.log("Callback Email:", cbEmail);
+  console.log("Outcome:", outcome);
+
   if(agentName) localStorage.setItem('pw_agent', agentName);
 
   const now = new Date();
@@ -1754,17 +1759,25 @@ async function saveLog(){
   if(backendOk){
     document.getElementById('logSaving').style.display = 'block';
     document.getElementById('logSaveBtn').disabled = true;
+    
     const all = [...ACTIVE, ...PIPELINE];
     const r = all.find(x => x.id === currentLogId);
+    
+    console.log("Sending to backend:", {
+      societyName: r ? r.name : currentLogName,
+      callbackEmail: cbEmail
+    });
+
     await pushLogToSheet({
       societyName: r ? r.name : currentLogName,
-      agentName, 
-      note, 
-      outcome,
+      agentName: agentName,
+      note: note,
+      outcome: outcome,
       callbackDate: cbDate,
-      callbackEmail: cbEmail,   // ← This is critical
+      callbackEmail: cbEmail,
       type: PIPELINE.find(p => p.id === currentLogId) ? 'pipeline' : 'active'
     });
+    
     document.getElementById('logSaveBtn').disabled = false;
   }
 

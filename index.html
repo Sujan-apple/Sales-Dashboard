@@ -1688,9 +1688,9 @@ async function loadSheet(){
         if (obj.revJun !== oldObj.revJun) changes.revJun = {old: oldObj.revJun, new: obj.revJun};
         if (obj.flats !== oldObj.flats) changes.flats = {old: oldObj.flats, new: obj.flats};
 
-        if (obj.remark.length > 3 && obj.remark !== oldObj.remark) {
-          changes.remark = {old: oldObj.remark, new: obj.remark};
-        }
+        // if (obj.remark.length > 3 && obj.remark !== oldObj.remark) {
+        //   changes.remark = {old: oldObj.remark, new: obj.remark};
+        // }
 
         if (Object.keys(changes).length > 0) dayChanges.push({ name, changes });
       }

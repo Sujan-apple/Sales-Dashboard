@@ -1102,8 +1102,11 @@ select.form-ctrl { cursor: pointer; }
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-let SCRIPT_URL = localStorage.getItem('pw_script_url') || '';
-let SHEET_URL  = localStorage.getItem('pw_sheet_url') || '';
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxiMnHO9j_OIgqcDkAg1TGOJYQpWz60FBvHypR50iDyEwocEpCyEL-CANf6loNK8sfr/exec";
+
+const SHEET_URL =
+"https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing";
 let backendOk  = false;
 
 let logs = {}, callbacks = {};
@@ -1142,59 +1145,22 @@ function setSyncStatus(state, msg) {
   if(dot && txt) { dot.className = 'sync-dot ' + state; txt.textContent = msg; }
 }
 
-async function apiCall(action, data = {}) {
-
+async function apiCall(action, data={}) {
   if (!SCRIPT_URL) return null;
-
   try {
-
     let res;
-
-    if (action === "getAllLogs") {
-
-      res = await fetch(
-        `${SCRIPT_URL}?action=getAllLogs&t=${Date.now()}`,
-        {
-          method: "GET",
-          cache: "no-store"
-        }
-      );
-
+    if (action === 'getAllLogs') {
+      res = await fetch(`${SCRIPT_URL}?action=getAllLogs&t=${Date.now()}`, { method:'GET', cache:'no-store' });
     } else {
-
       res = await fetch(SCRIPT_URL, {
-
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-          action: action,
-
-          ...data
-
-        })
-
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({action,...data})
       });
-
     }
-
-    if (!res.ok)
-      throw new Error("HTTP " + res.status);
-
+    if(!res.ok) throw new Error('HTTP '+res.status);
     return await res.json();
-
-  } catch (e) {
-
-    console.error(e);
-
-    return null;
-
-  }
-
+  } catch(e){ console.error('API error',e); return null; }
 }
 
 async function connectBackend() {
@@ -1774,12 +1740,7 @@ async function saveLog(){
   const agentName = document.getElementById('logAgent').value.trim();
   const outcome = document.getElementById('logOutcome').value;
   const cbDate = document.getElementById('cbDate').value;
- const cbEmail = document
-  .getElementById("cbEmail")
-  .value
-  .trim();
-
-console.log("EMAIL =", cbEmail);
+  const cbEmail = document.getElementById('cbEmail') ? document.getElementById('cbEmail').value.trim() : '';
 
   console.log("=== DEBUG ===");
   console.log("Callback Date:", cbDate);
@@ -1810,34 +1771,15 @@ console.log("EMAIL =", cbEmail);
       callbackEmail: cbEmail
     });
 
-    console.log({
-    callbackEmail: cbEmail,
-    callbackDate: cbDate,
-    outcome: outcome
-   });
-    const payload = {
-
-    societyName: r ? r.name : currentLogName,
-
-    agentName: agentName,
-
-    note: note,
-
-    outcome: outcome,
-
-    callbackDate: cbDate,
-
-    callbackEmail: cbEmail,
-
-    type: PIPELINE.find(p => p.id === currentLogId)
-        ? "pipeline"
-        : "active"
-
-};
-
-console.log("Sending payload", payload);
-
-await pushLogToSheet(payload);
+    await pushLogToSheet({
+      societyName: r ? r.name : currentLogName,
+      agentName: agentName,
+      note: note,
+      outcome: outcome,
+      callbackDate: cbDate,
+      callbackEmail: cbEmail,
+      type: PIPELINE.find(p => p.id === currentLogId) ? 'pipeline' : 'active'
+    });
     
     document.getElementById('logSaveBtn').disabled = false;
   }

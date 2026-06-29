@@ -1640,6 +1640,7 @@ async function markCbDone(id, name){
 
 // ── SHEET LOADER ──
 async function loadSheet(){
+  if (!SHEET_URL) return;
   const sheetId = '1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw';
   const statusEl = document.getElementById('connStatus');
 
@@ -1701,18 +1702,24 @@ async function loadSheet(){
       if(obj.ob > 0) nA.push(obj); 
       else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
-
-    // Only create snapshot if there are real changes
+    // Only create snapshot if there are real changes AND it's not duplicate
     if (dayChanges.length > 0) {
       const dd = String(new Date().getDate()).padStart(2,'0');
       const mm = String(new Date().getMonth()+1).padStart(2,'0');
       const yy = String(new Date().getFullYear()).slice(2);
       const todayString = `${dd}-${mm}-${yy}`;
 
-      const newSnap = { date: todayString, changes: dayChanges };
-      historicalSnapshots.push(newSnap);
-      localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
-      await pushSnapshotToSheet(newSnap);
+      // Prevent duplicate snapshots on same day
+      const lastSnap = historicalSnapshots[historicalSnapshots.length - 1];
+      if (!lastSnap || lastSnap.date !== todayString || lastSnap.changes.length === 0) {
+        const newSnap = { date: todayString, changes: dayChanges };
+        historicalSnapshots.push(newSnap);
+        localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
+        await pushSnapshotToSheet(newSnap);
+        console.log(`Snapshot created: ${dayChanges.length} changes`);
+      } else {
+        console.log("No new changes today - skipping snapshot");
+      }
     }
 
     ACTIVE = nA; 
@@ -1832,24 +1839,27 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── INIT — auto-connect and load on page open ──
+// ── INIT - Auto Load Everything ──
 window.onload = async function () {
-  document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
+    document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
 
-  const statusEl = document.getElementById('connStatus');
-  statusEl.textContent = '🔄 Connecting…';
+    const statusEl = document.getElementById('connStatus');
+    statusEl.textContent = '🔄 Initializing dashboard...';
+    statusEl.className = 'conn-status';
 
-  // Render immediately with default/cached data
-  renderCurrent();
+    // Step 1: Connect Backend first
+    await connectBackend();
 
-  // Connect backend (loads logs + callbacks)
-  await connectBackend();
-
-  // Load sheet data with slight delay
-  setTimeout(async () => {
-    await loadSheet();
-    renderCurrent();
-  }, 500);
+    // Step 2: Load Sheet data
+    setTimeout(async () => {
+        await loadSheet();
+        renderCurrent();
+        
+        if (backendOk) {
+            statusEl.textContent = '✅ Fully Loaded';
+            statusEl.className = 'conn-status ok';
+        }
+    }, 800);
 };
 
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);

@@ -68,6 +68,9 @@ html[data-theme="light"] {
   --shadow-sm:0 4px 16px rgba(0,0,0,0.08);
 }
 
+/* ══════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -99,6 +102,9 @@ body::before {
   margin: 0 auto;
 }
 
+/* ══════════════════════════════════════
+   GLASS MIXIN
+══════════════════════════════════════ */
 .glass {
   background: var(--surf);
   backdrop-filter: blur(20px) saturate(1.4);
@@ -107,7 +113,9 @@ body::before {
   box-shadow: var(--shadow);
 }
 
-/* HEADER */
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
 .header {
   display: flex;
   align-items: center;
@@ -125,7 +133,10 @@ body::before {
 }
 
 .header-left { display: flex; align-items: center; gap: 12px; }
+
+/* ProWater SVG Logo */
 .pw-logo-svg { width: 100px; height: 44px; flex-shrink: 0; }
+
 .hdr-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 .hdr-btn {
@@ -163,7 +174,9 @@ body::before {
 .sync-dot.loading { background: var(--ylw); animation: pulse 1s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-/* SETUP BANNER */
+/* ══════════════════════════════════════
+   SETUP BANNER
+══════════════════════════════════════ */
 .setup-banner {
   background: rgba(20,74,41,0.2);
   backdrop-filter: blur(12px);
@@ -187,7 +200,9 @@ body::before {
   flex-shrink: 0; margin-top: 1px;
 }
 
-/* CONNECTION INPUTS */
+/* ══════════════════════════════════════
+   CONNECTION INPUTS
+══════════════════════════════════════ */
 .conn-group { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
 .conn-input {
   flex: 1;
@@ -225,7 +240,14 @@ body::before {
 .conn-status.ok { color: var(--grn); }
 .conn-status.err { color: var(--red); }
 
-.agent-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+/* Agent name row */
+.agent-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
 .agent-label { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .agent-input {
   background: var(--glass);
@@ -241,7 +263,9 @@ body::before {
 }
 .agent-input:focus { border-color: var(--acc); }
 
-/* TABS */
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
 .tabs {
   display: flex;
   gap: 3px;
@@ -273,7 +297,9 @@ body::before {
 }
 .tab:hover:not(.active) { color: var(--txt); background: var(--glass2); }
 
-/* KPI STRIP */
+/* ══════════════════════════════════════
+   KPI STRIP
+══════════════════════════════════════ */
 .kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -307,7 +333,9 @@ body::before {
 .up { color: var(--grn); }
 .dn { color: var(--red); }
 
-/* SECTION DIVIDER */
+/* ══════════════════════════════════════
+   SECTION DIVIDER
+══════════════════════════════════════ */
 .sec {
   font-size: 10px;
   font-weight: 700;
@@ -321,7 +349,9 @@ body::before {
 }
 .sec::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
 
-/* SOCIETY CARDS */
+/* ══════════════════════════════════════
+   SOCIETY CARDS
+══════════════════════════════════════ */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -355,12 +385,14 @@ body::before {
 .scard-name { font-weight: 700; font-size: 14px; letter-spacing: -.01em; }
 .scard-meta { font-size: 10px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
 
+/* Badges */
 .badge { border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; letter-spacing: .04em; }
 .b-hot  { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
 .b-warn { background: rgba(251,191,36,0.12); color: var(--ylw); border: 1px solid rgba(251,191,36,0.25); }
 .b-good { background: rgba(74,222,128,0.12); color: var(--grn); border: 1px solid rgba(74,222,128,0.25); }
 .b-new  { background: rgba(96,165,250,0.12); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
 
+/* Metrics row */
 .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
 .metric {
   background: var(--glass2);
@@ -372,11 +404,13 @@ body::before {
 .metric-v { font-family: var(--mono); font-size: 14px; font-weight: 600; }
 .metric-l { font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-top: 2px; }
 
+/* Penetration bar */
 .pen-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .pen-bar { flex: 1; height: 6px; border-radius: 4px; background: var(--glass2); overflow: hidden; }
 .pen-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--pw-mid), var(--acc)); transition: width .4s ease; }
 .pen-txt { font-family: var(--mono); font-size: 10px; white-space: nowrap; }
 
+/* Last note */
 .last-note {
   background: var(--glass);
   border-radius: var(--radius-sm);
@@ -390,6 +424,7 @@ body::before {
 .note-agent { font-size: 10px; font-weight: 700; color: var(--acc); margin-bottom: 3px; }
 .note-time { font-size: 9px; color: var(--muted); margin-top: 4px; }
 
+/* Callback flag */
 .cb-flag {
   background: rgba(251,146,60,0.1);
   border: 1px solid rgba(251,146,60,0.25);
@@ -401,6 +436,7 @@ body::before {
   font-weight: 600;
 }
 
+/* Action buttons */
 .actions { display: flex; gap: 6px; }
 .abtn {
   flex: 1;
@@ -427,6 +463,7 @@ body::before {
 }
 .abtn.primary:hover { background: rgba(20,74,41,0.5); }
 
+/* Search row */
 .search-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
 .search-input {
   flex: 1;
@@ -458,7 +495,9 @@ body::before {
 .filter-btn:hover { border-color: var(--bdr2); color: var(--txt); }
 .filter-btn.on { background: rgba(20,74,41,0.3); border-color: rgba(147,212,69,0.4); color: var(--acc); }
 
-/* FOLLOW-UP TAB */
+/* ══════════════════════════════════════
+   FOLLOW-UP TAB
+══════════════════════════════════════ */
 .fup-item {
   background: var(--card);
   backdrop-filter: blur(16px);
@@ -496,7 +535,9 @@ body::before {
 }
 .icon-btn:hover { background: var(--glass2); color: var(--txt); border-color: var(--bdr2); }
 
-/* COMPARE TABLE */
+/* ══════════════════════════════════════
+   COMPARE TABLE
+══════════════════════════════════════ */
 .cmp-wrap { overflow-x: auto; border-radius: var(--radius); }
 .cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .cmp-table th {
@@ -522,76 +563,14 @@ body::before {
 .sort-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 10px; margin-left: 3px; }
 .sort-btn.active { color: var(--acc); }
 
-/* SNAPSHOT FULL PAGE OVERLAY */
-.snapshot-page {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  background: var(--bg);
-  overflow-y: auto;
-  animation: snapPageIn .25s cubic-bezier(.4,0,.2,1);
-}
-.snapshot-page.open { display: block; }
-@keyframes snapPageIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.snapshot-page-inner {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 20px 16px 60px;
-}
-
-.snap-page-topbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  background: rgba(13,43,26,0.85);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(147,212,69,0.18);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  margin: -20px -16px 24px;
-}
-
-.snap-back-btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--glass2);
-  border: 1px solid var(--bdr);
-  color: var(--txt);
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .15s;
-}
-.snap-back-btn:hover { background: rgba(20,74,41,0.4); border-color: var(--bdr2); }
-
-.snap-page-title {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -.02em;
-  flex: 1;
-}
-.snap-page-sub {
-  font-size: 11px;
-  color: var(--muted);
-  font-family: var(--mono);
-}
-
-/* SNAPSHOT REPORT CONTENT */
+/* ══════════════════════════════════════
+   SNAPSHOT REPORT
+══════════════════════════════════════ */
 .snap-report-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -693,7 +672,7 @@ body::before {
   border-radius: var(--radius-sm);
   background: var(--glass);
   border: 1px solid transparent;
-  transition: border-color .15px;
+  transition: border-color .15s;
 }
 .snap-field-row:hover { border-color: var(--bdr); }
 .snap-field-icon { font-size: 13px; flex-shrink: 0; width: 20px; text-align: center; }
@@ -719,14 +698,16 @@ body::before {
 
 .snap-empty {
   text-align: center;
-  padding: 80px 20px;
+  padding: 60px 20px;
   color: var(--muted);
 }
-.snap-empty-icon { font-size: 48px; margin-bottom: 16px; }
-.snap-empty-title { font-size: 18px; font-weight: 700; color: var(--txt2); margin-bottom: 8px; }
-.snap-empty-sub { font-size: 12px; line-height: 1.7; max-width: 320px; margin: 0 auto; }
+.snap-empty-icon { font-size: 40px; margin-bottom: 12px; }
+.snap-empty-title { font-size: 15px; font-weight: 700; color: var(--txt2); margin-bottom: 6px; }
+.snap-empty-sub { font-size: 12px; line-height: 1.6; }
 
-/* DRAWER */
+/* ══════════════════════════════════════
+   DRAWER
+══════════════════════════════════════ */
 .drawer-overlay {
   display: none;
   position: fixed;
@@ -819,7 +800,9 @@ body::before {
 }
 .drawer-cb-item b { display: block; margin-bottom: 2px; }
 
-/* MODALS */
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
 .modal-bg {
   display: none;
   position: fixed;
@@ -871,6 +854,7 @@ select.form-ctrl { cursor: pointer; }
 .btn-cancel { background: var(--glass2); color: var(--txt2); border: 1px solid var(--bdr) !important; }
 .btn-save { background: linear-gradient(135deg, var(--pw-mid), var(--pw-teal)); color: #fff; }
 
+/* Detail modal */
 .pen-ring-wrap { position: relative; width: 120px; height: 120px; margin: 0 auto 16px; }
 .pen-ring-wrap svg { transform: rotate(-90deg); }
 .pen-ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -888,8 +872,14 @@ select.form-ctrl { cursor: pointer; }
 .target-note { font-size: 11px; color: var(--txt2); background: var(--glass2); border-radius: var(--radius-sm); padding: 10px 13px; line-height: 1.6; margin: 12px 0; border: 1px solid var(--bdr); }
 .log-entry { background: var(--glass); border-left: 2px solid var(--acc); border-radius: var(--radius-sm); padding: 8px 11px; margin-bottom: 6px; font-size: 11px; color: var(--txt2); line-height: 1.5; }
 
+/* ══════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════ */
 .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 12px; }
 
+/* ══════════════════════════════════════
+   MOBILE
+══════════════════════════════════════ */
 @media (max-width: 600px) {
   .page-wrap { padding: 10px; }
   .header { padding: 10px 14px; }
@@ -907,8 +897,8 @@ select.form-ctrl { cursor: pointer; }
   .snap-timeline::before { left: 14px; }
   .snap-dot-outer { width: 30px; height: 30px; font-size: 12px; }
   .hdr-right .sync-badge { display: none; }
-  .snap-page-title { font-size: 14px; }
 }
+
 @media (max-width: 400px) {
   .kpis { grid-template-columns: repeat(2, 1fr); }
   .actions { flex-wrap: wrap; }
@@ -923,11 +913,17 @@ select.form-ctrl { cursor: pointer; }
 <div class="header">
   <div class="header-left">
     <button class="hdr-btn" onclick="toggleDrawer()" style="padding:7px 10px;font-size:16px;">☰</button>
+    <!-- ProWater Logo SVG Recreation -->
     <svg class="pw-logo-svg" viewBox="0 0 160 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Leaf drop 1 (dark teal, left) -->
       <path d="M92 8 C92 8, 82 18, 82 26 C82 31.5 86.5 36 92 36 C97.5 36 102 31.5 102 26 C102 18 92 8 92 8Z" fill="#0d4a2a"/>
+      <!-- Leaf drop 2 (medium green, top right) -->
       <path d="M107 4 C107 4, 99 12, 99 19 C99 23.6 102.7 27.3 107.3 27.3 C111.9 27.3 115.6 23.6 115.6 19 C115.6 12 107 4 107 4Z" fill="#3a8f3a" transform="rotate(-20,107,16)"/>
+      <!-- Leaf drop 3 (lime, right) -->
       <path d="M121 14 C121 14, 114 21, 114 27 C114 30.9 117.1 34 121 34 C124.9 34 128 30.9 128 27 C128 21 121 14 121 14Z" fill="#93d445" transform="rotate(15,121,24)"/>
+      <!-- "Pro" text -->
       <text x="0" y="26" font-family="'Inter',Arial,sans-serif" font-size="22" font-weight="800" fill="#0d4a2a" letter-spacing="-0.5">Pro</text>
+      <!-- "water" text -->
       <text x="0" y="50" font-family="'Inter',Arial,sans-serif" font-size="22" font-weight="800" fill="#0d4a2a" letter-spacing="-0.5">water</text>
     </svg>
   </div>
@@ -981,8 +977,7 @@ select.form-ctrl { cursor: pointer; }
     <a class="drawer-nav-item" onclick="renderDrawerFocus('history');scrollToDrawerFocus()">
       <span class="drawer-nav-icon">📜</span> Call History
     </a>
-    <!-- Snapshot nav item — opens full page -->
-    <a class="drawer-nav-item" id="snapshotNavBtn" onclick="openSnapshotPage()">
+    <a class="drawer-nav-item" id="snapshotNavBtn" onclick="showSnapshotInDrawer()">
       <span class="drawer-nav-icon">⏳</span> Change Snapshots
     </a>
   </div>
@@ -991,23 +986,6 @@ select.form-ctrl { cursor: pointer; }
   <div class="drawer-focus" id="drawerFocusArea">
     <h4>Today's Callbacks</h4>
     <p style="font-size:11px;color:var(--muted)">Loading…</p>
-  </div>
-</div>
-
-<!-- SNAPSHOT FULL PAGE -->
-<div class="snapshot-page" id="snapshotPage">
-  <div class="snap-page-topbar">
-    <button class="snap-back-btn" onclick="closeSnapshotPage()">
-      ← Back
-    </button>
-    <div>
-      <div class="snap-page-title">⏳ Change Snapshots</div>
-      <div class="snap-page-sub" id="snapPageSub">Loading…</div>
-    </div>
-    <div style="display:flex;gap:8px;margin-left:auto;" id="snapPageActions"></div>
-  </div>
-  <div class="snapshot-page-inner">
-    <div id="snapshotContent"></div>
   </div>
 </div>
 
@@ -1048,13 +1026,20 @@ select.form-ctrl { cursor: pointer; }
 <div id="tab-followup" style="display:none"></div>
 <div id="tab-compare" style="display:none"></div>
 
+<!-- SNAPSHOT PANEL (shown inside drawer focus area, or as full-page overlay) -->
+<div id="snapshotPanel" style="display:none">
+  <div id="snapshotContent"></div>
+</div>
+
 <!-- LOG MODAL -->
 <div class="modal-bg" id="logModal">
   <div class="modal">
     <div class="modal-title" id="logModalTitle">Log call</div>
     <div class="modal-sub" id="logModalSub"></div>
     <label class="form-lbl">Your name</label>
-    <input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
+<input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
+<label class="form-lbl" id="cbEmailLabel" style="display:none">Your email (for callback reminder)</label>
+<input type="email" class="form-ctrl" id="cbEmail" style="display:none" placeholder="yourname@office.com"/>
     <label class="form-lbl">Notes from call / visit</label>
     <textarea class="form-ctrl" id="logNote" placeholder="e.g. Spoke to committee, interested in 12 more flats…"></textarea>
     <label class="form-lbl">Outcome</label>
@@ -1542,7 +1527,7 @@ function renderCompare(){
 }
 
 // ═══════════════════════════════════════════════════
-// SNAPSHOT FULL PAGE
+// SNAPSHOT REPORT (shown in drawer)
 // ═══════════════════════════════════════════════════
 const fieldMeta = {
   ob:     { label: 'Onboarded',   icon: '🏠', fmt: v => v + ' flats',                          color: (o,n) => n>o ? 'plus' : 'minus' },
@@ -1550,8 +1535,6 @@ const fieldMeta = {
   revMay: { label: 'Rev May',     icon: '💰', fmt: v => '₹'+Number(v).toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
   revJun: { label: 'Rev Jun',     icon: '💰', fmt: v => '₹'+Number(v).toLocaleString('en-IN'), color: (o,n) => n>o ? 'plus' : 'minus' },
   flats:  { label: 'Total Flats', icon: '🏗️', fmt: v => v + ' flats',                          color: () => 'neutral' },
-  months: { label: 'Months Live', icon: '📅', fmt: v => v + ' mo',                             color: () => 'neutral' },
-  launch: { label: 'Launch Date', icon: '🚀', fmt: v => v || '—',                              color: () => 'neutral' },
   remark: { label: 'Remark',      icon: '📝', fmt: v => v || '—',                              color: () => 'neutral' },
 };
 
@@ -1567,7 +1550,17 @@ function buildSnapshotHTML() {
   const totalChanges = historicalSnapshots.reduce((a,s) => a + (s.changes||[]).length, 0);
   const totalSocs = new Set(historicalSnapshots.flatMap(s => (s.changes||[]).map(c=>c.name))).size;
 
-  let html = `<div class="snap-timeline">`;
+  let html = `
+    <div class="snap-report-header">
+      <div>
+        <div class="snap-report-title">Change Log</div>
+        <div class="snap-report-sub">${historicalSnapshots.length} snapshot${historicalSnapshots.length!==1?'s':''} · ${totalChanges} society change${totalChanges!==1?'s':''} across ${totalSocs} apartment${totalSocs!==1?'s':''}</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${backendOk?`<button class="filter-btn" onclick="loadSnapshotsFromSheet().then(()=>showSnapshotInDrawer())">🔄 Refresh</button>`:''}
+      </div>
+    </div>
+    <div class="snap-timeline">`;
 
   historicalSnapshots.slice().reverse().forEach((snap, idx) => {
     const changeCount = (snap.changes||[]).length;
@@ -1628,33 +1621,11 @@ function buildSnapshotHTML() {
   return html;
 }
 
-function openSnapshotPage() {
-  // Close drawer first
-  toggleDrawer();
-
-  const page = document.getElementById('snapshotPage');
-  const content = document.getElementById('snapshotContent');
-  const sub = document.getElementById('snapPageSub');
-  const actions = document.getElementById('snapPageActions');
-
-  // Build subtitle
-  const totalChanges = historicalSnapshots.reduce((a,s) => a + (s.changes||[]).length, 0);
-  sub.textContent = `${historicalSnapshots.length} snapshot${historicalSnapshots.length!==1?'s':''} · ${totalChanges} change${totalChanges!==1?'s':''}`;
-
-  // Refresh button
-  actions.innerHTML = backendOk
-    ? `<button class="filter-btn" onclick="loadSnapshotsFromSheet().then(()=>{ document.getElementById('snapshotContent').innerHTML=buildSnapshotHTML(); })">🔄 Refresh</button>`
-    : '';
-
-  content.innerHTML = buildSnapshotHTML();
-  page.classList.add('open');
-  page.scrollTop = 0;
-  document.body.style.overflow = 'hidden';
-}
-
-function closeSnapshotPage() {
-  document.getElementById('snapshotPage').classList.remove('open');
-  document.body.style.overflow = '';
+function showSnapshotInDrawer() {
+  // Show snapshots in drawer focus area with full scroll
+  const area = document.getElementById('drawerFocusArea');
+  area.innerHTML = `<div style="padding-bottom:40px;">${buildSnapshotHTML()}</div>`;
+  scrollToDrawerFocus();
 }
 
 // ═══════════════════════════════════════════════════
@@ -1729,22 +1700,29 @@ function openLog(id, name, mode){
   document.getElementById('cbDate').style.display='none';
   document.getElementById('cbDate').value='';
   if(mode==='callback'){
-    document.getElementById('logOutcome').value='callback';
-    document.getElementById('cbDateLabel').style.display='block';
-    document.getElementById('cbDate').style.display='block';
-  }
+  document.getElementById('logOutcome').value = 'callback';
+  document.getElementById('cbDateLabel').style.display  = 'block';
+  document.getElementById('cbDate').style.display       = 'block';
+  document.getElementById('cbEmailLabel').style.display = 'block';
+  document.getElementById('cbEmail').style.display      = 'block';
+}
   document.getElementById('logSaving').style.display='none';
   document.getElementById('logModal').classList.add('open');
 }
 
 document.getElementById('logOutcome').addEventListener('change',function(){
-  const s=this.value==='callback';
-  document.getElementById('cbDateLabel').style.display=s?'block':'none';
-  document.getElementById('cbDate').style.display=s?'block':'none';
+  const s = this.value === 'callback';
+  document.getElementById('cbDateLabel').style.display  = s ? 'block' : 'none';
+  document.getElementById('cbDate').style.display       = s ? 'block' : 'none';
+  document.getElementById('cbEmailLabel').style.display = s ? 'block' : 'none';
+  document.getElementById('cbEmail').style.display      = s ? 'block' : 'none';
 });
 
-function closeLogModal(){ document.getElementById('logModal').classList.remove('open'); }
-
+function closeLogModal(){
+  document.getElementById('logModal').classList.remove('open');
+  document.getElementById('cbEmailLabel').style.display = 'none';
+  document.getElementById('cbEmail').style.display      = 'none';
+}
 async function saveLog(){
   const note=document.getElementById('logNote').value.trim();
   if(!note){alert('Please add a note.');return;}
@@ -1769,12 +1747,14 @@ async function saveLog(){
     document.getElementById('logSaveBtn').disabled=true;
     const all=[...ACTIVE,...PIPELINE];
     const r=all.find(x=>x.id===currentLogId);
-    await pushLogToSheet({
-      societyName: r?r.name:currentLogName,
-      agentName, note, outcome,
-      callbackDate: cbDate,
-      type: PIPELINE.find(p=>p.id===currentLogId)?'pipeline':'active'
-    });
+    const cbEmail = document.getElementById('cbEmail').value.trim();
+await pushLogToSheet({
+  societyName: r?r.name:currentLogName,
+  agentName, note, outcome,
+  callbackDate: cbDate,
+  callbackEmail: cbEmail,
+  type: PIPELINE.find(p=>p.id===currentLogId)?'pipeline':'active'
+});
     document.getElementById('logSaveBtn').disabled=false;
   }
 
@@ -1848,8 +1828,6 @@ async function loadSheet(){
         if (obj.revMay !== oldObj.revMay)  changes.revMay = { old: oldObj.revMay, new: obj.revMay };
         if (obj.revJun !== oldObj.revJun)  changes.revJun = { old: oldObj.revJun, new: obj.revJun };
         if (obj.flats  !== oldObj.flats)   changes.flats  = { old: oldObj.flats,  new: obj.flats  };
-        if (obj.months !== oldObj.months)  changes.months = { old: oldObj.months, new: obj.months };
-        if (obj.launch !== oldObj.launch)  changes.launch = { old: oldObj.launch, new: obj.launch };
         if (obj.remark !== oldObj.remark)  changes.remark = { old: oldObj.remark, new: obj.remark };
         if (Object.keys(changes).length > 0) dayChanges.push({ name, changes });
       }
@@ -1982,28 +1960,67 @@ function toggleDrawer(){
 
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
-    const snap = document.getElementById('snapshotPage');
-    if(snap.classList.contains('open')){ closeSnapshotPage(); return; }
     const d=document.getElementById('callDrawer');
     if(d.classList.contains('open')) toggleDrawer();
   }
 });
 
+function sendPendingReminders() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var remSheet = ss.getSheetByName('PendingReminders');
+  if (!remSheet) return;
+  
+  var rows = remSheet.getDataRange().getValues();
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  
+  for (var i = 1; i < rows.length; i++) {
+    var row = rows[i];
+    var cbDate = new Date(row[0]);
+    cbDate.setHours(0,0,0,0);
+    var email     = row[1];
+    var society   = row[2];
+    var agent     = row[3];
+    var status    = row[5];
+    
+    if (status === 'pending' && cbDate.getTime() === today.getTime()) {
+      MailApp.sendEmail({
+        to: email,
+        subject: '📞 Callback Reminder — ' + society,
+        body: 'Hi ' + (agent || 'Team') + ',\n\nThis is a reminder that you have a callback scheduled today for:\n\n'
+            + '  Society: ' + society + '\n'
+            + '  Date: ' + row[0] + '\n\n'
+            + 'Please ensure you follow up today.\n\n'
+            + '— ProWater CRM'
+      });
+      // Mark as sent
+      remSheet.getRange(i + 1, 6).setValue('sent');
+    }
+  }
+}
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
-if(SCRIPT_URL) document.getElementById('scriptUrl').value=SCRIPT_URL;
-if(SHEET_URL)  document.getElementById('sheetUrl').value=SHEET_URL;
-if(localStorage.getItem('pw_agent'))
-  document.getElementById('agentName').value=localStorage.getItem('pw_agent');
+const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxHCMVDOaeyM3qiOSGjlODhF7pkY5AQWYNvQSI1JUzc5RdwqxJsY_f5WmO-6ALy0-sL/exec';
+const HARDCODED_SHEET_URL  = 'https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing';
 
-if(SCRIPT_URL){
-  document.getElementById('setupBanner').style.display='none';
-  connectBackend();
+if(!SCRIPT_URL) {
+  SCRIPT_URL = HARDCODED_SCRIPT_URL;
+  localStorage.setItem('pw_script_url', SCRIPT_URL);
 }
-if(SHEET_URL) loadSheet();
+if(!SHEET_URL) {
+  SHEET_URL = HARDCODED_SHEET_URL;
+  localStorage.setItem('pw_sheet_url', SHEET_URL);
+}
 
-renderOverview();
+if(SCRIPT_URL) document.getElementById('scriptUrl').value = SCRIPT_URL;
+if(SHEET_URL)  document.getElementById('sheetUrl').value  = SHEET_URL;
+if(localStorage.getItem('pw_agent'))
+  document.getElementById('agentName').value = localStorage.getItem('pw_agent');
+
+document.getElementById('setupBanner').style.display = 'none';
+connectBackend().then(() => loadSheet());
+
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);
 </script>
 </body>

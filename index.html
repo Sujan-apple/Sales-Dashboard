@@ -1164,38 +1164,51 @@ async function apiCall(action, data={}) {
 }
 
 async function connectBackend() {
-  const url = document.getElementById('scriptUrl').value.trim();
-  if (!url) { alert('Paste your Apps Script Web App URL first.'); return; }
-  SCRIPT_URL = url;
-  localStorage.setItem('pw_script_url', url);
-  setSyncStatus('loading', 'Connecting…');
-  document.getElementById('connStatus').textContent = 'Testing connection…';
+
+  setSyncStatus('loading', 'Connecting...');
+  document.getElementById('connStatus').textContent = 'Testing connection...';
   document.getElementById('connStatus').className = 'conn-status';
 
   const result = await apiCall('getAllLogs');
+
   if (result && result.grouped !== undefined) {
+
     backendOk = true;
-    logs = {}; callbacks = {};
+
+    logs = {};
+    callbacks = {};
+
     const allSocs = [...ACTIVE, ...PIPELINE];
+
     Object.entries(result.grouped).forEach(([name, entries]) => {
       const soc = allSocs.find(s => s.name === name);
       if (soc) logs[soc.id] = entries;
     });
+
     Object.entries(result.callbacks || {}).forEach(([name, date]) => {
       const soc = allSocs.find(s => s.name === name);
       if (soc) callbacks[soc.id] = date;
     });
+
     setSyncStatus('ok', 'Connected ✓');
-    document.getElementById('connStatus').textContent = '✅ Backend connected — logs sync across all devices in real time.';
-    document.getElementById('connStatus').className = 'conn-status ok';
+
+    document.getElementById('connStatus').textContent =
+      'Backend connected successfully.';
+
     document.getElementById('setupBanner').style.display = 'none';
+
     await loadSnapshotsFromSheet();
+
     renderCurrent();
+
   } else {
+
     backendOk = false;
+
     setSyncStatus('err', 'Failed');
-    document.getElementById('connStatus').textContent = '❌ Could not connect. Check the URL and make sure the deployment is set to "Anyone" access.';
-    document.getElementById('connStatus').className = 'conn-status err';
+
+    document.getElementById('connStatus').textContent =
+      'Backend connection failed.';
   }
 }
 

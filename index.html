@@ -1142,22 +1142,59 @@ function setSyncStatus(state, msg) {
   if(dot && txt) { dot.className = 'sync-dot ' + state; txt.textContent = msg; }
 }
 
-async function apiCall(action, data={}) {
+async function apiCall(action, data = {}) {
+
   if (!SCRIPT_URL) return null;
+
   try {
+
     let res;
-    if (action === 'getAllLogs') {
-      res = await fetch(`${SCRIPT_URL}?action=getAllLogs&t=${Date.now()}`, { method:'GET', cache:'no-store' });
+
+    if (action === "getAllLogs") {
+
+      res = await fetch(
+        `${SCRIPT_URL}?action=getAllLogs&t=${Date.now()}`,
+        {
+          method: "GET",
+          cache: "no-store"
+        }
+      );
+
     } else {
+
       res = await fetch(SCRIPT_URL, {
-        method:'POST',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({action,...data})
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          action: action,
+
+          ...data
+
+        })
+
       });
+
     }
-    if(!res.ok) throw new Error('HTTP '+res.status);
+
+    if (!res.ok)
+      throw new Error("HTTP " + res.status);
+
     return await res.json();
-  } catch(e){ console.error('API error',e); return null; }
+
+  } catch (e) {
+
+    console.error(e);
+
+    return null;
+
+  }
+
 }
 
 async function connectBackend() {
@@ -1737,7 +1774,12 @@ async function saveLog(){
   const agentName = document.getElementById('logAgent').value.trim();
   const outcome = document.getElementById('logOutcome').value;
   const cbDate = document.getElementById('cbDate').value;
-  const cbEmail = document.getElementById('cbEmail') ? document.getElementById('cbEmail').value.trim() : '';
+ const cbEmail = document
+  .getElementById("cbEmail")
+  .value
+  .trim();
+
+console.log("EMAIL =", cbEmail);
 
   console.log("=== DEBUG ===");
   console.log("Callback Date:", cbDate);
@@ -1768,15 +1810,34 @@ async function saveLog(){
       callbackEmail: cbEmail
     });
 
-    await pushLogToSheet({
-      societyName: r ? r.name : currentLogName,
-      agentName: agentName,
-      note: note,
-      outcome: outcome,
-      callbackDate: cbDate,
-      callbackEmail: cbEmail,
-      type: PIPELINE.find(p => p.id === currentLogId) ? 'pipeline' : 'active'
-    });
+    console.log({
+    callbackEmail: cbEmail,
+    callbackDate: cbDate,
+    outcome: outcome
+   });
+    const payload = {
+
+    societyName: r ? r.name : currentLogName,
+
+    agentName: agentName,
+
+    note: note,
+
+    outcome: outcome,
+
+    callbackDate: cbDate,
+
+    callbackEmail: cbEmail,
+
+    type: PIPELINE.find(p => p.id === currentLogId)
+        ? "pipeline"
+        : "active"
+
+};
+
+console.log("Sending payload", payload);
+
+await pushLogToSheet(payload);
     
     document.getElementById('logSaveBtn').disabled = false;
   }

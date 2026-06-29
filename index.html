@@ -1657,7 +1657,7 @@ async function loadSheet(){
     const num=v=>parseInt((v||'').replace(/[^0-9.-]/g,''))||0;
 
     const baselineMap = {};
-    ACTIVE.forEach(r => baselineMap[r.name] = JSON.parse(JSON.stringify(r))); // deep clone
+    ACTIVE.forEach(r => baselineMap[r.name] = JSON.parse(JSON.stringify(r)));
 
     const nA=[], nP=[]; 
     let dayChanges = [];
@@ -1682,30 +1682,28 @@ async function loadSheet(){
       const oldObj = baselineMap[name];
       if (oldObj) {
         const changes = {};
-
-        // Only numeric fields + strict remark
         if (obj.ob !== oldObj.ob) changes.ob = {old: oldObj.ob, new: obj.ob};
         if (obj.pen !== oldObj.pen) changes.pen = {old: oldObj.pen, new: obj.pen};
         if (obj.revMay !== oldObj.revMay) changes.revMay = {old: oldObj.revMay, new: obj.revMay};
         if (obj.revJun !== oldObj.revJun) changes.revJun = {old: oldObj.revJun, new: obj.revJun};
         if (obj.flats !== oldObj.flats) changes.flats = {old: oldObj.flats, new: obj.flats};
 
-        // Remark only if significantly different
         if (obj.remark.length > 3 && obj.remark !== oldObj.remark) {
           changes.remark = {old: oldObj.remark, new: obj.remark};
         }
 
-        if (Object.keys(changes).length > 0) {
-          dayChanges.push({ name, changes });
-        }
+        if (Object.keys(changes).length > 0) dayChanges.push({ name, changes });
       }
 
       if(obj.ob > 0) nA.push(obj); 
       else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
 
-    // FINAL CHECK - Only create snapshot if there are changes
-    if (dayChanges.length > 0) {
+    // === STRONG GUARD: Only create snapshot if changes exist AND it's not today already ===
+    const todayKey = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+    const alreadyHasToday = historicalSnapshots.some(s => s.date.includes(todayKey) || s.date === todayKey);
+
+    if (dayChanges.length > 0 && !alreadyHasToday) {
       const dd = String(new Date().getDate()).padStart(2,'0');
       const mm = String(new Date().getMonth()+1).padStart(2,'0');
       const yy = String(new Date().getFullYear()).slice(2);
@@ -1716,9 +1714,11 @@ async function loadSheet(){
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
       await pushSnapshotToSheet(newSnap);
       
-      console.log(`%c✅ Snapshot Created - ${dayChanges.length} changes`, "color: green; font-weight: bold");
+      console.log(`%c✅ New Snapshot Created (${dayChanges.length} changes)`, "color: green; font-weight: bold");
+    } else if (dayChanges.length === 0) {
+      console.log("%c🔄 No changes detected - Snapshot skipped", "color: orange");
     } else {
-      console.log("%c🔄 No real changes - Snapshot skipped", "color: orange");
+      console.log("%c⏭️ Snapshot for today already exists - skipped", "color: blue");
     }
 
     ACTIVE = nA; 

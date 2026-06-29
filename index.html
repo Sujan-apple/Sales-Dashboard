@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +7,53 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
 :root {
   --pw-dark:  #0d2b1a;
   --pw-mid:   #144a29;
   --pw-lime:  #93d445;
   --pw-green: #3a8f3a;
   --pw-teal:  #1a5c35;
+
+  --bg:       #08110d;
+  --bg2:      #0f1f15;
+  --surf:     rgba(20,74,41,0.18);
+  --surf2:    rgba(20,74,41,0.28);
+  --card:     rgba(15,31,21,0.6);
+  --glass:    rgba(255,255,255,0.04);
+  --glass2:   rgba(255,255,255,0.07);
+  --bdr:      rgba(147,212,69,0.15);
+  --bdr2:     rgba(147,212,69,0.28);
+
+  --acc:      #93d445;
+  --acc2:     #b8e87a;
+  --grn:      #4ade80;
+  --ylw:      #fbbf24;
+  --red:      #f87171;
+  --orn:      #fb923c;
+  --blue:     #60a5fa;
+
+  --txt:      #e8f5ee;
+  --txt2:     #9dc4ac;
+  --muted:    #5a7a63;
+
+  --mono:     'JetBrains Mono', monospace;
+  --radius:   14px;
+  --radius-sm:8px;
+
+  --glow:     0 0 40px rgba(147,212,69,0.08);
+  --shadow:   0 8px 32px rgba(0,0,0,0.4);
+  --shadow-sm:0 4px 16px rgba(0,0,0,0.3);
+}
+
+html[data-theme="light"] {
   --bg:    #f0f7f2;
   --bg2:   #e4f0e9;
   --surf:  rgba(255,255,255,0.75);
   --surf2: rgba(255,255,255,0.9);
-  --card:  rgba(255,255,255,0.85);
+  --card:  rgba(255,255,255,0.6);
   --glass: rgba(20,74,41,0.04);
   --glass2:rgba(20,74,41,0.08);
   --bdr:   rgba(20,74,41,0.15);
@@ -27,19 +63,16 @@
   --muted: #6a9a78;
   --acc:   #1a6b3a;
   --acc2:  #2d8a50;
-  --grn:      #16a34a;
-  --ylw:      #d97706;
-  --red:      #dc2626;
-  --orn:      #ea580c;
-  --blue:     #2563eb;
   --glow:  0 0 40px rgba(20,74,41,0.06);
-  --shadow:0 8px 32px rgba(0,0,0,0.10);
-  --shadow-sm:0 4px 16px rgba(0,0,0,0.06);
-  --mono:     'JetBrains Mono', monospace;
-  --radius:   14px;
-  --radius-sm:8px;
+  --shadow:0 8px 32px rgba(0,0,0,0.12);
+  --shadow-sm:0 4px 16px rgba(0,0,0,0.08);
 }
+
+/* ══════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg);
@@ -49,16 +82,18 @@ body {
   line-height: 1.5;
   overflow-x: hidden;
 }
+
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(20,74,41,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(147,212,69,0.06) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(20,74,41,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(147,212,69,0.08) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
+
 .page-wrap {
   position: relative;
   z-index: 1;
@@ -66,6 +101,10 @@ body::before {
   max-width: 1400px;
   margin: 0 auto;
 }
+
+/* ══════════════════════════════════════
+   GLASS MIXIN
+══════════════════════════════════════ */
 .glass {
   background: var(--surf);
   backdrop-filter: blur(20px) saturate(1.4);
@@ -73,6 +112,10 @@ body::before {
   border: 1px solid var(--bdr);
   box-shadow: var(--shadow);
 }
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
 .header {
   display: flex;
   align-items: center;
@@ -82,15 +125,20 @@ body::before {
   margin-bottom: 14px;
   gap: 10px;
   flex-wrap: wrap;
-  background: rgba(255,255,255,0.85);
+  background: rgba(13,43,26,0.7);
   backdrop-filter: blur(24px) saturate(1.5);
   -webkit-backdrop-filter: blur(24px) saturate(1.5);
-  border: 1px solid rgba(20,74,41,0.15);
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+  border: 1px solid rgba(147,212,69,0.2);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.05);
 }
+
 .header-left { display: flex; align-items: center; gap: 12px; }
+
+/* ProWater SVG Logo */
 .pw-logo-svg { width: 100px; height: 44px; flex-shrink: 0; }
+
 .hdr-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
 .hdr-btn {
   background: var(--glass2);
   border: 1px solid var(--bdr);
@@ -104,8 +152,10 @@ body::before {
   align-items: center;
   gap: 5px;
   transition: all .2s;
+  backdrop-filter: blur(10px);
 }
-.hdr-btn:hover { background: rgba(20,74,41,0.12); border-color: var(--bdr2); transform: translateY(-1px); }
+.hdr-btn:hover { background: var(--glass2); border-color: var(--bdr2); transform: translateY(-1px); }
+
 .sync-badge {
   display: flex;
   align-items: center;
@@ -123,20 +173,85 @@ body::before {
 .sync-dot.err { background: var(--red); }
 .sync-dot.loading { background: var(--ylw); animation: pulse 1s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ══════════════════════════════════════
+   SETUP BANNER
+══════════════════════════════════════ */
+.setup-banner {
+  background: rgba(20,74,41,0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(147,212,69,0.2);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.setup-banner strong { color: var(--grn); }
+.setup-banner code { background: var(--glass2); padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: var(--mono); color: var(--acc); }
+.setup-step { display: flex; gap: 10px; margin-bottom: 5px; }
+.step-num {
+  background: linear-gradient(135deg, var(--pw-mid), var(--pw-teal));
+  color: #fff;
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+/* ══════════════════════════════════════
+   CONNECTION INPUTS
+══════════════════════════════════════ */
+.conn-group { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+.conn-input {
+  flex: 1;
+  min-width: 200px;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-sm);
+  padding: 9px 14px;
+  color: var(--txt);
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.conn-input:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(147,212,69,0.1); }
+.conn-input::placeholder { color: var(--muted); }
+
+.conn-btn {
+  background: linear-gradient(135deg, var(--pw-mid), var(--pw-teal));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+.conn-btn:hover { opacity: .9; transform: translateY(-1px); }
+
+.conn-status { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+.conn-status.ok { color: var(--grn); }
+.conn-status.err { color: var(--red); }
+
+/* Agent name row */
 .agent-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 16px;
   flex-wrap: wrap;
-  background: rgba(255,255,255,0.7);
-  border: 1px solid var(--bdr);
-  border-radius: var(--radius);
-  padding: 10px 16px;
 }
 .agent-label { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .agent-input {
   background: var(--glass);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--bdr);
   border-radius: var(--radius-sm);
   padding: 8px 14px;
@@ -146,20 +261,20 @@ body::before {
   width: 220px;
   transition: border-color .2s;
 }
-.agent-input:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(26,107,58,0.1); }
-.agent-input::placeholder { color: var(--muted); }
-.conn-status { font-size: 11px; color: var(--muted); margin-bottom: 16px; padding: 8px 14px; background: rgba(255,255,255,0.6); border: 1px solid var(--bdr); border-radius: var(--radius-sm); }
-.conn-status.ok { color: var(--grn); }
-.conn-status.err { color: var(--red); }
+.agent-input:focus { border-color: var(--acc); }
+
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
 .tabs {
   display: flex;
   gap: 3px;
-  background: rgba(255,255,255,0.7);
+  background: var(--glass);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--bdr);
   border-radius: var(--radius);
   padding: 4px;
   margin-bottom: 20px;
-  box-shadow: var(--shadow-sm);
 }
 .tab {
   flex: 1;
@@ -178,9 +293,13 @@ body::before {
 .tab.active {
   background: linear-gradient(135deg, var(--pw-mid), var(--pw-teal));
   color: #fff;
-  box-shadow: 0 2px 12px rgba(20,74,41,0.3);
+  box-shadow: 0 2px 12px rgba(20,74,41,0.5);
 }
 .tab:hover:not(.active) { color: var(--txt); background: var(--glass2); }
+
+/* ══════════════════════════════════════
+   KPI STRIP
+══════════════════════════════════════ */
 .kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -188,20 +307,20 @@ body::before {
   margin-bottom: 20px;
 }
 .kpi {
-  background: rgba(255,255,255,0.85);
+  background: var(--card);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--bdr);
   border-radius: var(--radius);
   padding: 14px 16px;
   transition: border-color .2s, transform .15s;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
 }
 .kpi::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
+  height: 2px;
   background: linear-gradient(90deg, var(--pw-mid), var(--acc));
   opacity: 0;
   transition: opacity .2s;
@@ -209,10 +328,14 @@ body::before {
 .kpi:hover { border-color: var(--bdr2); transform: translateY(-2px); }
 .kpi:hover::before { opacity: 1; }
 .kpi-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-.kpi-val { font-family: var(--mono); font-size: 22px; font-weight: 600; line-height: 1; color: var(--txt); }
+.kpi-val { font-family: var(--mono); font-size: 22px; font-weight: 600; line-height: 1; }
 .kpi-sub { font-size: 10px; color: var(--txt2); margin-top: 5px; }
 .up { color: var(--grn); }
 .dn { color: var(--red); }
+
+/* ══════════════════════════════════════
+   SECTION DIVIDER
+══════════════════════════════════════ */
 .sec {
   font-size: 10px;
   font-weight: 700;
@@ -225,6 +348,10 @@ body::before {
   gap: 10px;
 }
 .sec::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
+
+/* ══════════════════════════════════════
+   SOCIETY CARDS
+══════════════════════════════════════ */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -232,35 +359,40 @@ body::before {
   margin-bottom: 24px;
 }
 .scard {
-  background: rgba(255,255,255,0.9);
+  background: var(--card);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
   border: 1px solid var(--bdr);
   border-radius: var(--radius);
   padding: 16px 18px;
   transition: border-color .25s, transform .2s, box-shadow .2s;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
 }
 .scard::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(26,107,58,0.02) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(147,212,69,0.03) 0%, transparent 60%);
   pointer-events: none;
 }
 .scard:hover {
   border-color: var(--bdr2);
   transform: translateY(-3px);
-  box-shadow: var(--shadow), 0 0 0 1px rgba(26,107,58,0.08);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(147,212,69,0.1);
 }
 .scard-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.scard-name { font-weight: 700; font-size: 14px; letter-spacing: -.01em; color: var(--txt); }
+.scard-name { font-weight: 700; font-size: 14px; letter-spacing: -.01em; }
 .scard-meta { font-size: 10px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
+
+/* Badges */
 .badge { border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; letter-spacing: .04em; }
-.b-hot  { background: rgba(220,38,38,0.10); color: var(--red); border: 1px solid rgba(220,38,38,0.20); }
-.b-warn { background: rgba(217,119,6,0.10); color: var(--ylw); border: 1px solid rgba(217,119,6,0.20); }
-.b-good { background: rgba(22,163,74,0.10); color: var(--grn); border: 1px solid rgba(22,163,74,0.20); }
-.b-new  { background: rgba(37,99,235,0.10); color: var(--blue); border: 1px solid rgba(37,99,235,0.20); }
+.b-hot  { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+.b-warn { background: rgba(251,191,36,0.12); color: var(--ylw); border: 1px solid rgba(251,191,36,0.25); }
+.b-good { background: rgba(74,222,128,0.12); color: var(--grn); border: 1px solid rgba(74,222,128,0.25); }
+.b-new  { background: rgba(96,165,250,0.12); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+
+/* Metrics row */
 .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
 .metric {
   background: var(--glass2);
@@ -269,14 +401,18 @@ body::before {
   text-align: center;
   border: 1px solid var(--bdr);
 }
-.metric-v { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--txt); }
+.metric-v { font-family: var(--mono); font-size: 14px; font-weight: 600; }
 .metric-l { font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-top: 2px; }
+
+/* Penetration bar */
 .pen-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.pen-bar { flex: 1; height: 6px; border-radius: 4px; background: rgba(20,74,41,0.1); overflow: hidden; }
+.pen-bar { flex: 1; height: 6px; border-radius: 4px; background: var(--glass2); overflow: hidden; }
 .pen-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--pw-mid), var(--acc)); transition: width .4s ease; }
 .pen-txt { font-family: var(--mono); font-size: 10px; white-space: nowrap; }
+
+/* Last note */
 .last-note {
-  background: rgba(26,107,58,0.06);
+  background: var(--glass);
   border-radius: var(--radius-sm);
   padding: 8px 11px;
   margin-bottom: 10px;
@@ -287,9 +423,11 @@ body::before {
 }
 .note-agent { font-size: 10px; font-weight: 700; color: var(--acc); margin-bottom: 3px; }
 .note-time { font-size: 9px; color: var(--muted); margin-top: 4px; }
+
+/* Callback flag */
 .cb-flag {
-  background: rgba(234,88,12,0.08);
-  border: 1px solid rgba(234,88,12,0.20);
+  background: rgba(251,146,60,0.1);
+  border: 1px solid rgba(251,146,60,0.25);
   border-radius: var(--radius-sm);
   padding: 5px 9px;
   font-size: 10px;
@@ -297,13 +435,15 @@ body::before {
   margin-bottom: 10px;
   font-weight: 600;
 }
+
+/* Action buttons */
 .actions { display: flex; gap: 6px; }
 .abtn {
   flex: 1;
   padding: 7px 4px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--bdr);
-  background: rgba(255,255,255,0.8);
+  background: var(--glass);
   color: var(--txt2);
   font-size: 10px;
   font-weight: 600;
@@ -313,19 +453,23 @@ body::before {
   align-items: center;
   justify-content: center;
   gap: 3px;
+  backdrop-filter: blur(8px);
 }
 .abtn:hover { background: var(--glass2); color: var(--txt); border-color: var(--bdr2); transform: translateY(-1px); }
 .abtn.primary {
-  background: rgba(20,74,41,0.08);
-  border-color: rgba(20,74,41,0.25);
-  color: var(--acc);
+  background: rgba(20,74,41,0.35);
+  border-color: rgba(147,212,69,0.3);
+  color: var(--acc2);
 }
-.abtn.primary:hover { background: rgba(20,74,41,0.14); }
+.abtn.primary:hover { background: rgba(20,74,41,0.5); }
+
+/* Search row */
 .search-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
 .search-input {
   flex: 1;
   min-width: 160px;
-  background: rgba(255,255,255,0.85);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--bdr);
   border-radius: var(--radius-sm);
   padding: 9px 14px;
@@ -334,10 +478,11 @@ body::before {
   outline: none;
   transition: border-color .2s;
 }
-.search-input:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(26,107,58,0.1); }
+.search-input:focus { border-color: var(--acc); }
 .search-input::placeholder { color: var(--muted); }
 .filter-btn {
-  background: rgba(255,255,255,0.85);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--bdr);
   border-radius: var(--radius-sm);
   color: var(--txt2);
@@ -348,9 +493,14 @@ body::before {
   transition: all .15s;
 }
 .filter-btn:hover { border-color: var(--bdr2); color: var(--txt); }
-.filter-btn.on { background: rgba(20,74,41,0.1); border-color: rgba(20,74,41,0.35); color: var(--acc); }
+.filter-btn.on { background: rgba(20,74,41,0.3); border-color: rgba(147,212,69,0.4); color: var(--acc); }
+
+/* ══════════════════════════════════════
+   FOLLOW-UP TAB
+══════════════════════════════════════ */
 .fup-item {
-  background: rgba(255,255,255,0.85);
+  background: var(--card);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--bdr);
   border-radius: var(--radius);
   padding: 14px 16px;
@@ -359,15 +509,14 @@ body::before {
   align-items: flex-start;
   gap: 12px;
   transition: border-color .2s;
-  box-shadow: var(--shadow-sm);
 }
 .fup-item:hover { border-color: var(--bdr2); }
 .fup-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-.fup-dot.red { background: var(--red); box-shadow: 0 0 8px rgba(220,38,38,0.4); }
-.fup-dot.ylw { background: var(--ylw); box-shadow: 0 0 8px rgba(217,119,6,0.4); }
-.fup-dot.grn { background: var(--grn); box-shadow: 0 0 8px rgba(22,163,74,0.4); }
+.fup-dot.red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.fup-dot.ylw { background: var(--ylw); box-shadow: 0 0 8px var(--ylw); }
+.fup-dot.grn { background: var(--grn); box-shadow: 0 0 8px var(--grn); }
 .fup-body { flex: 1; min-width: 0; }
-.fup-name { font-weight: 700; font-size: 13px; color: var(--txt); }
+.fup-name { font-weight: 700; font-size: 13px; }
 .fup-note { font-size: 11px; color: var(--txt2); margin-top: 4px; line-height: 1.5; }
 .fup-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
 .fup-actions { display: flex; gap: 6px; flex-shrink: 0; }
@@ -375,7 +524,7 @@ body::before {
   width: 30px; height: 30px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--bdr);
-  background: rgba(255,255,255,0.8);
+  background: var(--glass);
   color: var(--muted);
   font-size: 13px;
   cursor: pointer;
@@ -385,7 +534,11 @@ body::before {
   transition: all .15s;
 }
 .icon-btn:hover { background: var(--glass2); color: var(--txt); border-color: var(--bdr2); }
-.cmp-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+
+/* ══════════════════════════════════════
+   COMPARE TABLE
+══════════════════════════════════════ */
+.cmp-wrap { overflow-x: auto; border-radius: var(--radius); }
 .cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .cmp-table th {
   padding: 10px 14px;
@@ -396,68 +549,34 @@ body::before {
   letter-spacing: .08em;
   color: var(--muted);
   border-bottom: 1px solid var(--bdr);
-  background: rgba(255,255,255,0.9);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
   white-space: nowrap;
 }
 .cmp-table td {
   padding: 11px 14px;
-  border-bottom: 1px solid rgba(20,74,41,0.06);
+  border-bottom: 1px solid rgba(147,212,69,0.06);
   vertical-align: middle;
-  background: rgba(255,255,255,0.7);
 }
 .cmp-table tbody tr { cursor: pointer; transition: background .15s; }
-.cmp-table tbody tr:hover td { background: rgba(20,74,41,0.05); }
+.cmp-table tbody tr:hover td { background: var(--glass2); }
 .sort-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 10px; margin-left: 3px; }
 .sort-btn.active { color: var(--acc); }
-.snapshot-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  background: var(--bg);
-  overflow-y: auto;
-}
-.snapshot-overlay.open { display: block; }
-.snapshot-page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 24px 20px 60px;
-}
-.snapshot-page-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--bdr);
-}
-.snap-back-btn {
-  background: rgba(255,255,255,0.85);
-  border: 1px solid var(--bdr);
-  border-radius: var(--radius-sm);
-  padding: 8px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--txt);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all .15s;
-}
-.snap-back-btn:hover { background: var(--glass2); border-color: var(--bdr2); }
-.snap-page-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--txt); }
-.snap-page-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ══════════════════════════════════════
+   SNAPSHOT REPORT
+══════════════════════════════════════ */
 .snap-report-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 10px;
 }
-.snap-report-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--txt); }
+.snap-report-title { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
 .snap-report-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
 .snap-timeline { position: relative; }
 .snap-timeline::before {
   content: '';
@@ -466,8 +585,9 @@ body::before {
   top: 0; bottom: 0;
   width: 2px;
   background: linear-gradient(to bottom, var(--acc), transparent);
-  opacity: .2;
+  opacity: .3;
 }
+
 .snap-entry {
   display: flex;
   gap: 16px;
@@ -487,8 +607,8 @@ body::before {
   background: linear-gradient(135deg, var(--pw-mid), var(--pw-teal));
   display: flex; align-items: center; justify-content: center;
   font-size: 14px;
-  border: 2px solid rgba(20,74,41,0.25);
-  box-shadow: 0 2px 12px rgba(20,74,41,0.2);
+  border: 2px solid rgba(147,212,69,0.3);
+  box-shadow: 0 0 16px rgba(20,74,41,0.6);
   flex-shrink: 0;
 }
 .snap-body { flex: 1; min-width: 0; }
@@ -496,7 +616,7 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(20,74,41,0.08);
+  background: var(--glass2);
   border: 1px solid var(--bdr);
   border-radius: 20px;
   padding: 4px 12px;
@@ -507,38 +627,41 @@ body::before {
   font-family: var(--mono);
   letter-spacing: .03em;
 }
+
 .snap-society-card {
-  background: rgba(255,255,255,0.85);
+  background: var(--card);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--bdr);
   border-radius: var(--radius);
   overflow: hidden;
   margin-bottom: 10px;
   transition: border-color .2s;
-  box-shadow: var(--shadow-sm);
 }
 .snap-society-card:hover { border-color: var(--bdr2); }
+
 .snap-soc-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: rgba(20,74,41,0.05);
+  background: var(--glass2);
   border-bottom: 1px solid var(--bdr);
   flex-wrap: wrap;
   gap: 8px;
 }
-.snap-soc-name { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; color: var(--txt); }
+.snap-soc-name { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
 .snap-change-count {
   font-size: 9px;
   font-weight: 700;
-  background: rgba(26,107,58,0.12);
+  background: rgba(147,212,69,0.15);
   color: var(--acc);
-  border: 1px solid rgba(26,107,58,0.25);
+  border: 1px solid rgba(147,212,69,0.3);
   border-radius: 20px;
   padding: 2px 8px;
   letter-spacing: .05em;
   text-transform: uppercase;
 }
+
 .snap-fields { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
 .snap-field-row {
   display: flex;
@@ -551,13 +674,14 @@ body::before {
   border: 1px solid transparent;
   transition: border-color .15s;
 }
-.snap-field-row:hover { border-color: var(--bdr); background: var(--glass2); }
+.snap-field-row:hover { border-color: var(--bdr); }
 .snap-field-icon { font-size: 13px; flex-shrink: 0; width: 20px; text-align: center; }
 .snap-field-label { color: var(--muted); width: 100px; flex-shrink: 0; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
 .snap-old-val { color: var(--txt2); font-family: var(--mono); font-size: 11px; }
 .snap-arrow { color: var(--muted); font-size: 10px; flex-shrink: 0; }
 .snap-new-val { color: var(--txt); font-family: var(--mono); font-size: 11px; font-weight: 700; }
 .snap-delta { margin-left: auto; }
+
 .delta-pill {
   display: inline-flex;
   align-items: center;
@@ -568,9 +692,10 @@ body::before {
   font-weight: 700;
   font-family: var(--mono);
 }
-.delta-pill.plus { background: rgba(22,163,74,0.12); color: var(--grn); border: 1px solid rgba(22,163,74,0.22); }
-.delta-pill.minus { background: rgba(220,38,38,0.10); color: var(--red); border: 1px solid rgba(220,38,38,0.18); }
+.delta-pill.plus { background: rgba(74,222,128,0.15); color: var(--grn); border: 1px solid rgba(74,222,128,0.25); }
+.delta-pill.minus { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
 .delta-pill.neutral { background: var(--glass2); color: var(--muted); border: 1px solid var(--bdr); }
+
 .snap-empty {
   text-align: center;
   padding: 60px 20px;
@@ -579,41 +704,48 @@ body::before {
 .snap-empty-icon { font-size: 40px; margin-bottom: 12px; }
 .snap-empty-title { font-size: 15px; font-weight: 700; color: var(--txt2); margin-bottom: 6px; }
 .snap-empty-sub { font-size: 12px; line-height: 1.6; }
+
+/* ══════════════════════════════════════
+   DRAWER
+══════════════════════════════════════ */
 .drawer-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.3);
-  backdrop-filter: blur(3px);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
   z-index: 9998;
 }
 .drawer-overlay.open { display: block; }
+
 .drawer {
   position: fixed;
   left: 0; top: 0;
   width: 300px;
   height: 100%;
-  background: rgba(240,247,242,0.97);
+  background: rgba(10,24,15,0.92);
   backdrop-filter: blur(32px) saturate(1.5);
   -webkit-backdrop-filter: blur(32px) saturate(1.5);
   border-right: 1px solid var(--bdr);
   padding: 0;
   overflow: auto;
   z-index: 9999;
-  box-shadow: 4px 0 40px rgba(0,0,0,0.12);
+  box-shadow: 4px 0 40px rgba(0,0,0,0.5);
   transform: translateX(-100%);
   transition: transform .3s cubic-bezier(.4,0,.2,1);
 }
 .drawer.open { transform: translateX(0); }
+
 .drawer-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 18px 20px;
   border-bottom: 1px solid var(--bdr);
-  background: rgba(255,255,255,0.7);
+  background: rgba(20,74,41,0.2);
 }
-.drawer-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; color: var(--txt); }
+.drawer-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
+
 .drawer-close {
   background: var(--glass2);
   border: 1px solid var(--bdr);
@@ -624,6 +756,7 @@ body::before {
   font-size: 16px;
   display: flex; align-items: center; justify-content: center;
 }
+
 .drawer-nav { padding: 12px 12px 0; }
 .drawer-nav-item {
   display: flex;
@@ -641,9 +774,11 @@ body::before {
   margin-bottom: 2px;
 }
 .drawer-nav-item:hover { background: var(--glass2); color: var(--txt); border-color: var(--bdr); }
-.drawer-nav-item.active { background: rgba(20,74,41,0.1); color: var(--acc); border-color: rgba(20,74,41,0.2); }
+.drawer-nav-item.active { background: rgba(20,74,41,0.4); color: var(--acc); border-color: rgba(147,212,69,0.2); }
 .drawer-nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+
 .drawer-divider { height: 1px; background: var(--bdr); margin: 10px 12px; }
+
 .drawer-section-label {
   font-size: 9px;
   font-weight: 700;
@@ -652,23 +787,27 @@ body::before {
   color: var(--muted);
   padding: 6px 12px 4px;
 }
+
 .drawer-focus { padding: 12px; }
 .drawer-focus h4 { font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--txt2); }
 .drawer-cb-item {
   padding: 10px 12px;
-  background: rgba(234,88,12,0.07);
+  background: var(--glass2);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--orn);
   margin-bottom: 6px;
   font-size: 11px;
-  color: var(--txt);
 }
-.drawer-cb-item b { display: block; margin-bottom: 2px; color: var(--txt); }
+.drawer-cb-item b { display: block; margin-bottom: 2px; }
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
 .modal-bg {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.7);
   backdrop-filter: blur(6px);
   z-index: 200;
   align-items: center;
@@ -676,8 +815,10 @@ body::before {
   padding: 16px;
 }
 .modal-bg.open { display: flex; }
+
 .modal {
-  background: rgba(255,255,255,0.97);
+  background: rgba(10,24,15,0.9);
+  backdrop-filter: blur(32px) saturate(1.5);
   border: 1px solid var(--bdr);
   border-radius: 18px;
   padding: 24px;
@@ -685,14 +826,15 @@ body::before {
   max-width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(147,212,69,0.05);
 }
-.modal-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; letter-spacing: -.02em; color: var(--txt); }
+.modal-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; letter-spacing: -.02em; }
 .modal-sub { font-size: 11px; color: var(--muted); margin-bottom: 18px; }
-.form-lbl { font-size: 11px; color: var(--txt); margin-bottom: 5px; display: block; font-weight: 600; }
+
+.form-lbl { font-size: 11px; color: var(--txt2); margin-bottom: 5px; display: block; font-weight: 600; }
 .form-ctrl {
   width: 100%;
-  background: rgba(255,255,255,0.9);
+  background: var(--glass);
   border: 1px solid var(--bdr);
   border-radius: var(--radius-sm);
   color: var(--txt);
@@ -703,14 +845,16 @@ body::before {
   transition: border-color .2s, box-shadow .2s;
   margin-bottom: 12px;
 }
-.form-ctrl:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(26,107,58,0.1); }
+.form-ctrl:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(147,212,69,0.1); }
 textarea.form-ctrl { height: 76px; resize: vertical; }
 select.form-ctrl { cursor: pointer; }
-.form-ctrl::placeholder { color: var(--muted); }
+
 .form-row { display: flex; gap: 8px; margin-top: 4px; }
 .form-row button { flex: 1; padding: 10px; border-radius: var(--radius-sm); border: none; font-size: 12px; font-weight: 700; cursor: pointer; letter-spacing: .02em; }
 .btn-cancel { background: var(--glass2); color: var(--txt2); border: 1px solid var(--bdr) !important; }
 .btn-save { background: linear-gradient(135deg, var(--pw-mid), var(--pw-teal)); color: #fff; }
+
+/* Detail modal */
 .pen-ring-wrap { position: relative; width: 120px; height: 120px; margin: 0 auto 16px; }
 .pen-ring-wrap svg { transform: rotate(-90deg); }
 .pen-ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -726,8 +870,16 @@ select.form-ctrl { cursor: pointer; }
 .dprow-fill { height: 100%; border-radius: 4px; }
 .dprow-val { font-family: var(--mono); font-size: 11px; width: 32px; text-align: right; flex-shrink: 0; }
 .target-note { font-size: 11px; color: var(--txt2); background: var(--glass2); border-radius: var(--radius-sm); padding: 10px 13px; line-height: 1.6; margin: 12px 0; border: 1px solid var(--bdr); }
-.log-entry { background: rgba(26,107,58,0.05); border-left: 2px solid var(--acc); border-radius: var(--radius-sm); padding: 8px 11px; margin-bottom: 6px; font-size: 11px; color: var(--txt2); line-height: 1.5; }
+.log-entry { background: var(--glass); border-left: 2px solid var(--acc); border-radius: var(--radius-sm); padding: 8px 11px; margin-bottom: 6px; font-size: 11px; color: var(--txt2); line-height: 1.5; }
+
+/* ══════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════ */
 .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 12px; }
+
+/* ══════════════════════════════════════
+   MOBILE
+══════════════════════════════════════ */
 @media (max-width: 600px) {
   .page-wrap { padding: 10px; }
   .header { padding: 10px 14px; }
@@ -746,6 +898,7 @@ select.form-ctrl { cursor: pointer; }
   .snap-dot-outer { width: 30px; height: 30px; font-size: 12px; }
   .hdr-right .sync-badge { display: none; }
 }
+
 @media (max-width: 400px) {
   .kpis { grid-template-columns: repeat(2, 1fr); }
   .actions { flex-wrap: wrap; }
@@ -756,14 +909,21 @@ select.form-ctrl { cursor: pointer; }
 <body>
 <div class="page-wrap">
 
+<!-- HEADER -->
 <div class="header">
   <div class="header-left">
-    <button class="hdr-btn" onclick="toggleDrawer()" title="Menu" style="padding:7px 10px;font-size:16px;">☰</button>
+    <button class="hdr-btn" onclick="toggleDrawer()" style="padding:7px 10px;font-size:16px;">☰</button>
+    <!-- ProWater Logo SVG Recreation -->
     <svg class="pw-logo-svg" viewBox="0 0 160 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Leaf drop 1 (dark teal, left) -->
       <path d="M92 8 C92 8, 82 18, 82 26 C82 31.5 86.5 36 92 36 C97.5 36 102 31.5 102 26 C102 18 92 8 92 8Z" fill="#0d4a2a"/>
+      <!-- Leaf drop 2 (medium green, top right) -->
       <path d="M107 4 C107 4, 99 12, 99 19 C99 23.6 102.7 27.3 107.3 27.3 C111.9 27.3 115.6 23.6 115.6 19 C115.6 12 107 4 107 4Z" fill="#3a8f3a" transform="rotate(-20,107,16)"/>
+      <!-- Leaf drop 3 (lime, right) -->
       <path d="M121 14 C121 14, 114 21, 114 27 C114 30.9 117.1 34 121 34 C124.9 34 128 30.9 128 27 C128 21 121 14 121 14Z" fill="#93d445" transform="rotate(15,121,24)"/>
+      <!-- "Pro" text -->
       <text x="0" y="26" font-family="'Inter',Arial,sans-serif" font-size="22" font-weight="800" fill="#0d4a2a" letter-spacing="-0.5">Pro</text>
+      <!-- "water" text -->
       <text x="0" y="50" font-family="'Inter',Arial,sans-serif" font-size="22" font-weight="800" fill="#0d4a2a" letter-spacing="-0.5">water</text>
     </svg>
   </div>
@@ -772,12 +932,14 @@ select.form-ctrl { cursor: pointer; }
       <span class="sync-dot" id="syncDot"></span>
       <span id="syncTxt">Not connected</span>
     </div>
-    <button class="hdr-btn" onclick="refreshAll()" title="Refresh Backend & Sheet">↻ Refresh</button>
+    <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
   </div>
 </div>
 
+<!-- DRAWER OVERLAY -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
 
+<!-- DRAWER -->
 <div class="drawer" id="callDrawer">
   <div class="drawer-top">
     <div class="drawer-logo">
@@ -790,6 +952,7 @@ select.form-ctrl { cursor: pointer; }
     </div>
     <button class="drawer-close" onclick="toggleDrawer()">✕</button>
   </div>
+
   <div class="drawer-nav">
     <div class="drawer-section-label">Navigation</div>
     <a class="drawer-nav-item" onclick="showTab('overview');toggleDrawer()">
@@ -799,10 +962,12 @@ select.form-ctrl { cursor: pointer; }
       <span class="drawer-nav-icon">📞</span> Follow-ups
     </a>
     <a class="drawer-nav-item" onclick="showTab('compare');toggleDrawer()">
-      <span class="drawer-nav-icon">📊</span> Compare &amp; Reports
+      <span class="drawer-nav-icon">📊</span> Compare & Reports
     </a>
+
     <div class="drawer-divider"></div>
-    <div class="drawer-section-label">History &amp; Tracking</div>
+    <div class="drawer-section-label">History & Tracking</div>
+
     <a class="drawer-nav-item" onclick="renderDrawerFocus('today');scrollToDrawerFocus()">
       <span class="drawer-nav-icon">📅</span> Today's Callbacks
     </a>
@@ -812,10 +977,11 @@ select.form-ctrl { cursor: pointer; }
     <a class="drawer-nav-item" onclick="renderDrawerFocus('history');scrollToDrawerFocus()">
       <span class="drawer-nav-icon">📜</span> Call History
     </a>
-    <a class="drawer-nav-item" id="snapshotNavBtn" onclick="openSnapshotPage();toggleDrawer()">
+    <a class="drawer-nav-item" id="snapshotNavBtn" onclick="showSnapshotInDrawer()">
       <span class="drawer-nav-icon">⏳</span> Change Snapshots
     </a>
   </div>
+
   <div class="drawer-divider"></div>
   <div class="drawer-focus" id="drawerFocusArea">
     <h4>Today's Callbacks</h4>
@@ -823,26 +989,33 @@ select.form-ctrl { cursor: pointer; }
   </div>
 </div>
 
-<div class="snapshot-overlay" id="snapshotOverlay">
-  <div class="snapshot-page">
-    <div class="snapshot-page-header">
-      <button class="snap-back-btn" onclick="closeSnapshotPage()">← Back to Dashboard</button>
-      <div>
-        <div class="snap-page-title">⏳ Change Snapshots</div>
-        <div class="snap-page-sub">Track all data changes over time</div>
-      </div>
-    </div>
-    <div id="snapshotPageContent"></div>
-  </div>
+<!-- SETUP BANNER -->
+<div id="setupBanner" class="setup-banner">
+  <strong>One-time setup — connect Google Sheets backend (5 min)</strong><br><br>
+  <div class="setup-step"><div class="step-num">1</div><div>Open your Google Sheet → <strong>Extensions → Apps Script</strong></div></div>
+  <div class="setup-step"><div class="step-num">2</div><div>Delete everything → paste the code from <strong>AppScript_Backend.js</strong></div></div>
+  <div class="setup-step"><div class="step-num">3</div><div><strong>Deploy → New deployment → Web app</strong> → Execute as: <strong>Me</strong> → Access: <strong>Anyone</strong></div></div>
+  <div class="setup-step"><div class="step-num">4</div><div>Copy the <strong>Web App URL</strong> and paste it below</div></div>
+  <div class="setup-step"><div class="step-num">5</div><div>Also paste your <strong>Google Sheet URL</strong> for society data</div></div>
 </div>
+
+<div class="conn-group">
+  <input type="text" id="scriptUrl" class="conn-input" placeholder="Apps Script Web App URL…"/>
+  <button class="conn-btn" onclick="connectBackend()">Connect Backend</button>
+</div>
+<div class="conn-group">
+  <input type="text" id="sheetUrl" class="conn-input" placeholder="Google Sheet URL…"/>
+  <button class="conn-btn" onclick="loadSheet()">Load Sheet</button>
+</div>
+<div class="conn-status" id="connStatus">Logs are saving locally until backend is connected.</div>
 
 <div class="agent-row">
   <span class="agent-label">Your Name</span>
   <input type="text" id="agentName" class="agent-input" placeholder="Enter your name to tag call logs…"
     oninput="localStorage.setItem('pw_agent',this.value)"/>
-  <div id="connStatus" class="conn-status" style="margin:0;flex:1;">Click ↻ Refresh to connect.</div>
 </div>
 
+<!-- TABS -->
 <div class="tabs">
   <button class="tab active" onclick="showTab('overview')">Overview</button>
   <button class="tab" onclick="showTab('followup')">Follow-ups</button>
@@ -853,14 +1026,23 @@ select.form-ctrl { cursor: pointer; }
 <div id="tab-followup" style="display:none"></div>
 <div id="tab-compare" style="display:none"></div>
 
+<!-- SNAPSHOT PANEL (shown inside drawer focus area, or as full-page overlay) -->
+<div id="snapshotPanel" style="display:none">
+  <div id="snapshotContent"></div>
+</div>
+
+<!-- LOG MODAL -->
 <div class="modal-bg" id="logModal">
   <div class="modal">
     <div class="modal-title" id="logModalTitle">Log call</div>
     <div class="modal-sub" id="logModalSub"></div>
+    
     <label class="form-lbl">Your name</label>
     <input type="text" class="form-ctrl" id="logAgent" placeholder="Agent name…"/>
+    
     <label class="form-lbl">Notes from call / visit</label>
     <textarea class="form-ctrl" id="logNote" placeholder="e.g. Spoke to committee..."></textarea>
+    
     <label class="form-lbl">Outcome</label>
     <select class="form-ctrl" id="logOutcome">
       <option value="positive">Positive — progressing well</option>
@@ -868,11 +1050,15 @@ select.form-ctrl { cursor: pointer; }
       <option value="blocked">Blocked — needs attention</option>
       <option value="neutral">Neutral / informational</option>
     </select>
+    
     <label class="form-lbl" id="cbDateLabel" style="display:none">Callback date</label>
     <input type="date" class="form-ctrl" id="cbDate" style="display:none"/>
+    
     <label class="form-lbl" id="cbEmailLabel" style="display:none">Callback email (for reminder)</label>
     <input type="email" class="form-ctrl" id="cbEmail" style="display:none" placeholder="your@email.com"/>
+    
     <div id="logSaving" style="font-size:11px;color:var(--ylw);margin-bottom:8px;display:none;">Saving to sheet…</div>
+    
     <div class="form-row">
       <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
       <button class="btn-save" id="logSaveBtn" onclick="saveLog()">Save log</button>
@@ -880,6 +1066,7 @@ select.form-ctrl { cursor: pointer; }
   </div>
 </div>
 
+<!-- DETAIL MODAL -->
 <div class="modal-bg" id="detailModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
@@ -889,8 +1076,8 @@ select.form-ctrl { cursor: pointer; }
     <div class="modal-sub" id="detailSub"></div>
     <div class="pen-ring-wrap">
       <svg width="120" height="120" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(20,74,41,0.1)" stroke-width="10"/>
-        <circle cx="60" cy="60" r="48" fill="none" stroke="#dc2626" stroke-width="10"
+        <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(147,212,69,0.1)" stroke-width="10"/>
+        <circle cx="60" cy="60" r="48" fill="none" stroke="#f87171" stroke-width="10"
           stroke-dasharray="301.59" id="detailRing" stroke-dashoffset="0" stroke-linecap="round"/>
       </svg>
       <div class="pen-ring-label">
@@ -912,31 +1099,19 @@ select.form-ctrl { cursor: pointer; }
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiMnHO9j_OIgqcDkAg1TGOJYQpWz60FBvHypR50iDyEwocEpCyEL-CANf6loNK8sfr/exec";
-const SHEET_URL  = "https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing";
-let backendOk = false;
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxiMnHO9j_OIgqcDkAg1TGOJYQpWz60FBvHypR50iDyEwocEpCyEL-CANf6loNK8sfr/exec";
+
+const SHEET_URL =
+"https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing";
+let backendOk  = false;
 
 let logs = {}, callbacks = {};
 try { logs = JSON.parse(localStorage.getItem('pw_logs')||'{}'); } catch(e){}
 try { callbacks = JSON.parse(localStorage.getItem('pw_callbacks')||'{}'); } catch(e){}
-
-// Strip T18:30:00.000Z from any stored callback dates (ISO -> YYYY-MM-DD only)
-Object.keys(callbacks).forEach(id => {
-  if(callbacks[id] && /T\d{2}:\d{2}/.test(callbacks[id]))
-    callbacks[id] = callbacks[id].slice(0,10);
-});
-// Fix broken log timestamps
-Object.keys(logs).forEach(id => {
-  logs[id] = (logs[id]||[]).map(e => {
-    let t = e.time || '';
-    if(/1970/.test(t) || /T\d{2}:\d{2}/.test(t)) {
-      const m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
-      t = m ? (m[3]+'-'+m[2]+'-'+m[1].slice(2)) : '(unknown)';
-      return {...e, time: t};
-    }
-    return e;
-  });
-});
 
 let historicalSnapshots = [];
 try { historicalSnapshots = JSON.parse(localStorage.getItem('pw_snapshots')||'[]'); } catch(e){}
@@ -961,29 +1136,9 @@ let PIPELINE = [
 let _detailId = null, currentLogId = null, currentLogName = '';
 let sortKey='pen', sortDir=-1, filterUrgent=false, searchQ='', currentTab='overview';
 
-// ── DATE HELPERS ──
-function fmtDate(d){
-  if(!d) return '';
-  const s = String(d).trim();
-  // Parse YYYY-MM-DD from any ISO string (strips T18:30:00.000Z etc.)
-  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(m){ return m[3]+'-'+m[2]+'-'+m[1].slice(2); }
-  return s;
-}
-function parseDateOnly(d){
-  // Returns a Date at local midnight — safe for any ISO string
-  if(!d) return null;
-  const s = String(d).trim();
-  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
-  return new Date(d);
-}
-function todayMidnight(){
-  const n = new Date();
-  return new Date(n.getFullYear(), n.getMonth(), n.getDate());
-}
-
-// ── BACKEND ──
+// ═══════════════════════════════════════════════════
+// BACKEND API
+// ═══════════════════════════════════════════════════
 function setSyncStatus(state, msg) {
   const dot = document.getElementById('syncDot');
   const txt = document.getElementById('syncTxt');
@@ -1009,47 +1164,52 @@ async function apiCall(action, data={}) {
 }
 
 async function connectBackend() {
+
   setSyncStatus('loading', 'Connecting...');
-  const statusEl = document.getElementById('connStatus');
-  statusEl.textContent = 'Testing connection...';
-  statusEl.className = 'conn-status';
+  document.getElementById('connStatus').textContent = 'Testing connection...';
+  document.getElementById('connStatus').className = 'conn-status';
 
   const result = await apiCall('getAllLogs');
 
   if (result && result.grouped !== undefined) {
+
     backendOk = true;
+
     logs = {};
     callbacks = {};
+
     const allSocs = [...ACTIVE, ...PIPELINE];
+
     Object.entries(result.grouped).forEach(([name, entries]) => {
       const soc = allSocs.find(s => s.name === name);
       if (soc) logs[soc.id] = entries;
     });
+
     Object.entries(result.callbacks || {}).forEach(([name, date]) => {
       const soc = allSocs.find(s => s.name === name);
       if (soc) callbacks[soc.id] = date;
     });
-    setSyncStatus('ok', 'Connected ✓');
-    statusEl.textContent = 'Backend connected successfully.';
-    statusEl.className = 'conn-status ok';
-    await loadSnapshotsFromSheet();
-    renderCurrent();
-  } else {
-    backendOk = false;
-    setSyncStatus('err', 'Failed');
-    statusEl.textContent = 'Backend unavailable — logs saved locally.';
-    statusEl.className = 'conn-status err';
-  }
-}
 
-async function refreshAll() {
-  const statusEl = document.getElementById('connStatus');
-  setSyncStatus('loading', 'Refreshing...');
-  statusEl.textContent = "Refreshing backend & sheet...";
-  await connectBackend();
-  await loadSheet();
-  renderCurrent();
-  setSyncStatus('ok', 'Refreshed ✓');
+    setSyncStatus('ok', 'Connected ✓');
+
+    document.getElementById('connStatus').textContent =
+      'Backend connected successfully.';
+
+    document.getElementById('setupBanner').style.display = 'none';
+
+    await loadSnapshotsFromSheet();
+
+    renderCurrent();
+
+  } else {
+
+    backendOk = false;
+
+    setSyncStatus('err', 'Failed');
+
+    document.getElementById('connStatus').textContent =
+      'Backend connection failed.';
+  }
 }
 
 async function pushLogToSheet(logData) {
@@ -1076,6 +1236,7 @@ async function pushSnapshotToSheet(snap) {
 
 async function loadSnapshotsFromSheet() {
   if (!backendOk) return;
+  setSyncStatus('loading', 'Loading snapshots…');
   const result = await apiCall('getSnapshots');
   if (result && result.snapshots) {
     historicalSnapshots = result.snapshots.map(s => ({
@@ -1083,6 +1244,7 @@ async function loadSnapshotsFromSheet() {
       changes: typeof s.changes === 'string' ? JSON.parse(s.changes) : s.changes
     }));
     localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
+    setSyncStatus('ok', 'Snapshots loaded ✓');
   }
 }
 
@@ -1104,7 +1266,9 @@ async function refreshLogsFromSheet() {
   setSyncStatus('ok', 'Synced ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
 }
 
-// ── HELPERS ──
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
 function saveLocal() {
   localStorage.setItem('pw_logs', JSON.stringify(logs));
   localStorage.setItem('pw_callbacks', JSON.stringify(callbacks));
@@ -1113,11 +1277,6 @@ function getLogsById(id){ return logs[id]||[]; }
 function lastLog(id){ const l=getLogsById(id); return l.length?l[l.length-1]:null; }
 function fmt(n){ return '₹'+Number(n).toLocaleString('en-IN'); }
 function fmtS(n){ return n>=1000?'₹'+(n/1000).toFixed(1)+'k':'₹'+n; }
-
-function isOverdue(cbVal){
-  if(!cbVal) return false;
-  return parseDateOnly(cbVal) <= todayMidnight();
-}
 
 function checkHealthOverride(r) {
   let s=0;
@@ -1132,7 +1291,7 @@ function urgencyReasons(r){
   if(r.pen<15) rs.push(`Low penetration (${r.pen}%)`);
   if(r.months>12&&r.pen<25) rs.push(`${r.months}mo live, under 25% pen`);
   if(!lastLog(r.id)) rs.push('No call logged yet');
-  if(callbacks[r.id] && isOverdue(callbacks[r.id])) rs.push('Callback overdue');
+  if(callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()) rs.push('Callback overdue');
   return rs;
 }
 function isUrgent(r){ return urgencyReasons(r).length>0; }
@@ -1146,7 +1305,9 @@ function logCardHtml(ll) {
   </div>`;
 }
 
-// ── OVERVIEW TAB ──
+// ═══════════════════════════════════════════════════
+// OVERVIEW TAB
+// ═══════════════════════════════════════════════════
 function renderOverview(){
   const filtered=ACTIVE.filter(r=>{
     if(filterUrgent&&!isUrgent(r)) return false;
@@ -1160,7 +1321,7 @@ function renderOverview(){
   const delta=revJun-revMay;
   const avgPen=ACTIVE.length ? Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length) : 0;
   const urgent=ACTIVE.filter(isUrgent).length;
-  const cbDue=ACTIVE.filter(r=>callbacks[r.id] && isOverdue(callbacks[r.id])).length;
+  const cbDue=ACTIVE.filter(r=>callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()).length;
 
   let html=`<div class="kpis">
     <div class="kpi"><div class="kpi-lbl">Onboarded</div><div class="kpi-val">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
@@ -1183,7 +1344,6 @@ function renderOverview(){
     const d=r.revJun-r.revMay;
     const ll=lastLog(r.id);
     const cb=callbacks[r.id];
-    const overdue = cb && isOverdue(cb);
     html+=`<div class="scard">
       <div class="scard-top">
         <div>
@@ -1192,8 +1352,8 @@ function renderOverview(){
         </div>
         <span class="badge ${hl.c}">${hl.t}</span>
       </div>
-      ${overdue?`<div class="cb-flag">📞 Callback overdue · ${fmtDate(cb)}</div>`:''}
-      ${cb&&!overdue?`<div class="cb-flag" style="background:rgba(234,88,12,0.06);border-color:rgba(234,88,12,0.18);">📅 Callback scheduled · ${fmtDate(cb)}</div>`:''}
+      ${cb&&new Date(cb)<=new Date()?`<div class="cb-flag">📞 Callback overdue</div>`:''}
+      ${cb&&!(new Date(cb)<=new Date())?`<div class="cb-flag" style="background:rgba(251,146,60,0.06);border-color:rgba(251,146,60,0.2);">📅 Callback scheduled · ${cb}</div>`:''}
       ${logCardHtml(ll)}
       <div class="metrics">
         <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
@@ -1232,7 +1392,9 @@ function renderOverview(){
   document.getElementById('tab-overview').innerHTML=html;
 }
 
-// ── FOLLOW-UPS TAB ──
+// ═══════════════════════════════════════════════════
+// FOLLOW-UPS TAB
+// ═══════════════════════════════════════════════════
 function renderFollowup(){
   let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
     <div class="sec" style="margin:0;flex:1">Pending callbacks & flagged</div>
@@ -1241,21 +1403,21 @@ function renderFollowup(){
 
   const pending=ACTIVE.filter(r=>callbacks[r.id]||urgencyReasons(r).length)
     .sort((a,b)=>{
-      const ao=callbacks[a.id]&&isOverdue(callbacks[a.id])?0:1;
-      const bo=callbacks[b.id]&&isOverdue(callbacks[b.id])?0:1;
+      const ao=callbacks[a.id]&&new Date(callbacks[a.id])<=new Date()?0:1;
+      const bo=callbacks[b.id]&&new Date(callbacks[b.id])<=new Date()?0:1;
       return ao-bo;
     });
 
   if(!pending.length) html+=`<div class="empty">No pending follow-ups. All good! 🎉</div>`;
   else pending.forEach(r=>{
     const cb=callbacks[r.id]; const ll=lastLog(r.id);
-    const overdue=cb&&isOverdue(cb);
+    const overdue=cb&&new Date(cb)<=new Date();
     const reasons=urgencyReasons(r);
     html+=`<div class="fup-item">
       <div class="fup-dot ${overdue?'red':reasons.length?'ylw':'grn'}"></div>
       <div class="fup-body">
         <div class="fup-name">${r.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${r.flats} flats</span></div>
-        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;font-weight:600;">${overdue?'⚠ Overdue:':'📅'} ${fmtDate(cb)}</div>`:''}
+        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;font-weight:600;">${overdue?'⚠ Overdue:':'📅'} ${cb}</div>`:''}
         ${reasons.length?`<div class="fup-note">${reasons.join(' · ')}</div>`:''}
         ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:'<div class="fup-note" style="color:var(--muted)">No call logged yet</div>'}
       </div>
@@ -1275,7 +1437,7 @@ function renderFollowup(){
         <div class="fup-dot ylw"></div>
         <div class="fup-body">
           <div class="fup-name">${p.name} <span style="font-size:10px;color:var(--muted)">(Pipeline · ${p.flats} flats)</span></div>
-          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;font-weight:600;">📅 ${fmtDate(cb)}</div>`:''}
+          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;font-weight:600;">📅 ${cb}</div>`:''}
           ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:''}
         </div>
         <div class="fup-actions">
@@ -1304,7 +1466,9 @@ function renderFollowup(){
   document.getElementById('tab-followup').innerHTML=html;
 }
 
-// ── COMPARE TAB ──
+// ═══════════════════════════════════════════════════
+// COMPARE TAB
+// ═══════════════════════════════════════════════════
 function renderCompare(){
   const sorted=[...ACTIVE].sort((a,b)=>{
     let va=a[sortKey],vb=b[sortKey];
@@ -1329,7 +1493,7 @@ function renderCompare(){
     html+=`<tr onclick="openDetail(${r.id})" title="Click for details">
       <td><strong style="${sc<45?'color:var(--red)':''}">${r.name}</strong><div style="font-size:10px;color:var(--muted)">${r.months===0?'Just launched':r.months+'mo live'}</div></td>
       <td><div style="display:flex;align-items:center;gap:6px;">
-        <div style="width:50px;height:4px;border-radius:3px;background:rgba(20,74,41,0.1);overflow:hidden;">
+        <div style="width:50px;height:4px;border-radius:3px;background:var(--glass2);overflow:hidden;">
           <div style="height:100%;width:${r.pen}%;background:linear-gradient(90deg,var(--pw-mid),var(--acc));border-radius:3px;"></div>
         </div>
         <span style="font-family:var(--mono);font-size:11px">${r.pen}%</span>
@@ -1385,7 +1549,9 @@ function renderCompare(){
   document.getElementById('tab-compare').innerHTML=html;
 }
 
-// ── SNAPSHOT FULL PAGE ──
+// ═══════════════════════════════════════════════════
+// SNAPSHOT REPORT (shown in drawer)
+// ═══════════════════════════════════════════════════
 const fieldMeta = {
   ob:     { label: 'Onboarded',   icon: '🏠', fmt: v => v + ' flats',                          color: (o,n) => n>o ? 'plus' : 'minus' },
   pen:    { label: 'Penetration', icon: '📈', fmt: v => v + '%',                                color: (o,n) => n>o ? 'plus' : 'minus' },
@@ -1413,7 +1579,9 @@ function buildSnapshotHTML() {
         <div class="snap-report-title">Change Log</div>
         <div class="snap-report-sub">${historicalSnapshots.length} snapshot${historicalSnapshots.length!==1?'s':''} · ${totalChanges} society change${totalChanges!==1?'s':''} across ${totalSocs} apartment${totalSocs!==1?'s':''}</div>
       </div>
-      ${backendOk?`<button class="filter-btn" onclick="loadSnapshotsFromSheet().then(()=>{ document.getElementById('snapshotPageContent').innerHTML = buildSnapshotHTML(); })">🔄 Refresh</button>`:''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${backendOk?`<button class="filter-btn" onclick="loadSnapshotsFromSheet().then(()=>showSnapshotInDrawer())">🔄 Refresh</button>`:''}
+      </div>
     </div>
     <div class="snap-timeline">`;
 
@@ -1476,18 +1644,16 @@ function buildSnapshotHTML() {
   return html;
 }
 
-function openSnapshotPage() {
-  document.getElementById('snapshotPageContent').innerHTML = buildSnapshotHTML();
-  document.getElementById('snapshotOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+function showSnapshotInDrawer() {
+  // Show snapshots in drawer focus area with full scroll
+  const area = document.getElementById('drawerFocusArea');
+  area.innerHTML = `<div style="padding-bottom:40px;">${buildSnapshotHTML()}</div>`;
+  scrollToDrawerFocus();
 }
 
-function closeSnapshotPage() {
-  document.getElementById('snapshotOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ── DETAIL MODAL ──
+// ═══════════════════════════════════════════════════
+// DETAIL MODAL
+// ═══════════════════════════════════════════════════
 function openDetail(id){
   const all=[...ACTIVE,...PIPELINE];
   const r=all.find(x=>x.id===id);
@@ -1543,7 +1709,9 @@ function openLogFromDetail(){
   openLog(r.id, r.name, isPipe?'pipeline':'');
 }
 
-// ── LOG MODAL ──
+// ═══════════════════════════════════════════════════
+// LOG MODAL
+// ═══════════════════════════════════════════════════
 function openLog(id, name, mode){
   currentLogId=id; currentLogName=name||'';
   document.getElementById('logModalTitle').textContent=mode==='pipeline'?'Log pipeline note':'Log call / visit';
@@ -1554,16 +1722,13 @@ function openLog(id, name, mode){
   document.getElementById('cbDateLabel').style.display='none';
   document.getElementById('cbDate').style.display='none';
   document.getElementById('cbDate').value='';
-  document.getElementById('cbEmailLabel').style.display='none';
-  document.getElementById('cbEmail').style.display='none';
-  document.getElementById('cbEmail').value='';
   if(mode==='callback'){
-    document.getElementById('logOutcome').value='callback';
-    document.getElementById('cbDateLabel').style.display='block';
-    document.getElementById('cbDate').style.display='block';
-    document.getElementById('cbEmailLabel').style.display='block';
-    document.getElementById('cbEmail').style.display='block';
-  }
+  document.getElementById('logOutcome').value = 'callback';
+  document.getElementById('cbDateLabel').style.display  = 'block';
+  document.getElementById('cbDate').style.display       = 'block';
+  document.getElementById('cbEmailLabel').style.display = 'block';
+  document.getElementById('cbEmail').style.display      = 'block';
+}
   document.getElementById('logSaving').style.display='none';
   document.getElementById('logModal').classList.add('open');
 }
@@ -1578,12 +1743,9 @@ document.getElementById('logOutcome').addEventListener('change',function(){
 
 function closeLogModal(){
   document.getElementById('logModal').classList.remove('open');
-  document.getElementById('cbDateLabel').style.display='none';
-  document.getElementById('cbDate').style.display='none';
-  document.getElementById('cbEmailLabel').style.display='none';
-  document.getElementById('cbEmail').style.display='none';
+  document.getElementById('cbEmailLabel').style.display = 'none';
+  document.getElementById('cbEmail').style.display      = 'none';
 }
-
 async function saveLog(){
   const note = document.getElementById('logNote').value.trim();
   if(!note){ alert('Please add a note.'); return; }
@@ -1591,17 +1753,17 @@ async function saveLog(){
   const agentName = document.getElementById('logAgent').value.trim();
   const outcome = document.getElementById('logOutcome').value;
   const cbDate = document.getElementById('cbDate').value;
-  const cbEmail = document.getElementById('cbEmail').value.trim();
+  const cbEmail = document.getElementById('cbEmail') ? document.getElementById('cbEmail').value.trim() : '';
+
+  console.log("=== DEBUG ===");
+  console.log("Callback Date:", cbDate);
+  console.log("Callback Email:", cbEmail);
+  console.log("Outcome:", outcome);
 
   if(agentName) localStorage.setItem('pw_agent', agentName);
 
   const now = new Date();
-  // Store time as DD-MM-YY
-  const dd = String(now.getDate()).padStart(2,'0');
-  const mm = String(now.getMonth()+1).padStart(2,'0');
-  const yy = String(now.getFullYear()).slice(2);
-  const time = dd+'-'+mm+'-'+yy;
-
+  const time = now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
   const entry = {note, agentName, outcome, callbackDate: cbDate, time};
 
   if(!logs[currentLogId]) logs[currentLogId] = [];
@@ -1613,8 +1775,15 @@ async function saveLog(){
   if(backendOk){
     document.getElementById('logSaving').style.display = 'block';
     document.getElementById('logSaveBtn').disabled = true;
+    
     const all = [...ACTIVE, ...PIPELINE];
     const r = all.find(x => x.id === currentLogId);
+    
+    console.log("Sending to backend:", {
+      societyName: r ? r.name : currentLogName,
+      callbackEmail: cbEmail
+    });
+
     await pushLogToSheet({
       societyName: r ? r.name : currentLogName,
       agentName: agentName,
@@ -1624,6 +1793,7 @@ async function saveLog(){
       callbackEmail: cbEmail,
       type: PIPELINE.find(p => p.id === currentLogId) ? 'pipeline' : 'active'
     });
+    
     document.getElementById('logSaveBtn').disabled = false;
   }
 
@@ -1638,10 +1808,19 @@ async function markCbDone(id, name){
   renderCurrent();
 }
 
-// ── SHEET LOADER ──
+// ═══════════════════════════════════════════════════
+// SHEET LOADER
+// ═══════════════════════════════════════════════════
 async function loadSheet(){
-  const sheetId = '1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw';
-  const statusEl = document.getElementById('connStatus');
+  const input=document.getElementById('sheetUrl').value.trim();
+  if(!input){alert('Paste your Google Sheet link first.');return;}
+  const m=input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  if(!m){alert("Doesn't look like a Google Sheets URL.");return;}
+  const sheetId=m[1];
+  const btns=document.querySelectorAll('.conn-btn');
+  const btn=btns[btns.length-1];
+  btn.textContent='Loading…'; btn.disabled=true;
+  localStorage.setItem('pw_sheet_url',input);
 
   try{
     const res=await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`,{credentials:'omit'});
@@ -1650,86 +1829,74 @@ async function loadSheet(){
     const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
     const table=json.table;
     if(!table||!table.cols) throw new Error('Empty sheet.');
-
     const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
     const idx=k=>cols.findIndex(h=>h.includes(k));
     const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
     const num=v=>parseInt((v||'').replace(/[^0-9.-]/g,''))||0;
 
     const baselineMap = {};
-    ACTIVE.forEach(r => baselineMap[r.name] = JSON.parse(JSON.stringify(r)));
+    ACTIVE.forEach(r => {
+      baselineMap[r.name] = { ob: r.ob, pen: r.pen, revMay: r.revMay, revJun: r.revJun, flats: r.flats, months: r.months, launch: r.launch, remark: r.remark };
+    });
 
-    const nA=[], nP=[]; 
+    const nA=[],nP=[]; let cnt=200;
     let dayChanges = [];
 
     (table.rows||[]).forEach(row=>{
-      const name = (cell(row,'society')||cell(row,'name')||'').trim();
-      if(!name || /total|overall|^s\.?no/i.test(name)) return;
-
-      const obj = {
-        id: 200 + nA.length + nP.length,
-        name,
-        flats: num(cell(row,'total')) || num(cell(row,'flat')),
-        ob: num(cell(row,'onboard')),
-        pen: num(cell(row,'penetr')) || num(cell(row,'pen')),
+      const name=cell(row,'society')||cell(row,'name');
+      if(!name||/total|overall|^s\.?no/i.test(name)) return;
+      const ob=num(cell(row,'onboard'));
+      const id=cnt++;
+      const obj={
+        id,name,
+        flats:  num(cell(row,'total'))||num(cell(row,'flat')),
+        ob,
+        pen:    num(cell(row,'penetr'))||num(cell(row,'pen')),
         launch: cell(row,'launch')||cell(row,'month')||'—',
         months: num(cell(row,'months')),
         revMay: num(cell(row,'may')),
         revJun: num(cell(row,'june'))||num(cell(row,'jun')),
-        remark: (cell(row,'remark')||cell(row,'pendency')||'').trim(),
+        remark: cell(row,'remark')||cell(row,'pendency'),
       };
 
       const oldObj = baselineMap[name];
       if (oldObj) {
         const changes = {};
-        if (obj.ob !== oldObj.ob) changes.ob = {old: oldObj.ob, new: obj.ob};
-        if (obj.pen !== oldObj.pen) changes.pen = {old: oldObj.pen, new: obj.pen};
-        if (obj.revMay !== oldObj.revMay) changes.revMay = {old: oldObj.revMay, new: obj.revMay};
-        if (obj.revJun !== oldObj.revJun) changes.revJun = {old: oldObj.revJun, new: obj.revJun};
-        if (obj.flats !== oldObj.flats) changes.flats = {old: oldObj.flats, new: obj.flats};
-
-        // if (obj.remark.length > 3 && obj.remark !== oldObj.remark) {
-        //   changes.remark = {old: oldObj.remark, new: obj.remark};
-        // }
-
+        if (obj.ob     !== oldObj.ob)     changes.ob     = { old: oldObj.ob,     new: obj.ob     };
+        if (obj.pen    !== oldObj.pen)     changes.pen    = { old: oldObj.pen,    new: obj.pen    };
+        if (obj.revMay !== oldObj.revMay)  changes.revMay = { old: oldObj.revMay, new: obj.revMay };
+        if (obj.revJun !== oldObj.revJun)  changes.revJun = { old: oldObj.revJun, new: obj.revJun };
+        if (obj.flats  !== oldObj.flats)   changes.flats  = { old: oldObj.flats,  new: obj.flats  };
+        // if (obj.remark !== oldObj.remark)  changes.remark = { old: oldObj.remark, new: obj.remark };
         if (Object.keys(changes).length > 0) dayChanges.push({ name, changes });
       }
 
-      // if(obj.ob > 0) nA.push(obj); 
-      // else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
+      // if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
     });
 
-    // AUTO SNAPSHOT ONLY IF REAL CHANGES DETECTED
-    if (dayChanges.length > 0) {
-      const dd = String(new Date().getDate()).padStart(2,'0');
-      const mm = String(new Date().getMonth()+1).padStart(2,'0');
-      const yy = String(new Date().getFullYear()).slice(2);
-      const todayString = `${dd}-${mm}-${yy}`;
+    if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
 
+    if (dayChanges.length > 0) {
+      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
       const newSnap = { date: todayString, changes: dayChanges };
       historicalSnapshots.push(newSnap);
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
       await pushSnapshotToSheet(newSnap);
-      
-      console.log(`%c✅ Auto Snapshot Created (${dayChanges.length} changes)`, "color: green; font-weight: bold");
-    } else {
-      console.log("%c🔄 No changes detected - No snapshot created", "color: gray");
     }
 
-    ACTIVE = nA; 
-    PIPELINE = nP;
-
-    if(statusEl) {
-      statusEl.textContent = `✅ Sheet loaded (${nA.length} active)`;
-      statusEl.className = 'conn-status ok';
-    }
+    ACTIVE=nA; PIPELINE=nP;
+    document.getElementById('connStatus').textContent='✅ Sheet loaded. Logs preserved.';
     renderCurrent();
   } catch(e){
-    console.warn('Sheet load failed:', e);
-    if(statusEl) statusEl.textContent = 'Using default data';
+    alert('Could not load sheet.\n\n'+e.message);
+  } finally{
+    btn.textContent='Load Sheet'; btn.disabled=false;
   }
 }
-// ── TABS ──
+
+// ═══════════════════════════════════════════════════
+// TABS & UTILS
+// ═══════════════════════════════════════════════════
 function showTab(tab){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach((b)=>{
@@ -1749,27 +1916,35 @@ function renderCurrent(){
   else if(currentTab==='compare') renderCompare();
 }
 
+function toggleTheme(){
+  const h=document.documentElement;
+  const t=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',t);
+  document.getElementById('themeBtn').textContent=t==='dark'?'☀️':'🌙';
+  renderCurrent();
+}
 function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 
-// ── DRAWER ──
+// ═══════════════════════════════════════════════════
+// DRAWER
+// ═══════════════════════════════════════════════════
 function scrollToDrawerFocus() {
   const area = document.getElementById('drawerFocusArea');
-  if(area) setTimeout(()=>area.scrollIntoView({behavior:'smooth', block:'start'}), 100);
+  if(area) area.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function renderDrawerFocus(mode) {
   const area = document.getElementById('drawerFocusArea');
-  const today = todayMidnight();
+  const todayStr = new Date().toISOString().slice(0,10);
   let h = '';
 
   if (mode === 'today') {
     h = `<h4 style="margin-bottom:10px;">📅 Today's Callbacks</h4>`;
     let count = 0;
     Object.entries(callbacks).forEach(([id,date])=>{
-      const d = parseDateOnly(date);
-      if(d && d.getTime() === today.getTime()){
+      if(date === todayStr){
         const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div class="drawer-cb-item"><b>${s?s.name:id}</b><small style="color:var(--txt2);">Callback Due Today · ${fmtDate(date)}</small></div>`;
+        h+=`<div class="drawer-cb-item"><b>${s?s.name:id}</b><small style="color:var(--txt2);">Callback Due Today</small></div>`;
         count++;
       }
     });
@@ -1779,10 +1954,9 @@ function renderDrawerFocus(mode) {
     h = `<h4 style="margin-bottom:10px;">🔔 Upcoming Callbacks</h4>`;
     let count = 0;
     Object.entries(callbacks).forEach(([id,date])=>{
-      const d = parseDateOnly(date);
-      if(d && d > today){
+      if(date > todayStr){
         const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);background:var(--glass2);"><b>${s?s.name:id}</b><small style="color:var(--txt2);">📅 ${fmtDate(date)}</small></div>`;
+        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);"><b>${s?s.name:id}</b><small style="color:var(--txt2);">📅 ${date}</small></div>`;
         count++;
       }
     });
@@ -1810,9 +1984,8 @@ function renderDrawerFocus(mode) {
 }
 
 function toggleDrawer(){
-  const d = document.getElementById('callDrawer');
-  const o = document.getElementById('drawerOverlay');
-  if(!d || !o) return;
+  const d=document.getElementById('callDrawer');
+  const o=document.getElementById('drawerOverlay');
   const isOpen = d.classList.contains('open');
   if(isOpen){
     d.classList.remove('open');
@@ -1824,37 +1997,82 @@ function toggleDrawer(){
   }
 }
 
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape'){
-    const overlay = document.getElementById('snapshotOverlay');
-    if(overlay && overlay.classList.contains('open')){ closeSnapshotPage(); return; }
-    const d = document.getElementById('callDrawer');
-    if(d && d.classList.contains('open')) toggleDrawer();
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const d=document.getElementById('callDrawer');
+    if(d.classList.contains('open')) toggleDrawer();
   }
 });
 
-// ── INIT - Auto Load Everything ──
-let isLoading = false;
-
+function sendPendingReminders() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var remSheet = ss.getSheetByName('PendingReminders');
+  if (!remSheet) return;
+  
+  var rows = remSheet.getDataRange().getValues();
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  
+  for (var i = 1; i < rows.length; i++) {
+    var row = rows[i];
+    var cbDate = new Date(row[0]);
+    cbDate.setHours(0,0,0,0);
+    var email     = row[1];
+    var society   = row[2];
+    var agent     = row[3];
+    var status    = row[5];
+    
+    if (status === 'pending' && cbDate.getTime() === today.getTime()) {
+      MailApp.sendEmail({
+        to: email,
+        subject: '📞 Callback Reminder — ' + society,
+        body: 'Hi ' + (agent || 'Team') + ',\n\nThis is a reminder that you have a callback scheduled today for:\n\n'
+            + '  Society: ' + society + '\n'
+            + '  Date: ' + row[0] + '\n\n'
+            + 'Please ensure you follow up today.\n\n'
+            + '— ProWater CRM'
+      });
+      // Mark as sent
+      remSheet.getRange(i + 1, 6).setValue('sent');
+    }
+  }
+}
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiMnHO9j_OIgqcDkAg1TGOJYQpWz60FBvHypR50iDyEwocEpCyEL-CANf6loNK8sfr/exec';
+const HARDCODED_SHEET_URL  = 'https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing';
 window.onload = async function () {
-    if (isLoading) return;   // Prevent double load on mobile
-    isLoading = true;
 
-    document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
-
-    const statusEl = document.getElementById('connStatus');
-    statusEl.textContent = '🔄 Loading...';
+    document.getElementById("agentName").value =
+        localStorage.getItem("pw_agent") || "";
 
     await connectBackend();
-    
-    setTimeout(async () => {
-        await loadSheet();
-        renderCurrent();
-        statusEl.textContent = backendOk ? '✅ Ready' : '⚠️ Local Mode';
-    }, 900);
+
+    await loadSheet();
+
+    renderCurrent();
+
 };
+if(!SCRIPT_URL) {
+  SCRIPT_URL = HARDCODED_SCRIPT_URL;
+  localStorage.setItem('pw_script_url', SCRIPT_URL);
+}
+if(!SHEET_URL) {
+  SHEET_URL = HARDCODED_SHEET_URL;
+  localStorage.setItem('pw_sheet_url', SHEET_URL);
+}
+
+if(SCRIPT_URL) document.getElementById('scriptUrl').value = SCRIPT_URL;
+if(SHEET_URL)  document.getElementById('sheetUrl').value  = SHEET_URL;
+if(localStorage.getItem('pw_agent'))
+  document.getElementById('agentName').value = localStorage.getItem('pw_agent');
+
+document.getElementById('setupBanner').style.display = 'none';
+connectBackend().then(() => loadSheet());
 
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);
 </script>
 </body>
 </html>
+final with email working(snapshot in menu)

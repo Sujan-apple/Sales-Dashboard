@@ -1702,23 +1702,24 @@ async function loadSheet(){
       if(obj.ob > 0) nA.push(obj); 
       else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
-    // Only create snapshot if there are real changes AND it's not duplicate
+        // ── FIXED SNAPSHOT CREATION (Prevents duplicates on mobile) ──
     if (dayChanges.length > 0) {
       const dd = String(new Date().getDate()).padStart(2,'0');
       const mm = String(new Date().getMonth()+1).padStart(2,'0');
       const yy = String(new Date().getFullYear()).slice(2);
       const todayString = `${dd}-${mm}-${yy}`;
 
-      // Prevent duplicate snapshots on same day
-      const lastSnap = historicalSnapshots[historicalSnapshots.length - 1];
-      if (!lastSnap || lastSnap.date !== todayString || lastSnap.changes.length === 0) {
+      // Stronger duplicate prevention
+      const existingToday = historicalSnapshots.some(s => s.date === todayString);
+      
+      if (!existingToday) {
         const newSnap = { date: todayString, changes: dayChanges };
         historicalSnapshots.push(newSnap);
         localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
         await pushSnapshotToSheet(newSnap);
-        console.log(`Snapshot created: ${dayChanges.length} changes`);
+        console.log(`✅ New snapshot created: ${dayChanges.length} changes`);
       } else {
-        console.log("No new changes today - skipping snapshot");
+        console.log("⏭️ Snapshot for today already exists - skipping");
       }
     }
 
@@ -1840,26 +1841,24 @@ document.addEventListener('keydown', e => {
 });
 
 // ── INIT - Auto Load Everything ──
+let isLoading = false;
+
 window.onload = async function () {
+    if (isLoading) return;   // Prevent double load on mobile
+    isLoading = true;
+
     document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
 
     const statusEl = document.getElementById('connStatus');
-    statusEl.textContent = '🔄 Initializing dashboard...';
-    statusEl.className = 'conn-status';
+    statusEl.textContent = '🔄 Loading...';
 
-    // Step 1: Connect Backend first
     await connectBackend();
-
-    // Step 2: Load Sheet data
+    
     setTimeout(async () => {
         await loadSheet();
         renderCurrent();
-        
-        if (backendOk) {
-            statusEl.textContent = '✅ Fully Loaded';
-            statusEl.className = 'conn-status ok';
-        }
-    }, 800);
+        statusEl.textContent = backendOk ? '✅ Ready' : '⚠️ Local Mode';
+    }, 900);
 };
 
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);

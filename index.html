@@ -1731,38 +1731,41 @@ function closeLogModal(){
   document.getElementById('cbEmail').style.display      = 'none';
 }
 async function saveLog(){
-  const note=document.getElementById('logNote').value.trim();
-  if(!note){alert('Please add a note.');return;}
-  const agentName=document.getElementById('logAgent').value.trim();
-  const outcome=document.getElementById('logOutcome').value;
-  const cbDate=document.getElementById('cbDate').value;
+  const note = document.getElementById('logNote').value.trim();
+  if(!note){ alert('Please add a note.'); return; }
 
-  if(agentName) localStorage.setItem('pw_agent',agentName);
+  const agentName = document.getElementById('logAgent').value.trim();
+  const outcome = document.getElementById('logOutcome').value;
+  const cbDate = document.getElementById('cbDate').value;
+  const cbEmail = document.getElementById('cbEmail') ? document.getElementById('cbEmail').value.trim() : '';
 
-  const now=new Date();
-  const time=now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-  const entry={note,agentName,outcome,callbackDate:cbDate,time};
+  if(agentName) localStorage.setItem('pw_agent', agentName);
 
-  if(!logs[currentLogId]) logs[currentLogId]=[];
+  const now = new Date();
+  const time = now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+  const entry = {note, agentName, outcome, callbackDate: cbDate, time};
+
+  if(!logs[currentLogId]) logs[currentLogId] = [];
   logs[currentLogId].push(entry);
-  if(outcome==='callback'&&cbDate) callbacks[currentLogId]=cbDate;
+  if(outcome==='callback' && cbDate) callbacks[currentLogId] = cbDate;
 
   saveLocal();
 
   if(backendOk){
-    document.getElementById('logSaving').style.display='block';
-    document.getElementById('logSaveBtn').disabled=true;
-    const all=[...ACTIVE,...PIPELINE];
-    const r=all.find(x=>x.id===currentLogId);
-    const cbEmail = document.getElementById('cbEmail').value.trim();
-await pushLogToSheet({
-  societyName: r?r.name:currentLogName,
-  agentName, note, outcome,
-  callbackDate: cbDate,
-  callbackEmail: cbEmail,
-  type: PIPELINE.find(p=>p.id===currentLogId)?'pipeline':'active'
-});
-    document.getElementById('logSaveBtn').disabled=false;
+    document.getElementById('logSaving').style.display = 'block';
+    document.getElementById('logSaveBtn').disabled = true;
+    const all = [...ACTIVE, ...PIPELINE];
+    const r = all.find(x => x.id === currentLogId);
+    await pushLogToSheet({
+      societyName: r ? r.name : currentLogName,
+      agentName, 
+      note, 
+      outcome,
+      callbackDate: cbDate,
+      callbackEmail: cbEmail,   // ← This is critical
+      type: PIPELINE.find(p => p.id === currentLogId) ? 'pipeline' : 'active'
+    });
+    document.getElementById('logSaveBtn').disabled = false;
   }
 
   closeLogModal();

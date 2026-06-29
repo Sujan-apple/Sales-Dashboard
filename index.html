@@ -2029,7 +2029,18 @@ function sendPendingReminders() {
 // ═══════════════════════════════════════════════════
 const HARDCODED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiMnHO9j_OIgqcDkAg1TGOJYQpWz60FBvHypR50iDyEwocEpCyEL-CANf6loNK8sfr/exec';
 const HARDCODED_SHEET_URL  = 'https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing';
+window.onload = async function () {
 
+    document.getElementById("agentName").value =
+        localStorage.getItem("pw_agent") || "";
+
+    await connectBackend();
+
+    await loadSheet();
+
+    renderCurrent();
+
+};
 if(!SCRIPT_URL) {
   SCRIPT_URL = HARDCODED_SCRIPT_URL;
   localStorage.setItem('pw_script_url', SCRIPT_URL);

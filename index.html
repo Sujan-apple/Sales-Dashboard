@@ -1192,9 +1192,8 @@ function renderOverview(){
         </div>
         <span class="badge ${hl.c}">${hl.t}</span>
       </div>
-      ${overdue?`<div class="cb-flag">📞 Callback overdue · ${fmtDate(cb)}</div>`:''}
-      ${cb&&!overdue?`<div class="cb-flag" style="background:rgba(234,88,12,0.06);border-color:rgba(234,88,12,0.18);">📅 Callback scheduled · ${fmtDate(cb)}</div>`:''}
-      ${logCardHtml(ll)}
+     ${overdue?`<div class="cb-flag" style="background:rgba(220,38,38,0.12);border-color:rgba(220,38,38,0.3);color:var(--red);">📞 Callback overdue • ${fmtDate(cb)}</div>`:''}
+      ${cb&&!overdue?`<div class="cb-flag" style="background:rgba(234,88,12,0.08);border-color:rgba(234,88,12,0.25);">📅 Callback scheduled • ${fmtDate(cb)}</div>`:''}
       <div class="metrics">
         <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
         <div class="metric"><div class="metric-v" style="color:var(--acc)">${r.pen}%</div><div class="metric-l">Pen.</div></div>

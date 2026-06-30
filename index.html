@@ -1256,7 +1256,7 @@ function renderFollowup(){
         <div class="fup-name">${r.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${r.flats} flats</span></div>
         ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;font-weight:600;">${overdue?'⚠ Overdue:':'📅'} ${fmtDate(cb)}</div>`:''}
         ${reasons.length?`<div class="fup-note">${reasons.join(' · ')}</div>`:''}
-        ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:'<div class="fup-note" style="color:var(--muted)">No call logged yet</div>'}
+        ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time && ll.time !== '01 Jan 1970' ? ll.time : '—'}</div>`:'<div class="fup-note" style="color:var(--muted)">No call logged yet</div>'}
       </div>
       <div class="fup-actions">
         <button class="icon-btn" onclick="openLog(${r.id},'${esc(r.name)}')">📝</button>
@@ -1518,16 +1518,25 @@ function openDetail(id){
     document.getElementById('dTargetNote').innerHTML=`Pipeline society — ${r.flats} flats total.<br>${r.remark||''}`;
   }
 
-  const logList=getLogsById(id);
+    const logList=getLogsById(id);
   let lh=`<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Call history (${logList.length})</div>`;
-  if(!logList.length) lh+=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:12px;">No calls logged yet.</div>`;
-  else logList.slice().reverse().forEach(l=>{
-    lh+=`<div class="log-entry">
-      ${l.agentName?`<div style="font-size:10px;font-weight:700;color:var(--acc);margin-bottom:2px;">👤 ${l.agentName}</div>`:''}
-      ${l.note}
-      <div class="note-time">${l.time} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div>
-    </div>`;
-  });
+  
+  if(!logList.length) {
+    lh+=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:12px;">No calls logged yet.</div>`;
+  } else {
+    logList.slice().reverse().forEach(l=>{
+      // Robust date display
+      let displayTime = l.time || '—';
+      if(displayTime.includes('1970') || displayTime === '01 Jan 1970') {
+        displayTime = '—';
+      }
+      lh+=`<div class="log-entry">
+        ${l.agentName?`<div style="font-size:10px;font-weight:700;color:var(--acc);margin-bottom:2px;">👤 ${l.agentName}</div>`:''}
+        ${l.note}
+        <div class="note-time">${displayTime} · ${l.outcome==='blocked'?'🔴':l.outcome==='callback'?'🟡':'🟢'} ${l.outcome}</div>
+      </div>`;
+    });
+  }
   document.getElementById('dLogHistory').innerHTML=lh;
   document.getElementById('dLogBtn').textContent=isPipe?'📝 Log pipeline note':'📝 Log a call';
   document.getElementById('detailModal').classList.add('open');
@@ -1631,9 +1640,15 @@ async function saveLog(){
 }
 
 async function markCbDone(id, name){
+  // Remove callback
   delete callbacks[id];
   saveLocal();
-  if(backendOk) await apiCall('clearCallback',{societyName:name});
+
+  if(backendOk) {
+    await apiCall('clearCallback', {societyName: name});
+  }
+
+  // Refresh to prevent stale/broken dates
   renderCurrent();
 }
 

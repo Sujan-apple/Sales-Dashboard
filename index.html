@@ -910,10 +910,8 @@ select.form-ctrl { cursor: pointer; }
     <button class="btn-save" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:none;font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;" id="dLogBtn" onclick="openLogFromDetail()">📝 Log a call</button>
   </div>
 </div>
+
 <script>
-// ═══════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiMnHO9j_OIgqcDkAg1TGOJYQpWz60FBvHypR50iDyEwocEpCyEL-CANf6loNK8sfr/exec";
 const SHEET_URL  = "https://docs.google.com/spreadsheets/d/1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw/edit?usp=sharing";
 let backendOk = false;
@@ -921,6 +919,24 @@ let backendOk = false;
 let logs = {}, callbacks = {};
 try { logs = JSON.parse(localStorage.getItem('pw_logs')||'{}'); } catch(e){}
 try { callbacks = JSON.parse(localStorage.getItem('pw_callbacks')||'{}'); } catch(e){}
+
+// Strip T18:30:00.000Z from any stored callback dates (ISO -> YYYY-MM-DD only)
+Object.keys(callbacks).forEach(id => {
+  if(callbacks[id] && /T\d{2}:\d{2}/.test(callbacks[id]))
+    callbacks[id] = callbacks[id].slice(0,10);
+});
+// Fix broken log timestamps
+Object.keys(logs).forEach(id => {
+  logs[id] = (logs[id]||[]).map(e => {
+    let t = e.time || '';
+    if(/1970/.test(t) || /T\d{2}:\d{2}/.test(t)) {
+      const m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      t = m ? (m[3]+'-'+m[2]+'-'+m[1].slice(2)) : '(unknown)';
+      return {...e, time: t};
+    }
+    return e;
+  });
+});
 
 let historicalSnapshots = [];
 try { historicalSnapshots = JSON.parse(localStorage.getItem('pw_snapshots')||'[]'); } catch(e){}
@@ -945,9 +961,29 @@ let PIPELINE = [
 let _detailId = null, currentLogId = null, currentLogName = '';
 let sortKey='pen', sortDir=-1, filterUrgent=false, searchQ='', currentTab='overview';
 
-// ═══════════════════════════════════════════════════
-// BACKEND API
-// ═══════════════════════════════════════════════════
+// ── DATE HELPERS ──
+function fmtDate(d){
+  if(!d) return '';
+  const s = String(d).trim();
+  // Parse YYYY-MM-DD from any ISO string (strips T18:30:00.000Z etc.)
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m){ return m[3]+'-'+m[2]+'-'+m[1].slice(2); }
+  return s;
+}
+function parseDateOnly(d){
+  // Returns a Date at local midnight — safe for any ISO string
+  if(!d) return null;
+  const s = String(d).trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+  return new Date(d);
+}
+function todayMidnight(){
+  const n = new Date();
+  return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+}
+
+// ── BACKEND ──
 function setSyncStatus(state, msg) {
   const dot = document.getElementById('syncDot');
   const txt = document.getElementById('syncTxt');
@@ -1068,9 +1104,7 @@ async function refreshLogsFromSheet() {
   setSyncStatus('ok', 'Synced ' + new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'}));
 }
 
-// ═══════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════
+// ── HELPERS ──
 function saveLocal() {
   localStorage.setItem('pw_logs', JSON.stringify(logs));
   localStorage.setItem('pw_callbacks', JSON.stringify(callbacks));
@@ -1080,24 +1114,9 @@ function lastLog(id){ const l=getLogsById(id); return l.length?l[l.length-1]:nul
 function fmt(n){ return '₹'+Number(n).toLocaleString('en-IN'); }
 function fmtS(n){ return n>=1000?'₹'+(n/1000).toFixed(1)+'k':'₹'+n; }
 
-// Format a callback date string (yyyy-mm-dd) into a friendly display, e.g. "29 Jun 2026"
-function fmtCbDate(dateStr){
-  if(!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
-  if(isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
-}
-
-// Friendly relative phrasing for an overdue callback, e.g. "1 day overdue", "Due today"
-function fmtCbOverdue(dateStr){
-  if(!dateStr) return '';
-  const cb = new Date(dateStr + 'T00:00:00');
-  const today = new Date(); today.setHours(0,0,0,0);
-  if(isNaN(cb.getTime())) return fmtCbDate(dateStr);
-  const days = Math.round((today - cb) / 86400000);
-  if(days <= 0) return 'Due today';
-  if(days === 1) return '1 day overdue';
-  return days + ' days overdue';
+function isOverdue(cbVal){
+  if(!cbVal) return false;
+  return parseDateOnly(cbVal) <= todayMidnight();
 }
 
 function checkHealthOverride(r) {
@@ -1113,7 +1132,7 @@ function urgencyReasons(r){
   if(r.pen<15) rs.push(`Low penetration (${r.pen}%)`);
   if(r.months>12&&r.pen<25) rs.push(`${r.months}mo live, under 25% pen`);
   if(!lastLog(r.id)) rs.push('No call logged yet');
-  if(callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()) rs.push('Callback overdue');
+  if(callbacks[r.id] && isOverdue(callbacks[r.id])) rs.push('Callback overdue');
   return rs;
 }
 function isUrgent(r){ return urgencyReasons(r).length>0; }
@@ -1127,9 +1146,7 @@ function logCardHtml(ll) {
   </div>`;
 }
 
-// ═══════════════════════════════════════════════════
-// OVERVIEW TAB
-// ═══════════════════════════════════════════════════
+// ── OVERVIEW TAB ──
 function renderOverview(){
   const filtered=ACTIVE.filter(r=>{
     if(filterUrgent&&!isUrgent(r)) return false;
@@ -1143,7 +1160,7 @@ function renderOverview(){
   const delta=revJun-revMay;
   const avgPen=ACTIVE.length ? Math.round(ACTIVE.reduce((a,r)=>a+r.pen,0)/ACTIVE.length) : 0;
   const urgent=ACTIVE.filter(isUrgent).length;
-  const cbDue=ACTIVE.filter(r=>callbacks[r.id]&&new Date(callbacks[r.id])<=new Date()).length;
+  const cbDue=ACTIVE.filter(r=>callbacks[r.id] && isOverdue(callbacks[r.id])).length;
 
   let html=`<div class="kpis">
     <div class="kpi"><div class="kpi-lbl">Onboarded</div><div class="kpi-val">${ob}</div><div class="kpi-sub">of ${aFlats} active flats</div></div>
@@ -1166,7 +1183,7 @@ function renderOverview(){
     const d=r.revJun-r.revMay;
     const ll=lastLog(r.id);
     const cb=callbacks[r.id];
-    const cbOverdue = cb && new Date(cb) <= new Date();
+    const overdue = cb && isOverdue(cb);
     html+=`<div class="scard">
       <div class="scard-top">
         <div>
@@ -1175,8 +1192,8 @@ function renderOverview(){
         </div>
         <span class="badge ${hl.c}">${hl.t}</span>
       </div>
-      ${cbOverdue?`<div class="cb-flag">📞 Callback overdue · ${fmtCbOverdue(cb)} <span style="opacity:.75;font-weight:500;">(was due ${fmtCbDate(cb)})</span></div>`:''}
-      ${cb&&!cbOverdue?`<div class="cb-flag" style="background:rgba(194,65,12,0.06);border-color:rgba(194,65,12,0.18);">📅 Callback scheduled · ${fmtCbDate(cb)}</div>`:''}
+      ${overdue?`<div class="cb-flag">📞 Callback overdue · ${fmtDate(cb)}</div>`:''}
+      ${cb&&!overdue?`<div class="cb-flag" style="background:rgba(234,88,12,0.06);border-color:rgba(234,88,12,0.18);">📅 Callback scheduled · ${fmtDate(cb)}</div>`:''}
       ${logCardHtml(ll)}
       <div class="metrics">
         <div class="metric"><div class="metric-v">${r.ob}</div><div class="metric-l">Onboarded</div></div>
@@ -1215,9 +1232,7 @@ function renderOverview(){
   document.getElementById('tab-overview').innerHTML=html;
 }
 
-// ═══════════════════════════════════════════════════
-// FOLLOW-UPS TAB
-// ═══════════════════════════════════════════════════
+// ── FOLLOW-UPS TAB ──
 function renderFollowup(){
   let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
     <div class="sec" style="margin:0;flex:1">Pending callbacks & flagged</div>
@@ -1226,21 +1241,21 @@ function renderFollowup(){
 
   const pending=ACTIVE.filter(r=>callbacks[r.id]||urgencyReasons(r).length)
     .sort((a,b)=>{
-      const ao=callbacks[a.id]&&new Date(callbacks[a.id])<=new Date()?0:1;
-      const bo=callbacks[b.id]&&new Date(callbacks[b.id])<=new Date()?0:1;
+      const ao=callbacks[a.id]&&isOverdue(callbacks[a.id])?0:1;
+      const bo=callbacks[b.id]&&isOverdue(callbacks[b.id])?0:1;
       return ao-bo;
     });
 
   if(!pending.length) html+=`<div class="empty">No pending follow-ups. All good! 🎉</div>`;
   else pending.forEach(r=>{
     const cb=callbacks[r.id]; const ll=lastLog(r.id);
-    const overdue=cb&&new Date(cb)<=new Date();
+    const overdue=cb&&isOverdue(cb);
     const reasons=urgencyReasons(r);
     html+=`<div class="fup-item">
       <div class="fup-dot ${overdue?'red':reasons.length?'ylw':'grn'}"></div>
       <div class="fup-body">
         <div class="fup-name">${r.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${r.flats} flats</span></div>
-        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;font-weight:600;">${overdue?'⚠ '+fmtCbOverdue(cb)+' (was due '+fmtCbDate(cb)+')':'📅 '+fmtCbDate(cb)}</div>`:''}
+        ${cb?`<div style="font-size:11px;color:${overdue?'var(--red)':'var(--orn)'};margin-top:3px;font-weight:600;">${overdue?'⚠ Overdue:':'📅'} ${fmtDate(cb)}</div>`:''}
         ${reasons.length?`<div class="fup-note">${reasons.join(' · ')}</div>`:''}
         ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:'<div class="fup-note" style="color:var(--muted)">No call logged yet</div>'}
       </div>
@@ -1260,7 +1275,7 @@ function renderFollowup(){
         <div class="fup-dot ylw"></div>
         <div class="fup-body">
           <div class="fup-name">${p.name} <span style="font-size:10px;color:var(--muted)">(Pipeline · ${p.flats} flats)</span></div>
-          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;font-weight:600;">📅 ${fmtCbDate(cb)}</div>`:''}
+          ${cb?`<div style="font-size:11px;color:var(--orn);margin-top:3px;font-weight:600;">📅 ${fmtDate(cb)}</div>`:''}
           ${ll?`<div class="fup-note" style="font-style:italic">"${ll.note}" ${ll.agentName?`<span style="color:var(--acc)">— ${ll.agentName}</span>`:''}</div><div class="fup-time">${ll.time}</div>`:''}
         </div>
         <div class="fup-actions">
@@ -1289,9 +1304,7 @@ function renderFollowup(){
   document.getElementById('tab-followup').innerHTML=html;
 }
 
-// ═══════════════════════════════════════════════════
-// COMPARE TAB
-// ═══════════════════════════════════════════════════
+// ── COMPARE TAB ──
 function renderCompare(){
   const sorted=[...ACTIVE].sort((a,b)=>{
     let va=a[sortKey],vb=b[sortKey];
@@ -1372,9 +1385,7 @@ function renderCompare(){
   document.getElementById('tab-compare').innerHTML=html;
 }
 
-// ═══════════════════════════════════════════════════
-// SNAPSHOT FULL PAGE
-// ═══════════════════════════════════════════════════
+// ── SNAPSHOT FULL PAGE ──
 const fieldMeta = {
   ob:     { label: 'Onboarded',   icon: '🏠', fmt: v => v + ' flats',                          color: (o,n) => n>o ? 'plus' : 'minus' },
   pen:    { label: 'Penetration', icon: '📈', fmt: v => v + '%',                                color: (o,n) => n>o ? 'plus' : 'minus' },
@@ -1476,9 +1487,7 @@ function closeSnapshotPage() {
   document.body.style.overflow = '';
 }
 
-// ═══════════════════════════════════════════════════
-// DETAIL MODAL
-// ═══════════════════════════════════════════════════
+// ── DETAIL MODAL ──
 function openDetail(id){
   const all=[...ACTIVE,...PIPELINE];
   const r=all.find(x=>x.id===id);
@@ -1534,9 +1543,7 @@ function openLogFromDetail(){
   openLog(r.id, r.name, isPipe?'pipeline':'');
 }
 
-// ═══════════════════════════════════════════════════
-// LOG MODAL
-// ═══════════════════════════════════════════════════
+// ── LOG MODAL ──
 function openLog(id, name, mode){
   currentLogId=id; currentLogName=name||'';
   document.getElementById('logModalTitle').textContent=mode==='pipeline'?'Log pipeline note':'Log call / visit';
@@ -1589,7 +1596,12 @@ async function saveLog(){
   if(agentName) localStorage.setItem('pw_agent', agentName);
 
   const now = new Date();
-  const time = now.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+  // Store time as DD-MM-YY
+  const dd = String(now.getDate()).padStart(2,'0');
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const yy = String(now.getFullYear()).slice(2);
+  const time = dd+'-'+mm+'-'+yy;
+
   const entry = {note, agentName, outcome, callbackDate: cbDate, time};
 
   if(!logs[currentLogId]) logs[currentLogId] = [];
@@ -1626,9 +1638,7 @@ async function markCbDone(id, name){
   renderCurrent();
 }
 
-// ═══════════════════════════════════════════════════
-// SHEET LOADER
-// ═══════════════════════════════════════════════════
+// ── SHEET LOADER ──
 async function loadSheet(){
   const sheetId = '1WCcDF5bAi5AjUlm6Xorlbe09fS4cT4EqpZc73ZQYGmw';
   const statusEl = document.getElementById('connStatus');
@@ -1640,73 +1650,86 @@ async function loadSheet(){
     const json=JSON.parse(raw.slice(raw.indexOf('(')+1,raw.lastIndexOf(')')));
     const table=json.table;
     if(!table||!table.cols) throw new Error('Empty sheet.');
+
     const cols=table.cols.map(c=>(c.label||'').toLowerCase().replace(/[^a-z0-9]/g,''));
     const idx=k=>cols.findIndex(h=>h.includes(k));
     const cell=(row,k)=>{const i=idx(k);if(i<0||!row.c||!row.c[i]||row.c[i].v===null)return '';return String(row.c[i].v).trim();};
     const num=v=>parseInt((v||'').replace(/[^0-9.-]/g,''))||0;
 
     const baselineMap = {};
-    ACTIVE.forEach(r => {
-      baselineMap[r.name] = { ob: r.ob, pen: r.pen, revMay: r.revMay, revJun: r.revJun, flats: r.flats, months: r.months, launch: r.launch, remark: r.remark };
-    });
+    ACTIVE.forEach(r => baselineMap[r.name] = JSON.parse(JSON.stringify(r)));
 
-    const nA=[],nP=[]; let cnt=200;
+    const nA=[], nP=[]; 
     let dayChanges = [];
 
     (table.rows||[]).forEach(row=>{
-      const name=cell(row,'society')||cell(row,'name');
-      if(!name||/total|overall|^s\.?no/i.test(name)) return;
-      const ob=num(cell(row,'onboard'));
-      const id=cnt++;
-      const obj={
-        id,name,
-        flats:  num(cell(row,'total'))||num(cell(row,'flat')),
-        ob,
-        pen:    num(cell(row,'penetr'))||num(cell(row,'pen')),
+      const name = (cell(row,'society')||cell(row,'name')||'').trim();
+      if(!name || /total|overall|^s\.?no/i.test(name)) return;
+
+      const obj = {
+        id: 200 + nA.length + nP.length,
+        name,
+        flats: num(cell(row,'total')) || num(cell(row,'flat')),
+        ob: num(cell(row,'onboard')),
+        pen: num(cell(row,'penetr')) || num(cell(row,'pen')),
         launch: cell(row,'launch')||cell(row,'month')||'—',
         months: num(cell(row,'months')),
         revMay: num(cell(row,'may')),
         revJun: num(cell(row,'june'))||num(cell(row,'jun')),
-        remark: cell(row,'remark')||cell(row,'pendency'),
+        remark: (cell(row,'remark')||cell(row,'pendency')||'').trim(),
       };
 
       const oldObj = baselineMap[name];
       if (oldObj) {
         const changes = {};
-        if (obj.ob     !== oldObj.ob)     changes.ob     = { old: oldObj.ob,     new: obj.ob     };
-        if (obj.pen    !== oldObj.pen)     changes.pen    = { old: oldObj.pen,    new: obj.pen    };
-        if (obj.revMay !== oldObj.revMay)  changes.revMay = { old: oldObj.revMay, new: obj.revMay };
-        if (obj.revJun !== oldObj.revJun)  changes.revJun = { old: oldObj.revJun, new: obj.revJun };
-        if (obj.flats  !== oldObj.flats)   changes.flats  = { old: oldObj.flats,  new: obj.flats  };
-        if (obj.remark !== oldObj.remark)  changes.remark = { old: oldObj.remark, new: obj.remark };
+        if (obj.ob !== oldObj.ob) changes.ob = {old: oldObj.ob, new: obj.ob};
+        if (obj.pen !== oldObj.pen) changes.pen = {old: oldObj.pen, new: obj.pen};
+        if (obj.revMay !== oldObj.revMay) changes.revMay = {old: oldObj.revMay, new: obj.revMay};
+        if (obj.revJun !== oldObj.revJun) changes.revJun = {old: oldObj.revJun, new: obj.revJun};
+        if (obj.flats !== oldObj.flats) changes.flats = {old: oldObj.flats, new: obj.flats};
+
+        // if (obj.remark.length > 3 && obj.remark !== oldObj.remark) {
+        //   changes.remark = {old: oldObj.remark, new: obj.remark};
+        // }
+
         if (Object.keys(changes).length > 0) dayChanges.push({ name, changes });
       }
 
-      if(ob>0) nA.push(obj); else nP.push({id,name,flats:obj.flats,remark:obj.remark});
+      if(obj.ob > 0) nA.push(obj); 
+      else nP.push({id:obj.id, name, flats:obj.flats, remark:obj.remark});
     });
 
-    if(!nA.length&&!nP.length) throw new Error('No rows found. Check column headers.');
-
+    // AUTO SNAPSHOT ONLY IF REAL CHANGES DETECTED
     if (dayChanges.length > 0) {
-      const todayString = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+      const dd = String(new Date().getDate()).padStart(2,'0');
+      const mm = String(new Date().getMonth()+1).padStart(2,'0');
+      const yy = String(new Date().getFullYear()).slice(2);
+      const todayString = `${dd}-${mm}-${yy}`;
+
       const newSnap = { date: todayString, changes: dayChanges };
       historicalSnapshots.push(newSnap);
       localStorage.setItem('pw_snapshots', JSON.stringify(historicalSnapshots));
       await pushSnapshotToSheet(newSnap);
+      
+      console.log(`%c✅ Auto Snapshot Created (${dayChanges.length} changes)`, "color: green; font-weight: bold");
+    } else {
+      console.log("%c🔄 No changes detected - No snapshot created", "color: gray");
     }
 
-    ACTIVE=nA; PIPELINE=nP;
-    if(statusEl) { statusEl.textContent='✅ Sheet loaded successfully.'; statusEl.className='conn-status ok'; }
+    ACTIVE = nA; 
+    PIPELINE = nP;
+
+    if(statusEl) {
+      statusEl.textContent = `✅ Sheet loaded (${nA.length} active)`;
+      statusEl.className = 'conn-status ok';
+    }
     renderCurrent();
   } catch(e){
-    if(statusEl) { statusEl.textContent='Sheet data unavailable — using defaults.'; statusEl.className='conn-status'; }
-    console.warn('Sheet load failed:', e.message);
+    console.warn('Sheet load failed:', e);
+    if(statusEl) statusEl.textContent = 'Using default data';
   }
 }
-
-// ═══════════════════════════════════════════════════
-// TABS & UTILS
-// ═══════════════════════════════════════════════════
+// ── TABS ──
 function showTab(tab){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach((b)=>{
@@ -1728,9 +1751,7 @@ function renderCurrent(){
 
 function esc(s){ return (s||'').replace(/'/g,"\\'"); }
 
-// ═══════════════════════════════════════════════════
-// DRAWER
-// ═══════════════════════════════════════════════════
+// ── DRAWER ──
 function scrollToDrawerFocus() {
   const area = document.getElementById('drawerFocusArea');
   if(area) setTimeout(()=>area.scrollIntoView({behavior:'smooth', block:'start'}), 100);
@@ -1738,16 +1759,17 @@ function scrollToDrawerFocus() {
 
 function renderDrawerFocus(mode) {
   const area = document.getElementById('drawerFocusArea');
-  const todayStr = new Date().toISOString().slice(0,10);
+  const today = todayMidnight();
   let h = '';
 
   if (mode === 'today') {
     h = `<h4 style="margin-bottom:10px;">📅 Today's Callbacks</h4>`;
     let count = 0;
     Object.entries(callbacks).forEach(([id,date])=>{
-      if(date === todayStr){
+      const d = parseDateOnly(date);
+      if(d && d.getTime() === today.getTime()){
         const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div class="drawer-cb-item"><b>${s?s.name:id}</b><small style="color:var(--txt2);">Callback Due Today</small></div>`;
+        h+=`<div class="drawer-cb-item"><b>${s?s.name:id}</b><small style="color:var(--txt2);">Callback Due Today · ${fmtDate(date)}</small></div>`;
         count++;
       }
     });
@@ -1757,9 +1779,10 @@ function renderDrawerFocus(mode) {
     h = `<h4 style="margin-bottom:10px;">🔔 Upcoming Callbacks</h4>`;
     let count = 0;
     Object.entries(callbacks).forEach(([id,date])=>{
-      if(date > todayStr){
+      const d = parseDateOnly(date);
+      if(d && d > today){
         const s=[...ACTIVE,...PIPELINE].find(x=>x.id==id);
-        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);background:var(--glass2);"><b>${s?s.name:id}</b><small style="color:var(--txt2);">📅 ${fmtCbDate(date)}</small></div>`;
+        h+=`<div class="drawer-cb-item" style="border-left-color:var(--muted);background:var(--glass2);"><b>${s?s.name:id}</b><small style="color:var(--txt2);">📅 ${fmtDate(date)}</small></div>`;
         count++;
       }
     });
@@ -1810,26 +1833,25 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ═══════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════
+// ── INIT - Auto Load Everything ──
+let isLoading = false;
+
 window.onload = async function () {
-  document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
+    if (isLoading) return;   // Prevent double load on mobile
+    isLoading = true;
 
-  const statusEl = document.getElementById('connStatus');
-  statusEl.textContent = '🔄 Connecting…';
+    document.getElementById('agentName').value = localStorage.getItem('pw_agent') || '';
 
-  // Render immediately with default data
-  renderCurrent();
+    const statusEl = document.getElementById('connStatus');
+    statusEl.textContent = '🔄 Loading...';
 
-  // Connect backend
-  await connectBackend();
-
-  // Load sheet with slight delay
-  setTimeout(async () => {
-    await loadSheet();
-    renderCurrent();
-  }, 500);
+    await connectBackend();
+    
+    setTimeout(async () => {
+        await loadSheet();
+        renderCurrent();
+        statusEl.textContent = backendOk ? '✅ Ready' : '⚠️ Local Mode';
+    }, 900);
 };
 
 setInterval(()=>{ if(backendOk){ refreshLogsFromSheet().then(renderCurrent); } }, 60000);
